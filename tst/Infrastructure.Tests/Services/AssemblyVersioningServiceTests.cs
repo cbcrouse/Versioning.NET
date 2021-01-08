@@ -1,12 +1,13 @@
 ﻿using Application.Interfaces;
 using Domain.Enumerations;
 using Infrastructure.Services;
+using Infrastructure.Tests.Setup;
 using Semver;
 using Xunit;
 
 namespace Infrastructure.Tests.Services
 {
-    public class AssemblyVersioningServiceTests
+    public class AssemblyVersioningServiceTests : GitSetup
     {
         [Fact]
         public void AssemblyVersioningService_Implements_IAssemblyVersioningService()
@@ -25,7 +26,7 @@ namespace Infrastructure.Tests.Services
             var service = new AssemblyVersioningService();
 
             // Act
-            SemVersion result = service.GetLatestAssemblyVersion("G:\\Git\\CleanArchitecture");
+            SemVersion result = service.GetLatestAssemblyVersion(TestRepoDirectory);
 
             // Assert
             Assert.True(result != default);
@@ -36,14 +37,14 @@ namespace Infrastructure.Tests.Services
         {
             // Arrange
             var service = new AssemblyVersioningService();
-            SemVersion originalAssemblyVersion = service.GetLatestAssemblyVersion("G:\\Git\\CleanArchitecture");
+            SemVersion originalAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory);
             SemVersion expectedAssemblyVersion = new SemVersion(originalAssemblyVersion.Major, originalAssemblyVersion.Minor, originalAssemblyVersion.Patch+1);
 
             // Act
-            service.IncrementVersion(VersionIncrement.Patch, "G:\\Git\\CleanArchitecture");
+            service.IncrementVersion(VersionIncrement.Patch, TestRepoDirectory);
 
             // Assert
-            SemVersion actualAssemblyVersion = service.GetLatestAssemblyVersion("G:\\Git\\CleanArchitecture");
+            SemVersion actualAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory);
             Assert.Equal(expectedAssemblyVersion, actualAssemblyVersion);
         }
     }
