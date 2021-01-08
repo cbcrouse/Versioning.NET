@@ -1,9 +1,12 @@
-﻿using Domain.Constants;
+﻿#nullable enable
+using Domain.Constants;
 using Domain.Entities;
+using Domain.Enumerations;
 using Infrastructure.Services;
 using Infrastructure.Tests.Setup;
 using System.Collections.Generic;
 using System.Linq;
+using System.Management.Automation;
 using System.Text.RegularExpressions;
 using Xunit;
 
@@ -15,10 +18,10 @@ namespace Infrastructure.Tests.Services
         public void CanGetGitCommits()
         {
             // Arrange
-            var service = new GitService(new PowerShellService());
+            var sut = new GitService(new PowerShellService());
 
             // Act
-            List<GitCommit> results = service.GetCommits(TestRepoDirectory);
+            List<GitCommit> results = sut.GetCommits(TestRepoDirectory);
 
             // Assert
             Assert.True(results.Any());
@@ -28,10 +31,10 @@ namespace Infrastructure.Tests.Services
         public void CanGetGitTags()
         {
             // Arrange
-            var service = new GitService(new PowerShellService());
+            var sut = new GitService(new PowerShellService());
 
             // Act
-            IEnumerable<string> results = service.GetTags(TestRepoDirectory);
+            IEnumerable<string> results = sut.GetTags(TestRepoDirectory);
 
             // Assert
             Assert.True(results.Any());
@@ -49,6 +52,32 @@ namespace Infrastructure.Tests.Services
 
             // Assert
             Assert.Contains(results, x => regex.Match(x).Success);
+        }
+
+        [Fact]
+        public void CanCreateGitCommit()
+        {
+            // Arrange
+            var pwsh = new PowerShellService();
+            var sut = new GitService(pwsh);
+            var avs = new AssemblyVersioningService();
+            avs.IncrementVersion(VersionIncrement.Patch, TestRepoDirectory);
+            PSObject? expectedConfigEmail = pwsh.RunScript(TestRepoDirectory, "git config --global --get user.email").FirstOrDefault();
+            PSObject? expectedConfigName = pwsh.RunScript(TestRepoDirectory, "git config --global --get user.name").FirstOrDefault();
+
+            // Act
+            sut.CommitChanges(TestRepoDirectory, "Test Commit Message", "support@test.com");
+
+            // Assert
+            List<GitCommit> results = sut.GetCommits(TestRepoDirectory);
+            Assert.Contains(results, x => x.Subject.Equals("Test Commit Message"));
+
+            PSObject? actualConfigEmail = pwsh.RunScript(TestRepoDirectory, "git config --global --get user.email").FirstOrDefault();
+            PSObject? actualConfigName = pwsh.RunScript(TestRepoDirectory, "git config --global --get user.name").FirstOrDefault();
+
+            Assert.Equal(expectedConfigEmail, actualConfigEmail);
+            Assert.Equal(expectedConfigName, actualConfigName);
+
         }
     }
 }

@@ -63,5 +63,27 @@ namespace Infrastructure.Services
         {
             return _powerShell.RunScript(gitDirectory, "git tag").Select(x => x.ToString());
         }
+
+        /// <summary>
+        /// Stage current changes and create a git commit with the specified message.
+        /// </summary>
+        /// <param name="gitDirectory">The directory containing the .git folder.</param>
+        /// <param name="commitMessage">The message for the git commit.</param>
+        /// <param name="authorEmail">The e-mail for the commit author.</param>
+        public void CommitChanges(string gitDirectory, string commitMessage, string authorEmail)
+        {
+            PSObject? originalEmail = _powerShell.RunScript(gitDirectory, "git config --global --get user.email").FirstOrDefault();
+            PSObject? originalName = _powerShell.RunScript(gitDirectory, "git config --global --get user.name").FirstOrDefault();
+
+            _powerShell.RunScript(gitDirectory, $"git config --global user.email {authorEmail}");
+            _powerShell.RunScript(gitDirectory, $"git config --global user.name {authorEmail}");
+            _powerShell.RunScript(gitDirectory, "git add .");
+            _powerShell.RunScript(gitDirectory, $"git commit -m \"{commitMessage}\"");
+
+            // Preserving the original configuration for the end-users.
+            // It's safe if the original values are null.
+            _powerShell.RunScript(gitDirectory, $"git config --global user.email {originalEmail}");
+            _powerShell.RunScript(gitDirectory, $"git config --global user.name {originalName}");
+        }
     }
 }
