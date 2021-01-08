@@ -62,8 +62,13 @@ namespace Infrastructure.Tests.Services
             var sut = new GitService(pwsh);
             var avs = new AssemblyVersioningService();
             avs.IncrementVersion(VersionIncrement.Patch, TestRepoDirectory);
-            PSObject? expectedConfigEmail = pwsh.RunScript(TestRepoDirectory, "git config --global --get user.email").FirstOrDefault();
-            PSObject? expectedConfigName = pwsh.RunScript(TestRepoDirectory, "git config --global --get user.name").FirstOrDefault();
+
+            // Preserve original git config values
+            PSObject? originalConfigEmail = pwsh.RunScript(TestRepoDirectory, "git config --global --get user.email").FirstOrDefault();
+            PSObject? originalConfigName = pwsh.RunScript(TestRepoDirectory, "git config --global --get user.name").FirstOrDefault();
+
+            PSObject? expectedConfigEmail = pwsh.RunScript(TestRepoDirectory, "git config --global --unset user.email").FirstOrDefault();
+            PSObject? expectedConfigName = pwsh.RunScript(TestRepoDirectory, "git config --global --unset user.name").FirstOrDefault();
 
             // Act
             sut.CommitChanges(TestRepoDirectory, "Test Commit Message", "support@test.com");
@@ -78,6 +83,9 @@ namespace Infrastructure.Tests.Services
             Assert.Equal(expectedConfigEmail, actualConfigEmail);
             Assert.Equal(expectedConfigName, actualConfigName);
 
+            // Reset git config
+            pwsh.RunScript(TestRepoDirectory, $"git config --global user.email {originalConfigEmail}");
+            pwsh.RunScript(TestRepoDirectory, $"git config --global user.name {originalConfigName}");
         }
     }
 }
