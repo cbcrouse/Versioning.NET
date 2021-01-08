@@ -33,7 +33,7 @@ namespace Infrastructure.Tests.Services
         }
 
         [Fact]
-        public void Can_IncrementAssemblyVersion()
+        public void Can_IncrementAssemblyVersion_By_Patch()
         {
             // Arrange
             var service = new AssemblyVersioningService();
@@ -42,6 +42,38 @@ namespace Infrastructure.Tests.Services
 
             // Act
             service.IncrementVersion(VersionIncrement.Patch, TestRepoDirectory);
+
+            // Assert
+            SemVersion actualAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory);
+            Assert.Equal(expectedAssemblyVersion, actualAssemblyVersion);
+        }
+
+        [Fact]
+        public void Can_IncrementAssemblyVersion_By_Minor()
+        {
+            // Arrange
+            var service = new AssemblyVersioningService();
+            SemVersion originalAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory);
+            SemVersion expectedAssemblyVersion = new SemVersion(originalAssemblyVersion.Major, originalAssemblyVersion.Minor+1);
+
+            // Act
+            service.IncrementVersion(VersionIncrement.Minor, TestRepoDirectory);
+
+            // Assert
+            SemVersion actualAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory);
+            Assert.Equal(expectedAssemblyVersion, actualAssemblyVersion);
+        }
+
+        [Fact]
+        public void Can_IncrementAssemblyVersion_By_Major()
+        {
+            // Arrange
+            var service = new AssemblyVersioningService();
+            SemVersion originalAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory);
+            SemVersion expectedAssemblyVersion = new SemVersion(originalAssemblyVersion.Major+1);
+
+            // Act
+            service.IncrementVersion(VersionIncrement.Major, TestRepoDirectory);
 
             // Assert
             SemVersion actualAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory);
