@@ -29,4 +29,4 @@ jobs:
       - name: Run a one-line script
         uses: Amadevus/pwsh-script@v2.0.0
         with:
-          script: $env.Temp
+          script: $env:Temp
