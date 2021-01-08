@@ -81,9 +81,15 @@ namespace Infrastructure.Services
             _powerShell.RunScript(gitDirectory, $"git commit -m \"{commitMessage}\"");
 
             // Preserving the original configuration for the end-users.
-            // It's safe if the original values are null.
-            _powerShell.RunScript(gitDirectory, $"git config --global user.email {originalEmail}");
-            _powerShell.RunScript(gitDirectory, $"git config --global user.name {originalName}");
+            _powerShell.RunScript(gitDirectory,
+                originalEmail == null
+                    ? "git config --global --unset user.email"
+                    : $"git config --global user.email {originalEmail}");
+
+            _powerShell.RunScript(gitDirectory,
+                originalName == null
+                    ? "git config --global --unset user.name"
+                    : $"git config --global user.name {originalName}");
         }
     }
 }
