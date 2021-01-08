@@ -27,6 +27,4 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        uses: Amadevus/pwsh-script@v2.0.0
-        with:
-          script: $env:Temp
+        run: powershell "$env:TEMP"
