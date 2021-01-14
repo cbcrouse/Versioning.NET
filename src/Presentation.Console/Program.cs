@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Hosting;
-using System.Reflection;
 using System.Threading.Tasks;
 
 #pragma warning disable 1591
@@ -7,29 +6,22 @@ using System.Threading.Tasks;
 namespace Presentation.Console
 {
     public class Program
-	{
-		public static async Task Main(string[] args)
-		{
-			var builder = CreateHostBuilder(args).Build();
+    {
+        public static async Task<int> Main(string[] args)
+        {
+            IHost host = CreateHostBuilder(args).Build();
+            return await host.RunCommandLineApplicationAsync();
+        }
 
-			DisplayIntro();
-			// ParseArgs();
-
-			await builder.RunAsync();
-		}
-
-		public static IHostBuilder CreateHostBuilder(string[] args) =>
-			Host.CreateDefaultBuilder(args)
-				.ConfigureServices(services =>
-				{
-					var startup = new Startup();
-					startup.ConfigureServices(services);
-				});
-
-		private static void DisplayIntro()
-		{
-			string version = Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
-			System.Console.WriteLine($"Current version: {version}");
-		}
-	}
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
+                .UseCommandLineApplication<VersioningDotNetApp>(args)
+                .ConfigureServices(services =>
+                {
+                var startup = new Startup();
+                startup.ConfigureServices(services);
+                });
+        }
+    }
 }
