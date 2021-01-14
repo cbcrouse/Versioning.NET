@@ -89,7 +89,11 @@ namespace Infrastructure.Startup
         /// </summary>
         protected virtual ILogger Logger => new LoggerConfiguration()
             .Enrich.FromLogContext()
+#if DEBUG
             .MinimumLevel.Verbose()
+#else
+            .MinimumLevel.Error()
+#endif
             .WriteTo.ApplicationInsights(new TraceTelemetryConverter(), LogEventLevel.Information)
             .WriteTo.Console(outputTemplate:"[{Timestamp:yyyy:MM:dd hh:mm:ss.fff tt}] [{Level}] [{SourceContext}] {Message}{NewLine}{Exception}")
             .CreateLogger();
