@@ -5,7 +5,9 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <nullable>enable</nullable>
     <PackAsTool>true</PackAsTool>
-    <ToolCommandName>semver</ToolCommandName>
+    <ToolCommandName>dotnet-version</ToolCommandName>
+    <PackageId>Versioning.NET</PackageId>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
     <StartupObject />
