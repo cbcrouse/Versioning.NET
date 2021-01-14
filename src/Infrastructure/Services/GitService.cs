@@ -17,6 +17,10 @@ namespace Infrastructure.Services
     {
         private readonly IPowerShellService _powerShell;
 
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        /// <param name="powerShell">An abstraction to facilitate testing without using the PowerShell integration.</param>
         public GitService(IPowerShellService powerShell)
         {
             _powerShell = powerShell;

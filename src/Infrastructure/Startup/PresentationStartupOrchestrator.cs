@@ -9,11 +9,11 @@ using System.Linq.Expressions;
 
 namespace Infrastructure.Startup
 {
-	/// <summary>
-	/// Defines the default behavior for orchestrating dependency registrations across the presentation and infrastructure.
-	/// </summary>
-	/// <typeparam name="TOrchestrator">The <see cref="CoreStartupOrchestrator"/> implementation.</typeparam>
-	public class PresentationStartupOrchestrator<TOrchestrator> where TOrchestrator : CoreStartupOrchestrator, new()
+    /// <summary>
+    /// Defines the default behavior for orchestrating dependency registrations across the presentation and infrastructure.
+    /// </summary>
+    /// <typeparam name="TOrchestrator">The <see cref="CoreStartupOrchestrator"/> implementation.</typeparam>
+    public class PresentationStartupOrchestrator<TOrchestrator> where TOrchestrator : CoreStartupOrchestrator, new()
 	{
 		/// <summary>
 		/// Populates the <see cref="IServiceCollection"/> with presentation-specific dependencies
@@ -67,7 +67,7 @@ namespace Infrastructure.Startup
 		protected virtual void SetBasePath(IConfigurationBuilder builder)
 		{
 			string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
-			string path = Directory.GetParent(assemblyLocation).FullName;
+			string path = Directory.GetParent(assemblyLocation)!.FullName;
 			builder.SetBasePath(path);
 		}
 
@@ -77,23 +77,7 @@ namespace Infrastructure.Startup
 		/// <param name="builder">Represents a type used to build application configuration.</param>
 		protected virtual void AddConfigurations(IConfigurationBuilder builder)
 		{
-			string environment = EnvironmentHelper.GetRequiredEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
-			// Load application settings first
-			builder.AddJsonFile("appsettings.core.json", optional: false, reloadOnChange: true);
-			if (!string.IsNullOrWhiteSpace(environment))
-				builder.AddJsonFile($"appsettings.core.{environment}.json", optional: true, reloadOnChange: true);
-
-			// Load presentation settings next
-			builder.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-			if (!string.IsNullOrWhiteSpace(environment))
-				builder.AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true);
-
-			// Load environment variables next to last
-			builder.AddEnvironmentVariables();
-
-			// Load local developer settings last
-			builder.AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true);
+			builder.AddPrioritizedSettings();
 		}
 
 		/// <summary>

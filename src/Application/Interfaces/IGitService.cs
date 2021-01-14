@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 namespace Application.Interfaces
 {
+    /// <summary>
+    /// An abstraction to facilitate testing without using the git integration.
+    /// </summary>
     public interface IGitService
     {
         /// <summary>

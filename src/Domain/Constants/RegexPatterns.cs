@@ -1,5 +1,8 @@
 ﻿namespace Domain.Constants
 {
+    /// <summary>
+    /// Various regex pattern constants.
+    /// </summary>
     public static class RegexPatterns
     {
         /// <summary>
