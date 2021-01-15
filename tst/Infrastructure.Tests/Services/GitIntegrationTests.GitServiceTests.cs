@@ -3,7 +3,6 @@ using Domain.Constants;
 using Domain.Entities;
 using Domain.Enumerations;
 using Infrastructure.Services;
-using Infrastructure.Tests.Setup;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
@@ -12,7 +11,7 @@ using Xunit;
 
 namespace Infrastructure.Tests.Services
 {
-    public class GitServiceTests : GitSetup
+    public partial class GitIntegrationTests
     {
         [Fact]
         public void CanGetGitCommits()

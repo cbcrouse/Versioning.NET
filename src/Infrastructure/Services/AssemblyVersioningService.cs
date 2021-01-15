@@ -47,7 +47,7 @@ namespace Infrastructure.Services
         /// <param name="directory">The directory of the assemblies to version.</param>
         public void IncrementVersion(VersionIncrement increment, string directory)
         {
-            string[]? csProjFiles = Directory.GetFiles(directory, "*.csproj", SearchOption.AllDirectories);
+            string[] csProjFiles = Directory.GetFiles(directory, "*.csproj", SearchOption.AllDirectories);
 
             foreach (string csProjFile in csProjFiles)
             {

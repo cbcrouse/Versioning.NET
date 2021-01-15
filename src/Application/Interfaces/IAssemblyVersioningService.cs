@@ -4,7 +4,7 @@ using Semver;
 namespace Application.Interfaces
 {
     /// <summary>
-    /// Provides an abstraction for working with assembly versions.
+    /// An abstraction for working with assembly versions.
     /// </summary>
     public interface IAssemblyVersioningService
     {

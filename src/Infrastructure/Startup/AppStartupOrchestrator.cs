@@ -1,4 +1,5 @@
 using Application.Configuration;
+using Application.Interfaces;
 using Application.Interfaces.ValueResolvers;
 using Application.Mapping;
 using AutoMapper;
@@ -6,6 +7,7 @@ using AutoMapper.Configuration;
 using FluentValidation;
 using Infrastructure.Configuration;
 using Infrastructure.MediatR;
+using Infrastructure.Services;
 using Infrastructure.ValueResolvers;
 using MediatR;
 using MediatR.Pipeline;
@@ -44,6 +46,12 @@ namespace Infrastructure.Startup
 			ServiceRegistrationExpressions.Add(() => RegisterAutoMapper());
 
 			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddSingleton<ISystemClock, SystemClock>());
+
+			//Services
+			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddSingleton<IGitService, GitService>());
+			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddSingleton<IGitVersioningService, GitVersioningService>());
+			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddSingleton<IAssemblyVersioningService, AssemblyVersioningService>());
+			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddSingleton<IPowerShellService, PowerShellService>());
 		}
 
 		private void RegisterAutoMapper()

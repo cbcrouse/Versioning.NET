@@ -5,6 +5,13 @@
       "environmentVariables": {
         "ASPNETCORE_Environment": "Development"
       }
+    },
+    "Presentation.Console - Increment Minor": {
+      "commandName": "Project",
+      "commandLineArgs": "-g \"G:\\Git\\CleanArchitecture\\templates\\ca-sln-sql\" -v Minor",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     }
   }
 }

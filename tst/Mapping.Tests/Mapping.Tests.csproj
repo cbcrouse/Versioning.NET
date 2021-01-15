@@ -19,4 +19,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Presentation.Console\Presentation.Console.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectCapability Include="DynamicDependentFile" />
+    <ProjectCapability Include="DynamicFileNesting" />
+  </ItemGroup>
 </Project>

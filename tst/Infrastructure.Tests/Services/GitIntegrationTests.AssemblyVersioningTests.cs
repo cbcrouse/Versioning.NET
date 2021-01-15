@@ -1,13 +1,12 @@
 ﻿using Application.Interfaces;
 using Domain.Enumerations;
 using Infrastructure.Services;
-using Infrastructure.Tests.Setup;
 using Semver;
 using Xunit;
 
 namespace Infrastructure.Tests.Services
 {
-    public class AssemblyVersioningServiceTests : GitSetup
+    public partial class GitIntegrationTests
     {
         [Fact]
         public void AssemblyVersioningService_Implements_IAssemblyVersioningService()
