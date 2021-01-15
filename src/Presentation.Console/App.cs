@@ -12,7 +12,7 @@ namespace Presentation.Console
     /// The versioning commandline application.
     /// </summary>
     [Command]
-    public class VersioningDotNetApp
+    public class App
     {
         private readonly IMediator _mediator;
 
@@ -21,7 +21,7 @@ namespace Presentation.Console
         /// </summary>
         /// <param name="mediator">An abstraction for accessing application behaviors.</param>
 #pragma warning disable 8618
-        public VersioningDotNetApp(IMediator mediator)
+        public App(IMediator mediator)
 #pragma warning restore 8618
         {
             _mediator = mediator;

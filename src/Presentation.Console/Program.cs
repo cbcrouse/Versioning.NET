@@ -16,7 +16,7 @@ namespace Presentation.Console
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
-                .UseCommandLineApplication<VersioningDotNetApp>(args)
+                .UseCommandLineApplication<App>(args)
                 .ConfigureServices(services =>
                 {
                 var startup = new Startup();
