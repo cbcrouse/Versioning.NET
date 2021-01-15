@@ -18,7 +18,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="5.0.2" />
-    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.1.0" />
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.1.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
