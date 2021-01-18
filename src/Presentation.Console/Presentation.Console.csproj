@@ -5,13 +5,20 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <nullable>enable</nullable>
     <PackAsTool>true</PackAsTool>
-    <ToolCommandName>dotnet-version</ToolCommandName>
-    <PackageId>Versioning.NET</PackageId>
-    <PackageOutputPath>./nupkg</PackageOutputPath>
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
     <StartupObject />
+    <ToolCommandName>dotnet-version</ToolCommandName>
     <VersionPrefix>0.0.1</VersionPrefix>
+
+    <Authors>Casey Crouse</Authors>
+    <PackageId>Versioning.NET</PackageId>
+    <Description>A dotnet tool that automatically versions csproj files semantically with git integration.</Description>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/cbcrouse/Versioning.NET</PackageProjectUrl>
+    <PackageTags>dotnet;tool;semver</PackageTags>
+    <RepositoryUrl>https://github.com/cbcrouse/Versioning.NET</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -43,6 +50,10 @@
     <None Update="appsettings.local.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <DependentUpon>appsettings.json</DependentUpon>
+    </None>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
     </None>
   </ItemGroup>
 
