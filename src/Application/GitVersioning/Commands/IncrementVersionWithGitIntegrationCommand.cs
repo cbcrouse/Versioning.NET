@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using Domain.Enumerations;
 using MediatR;
 
 namespace Application.GitVersioning.Commands
@@ -9,11 +8,6 @@ namespace Application.GitVersioning.Commands
     /// </summary>
     public class IncrementVersionWithGitIntegrationCommand : IRequest<Unit>
     {
-        /// <summary>
-        /// Indicates how to increment the version.
-        /// </summary>
-        public VersionIncrement VersionIncrement { get; set; }
-
         /// <summary>
         /// The directory containing the .git folder.
         /// </summary>

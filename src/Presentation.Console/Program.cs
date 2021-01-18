@@ -1,6 +1,7 @@
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Hosting;
+using Presentation.Console.Commands;
 using System;
 using System.Threading.Tasks;
 
