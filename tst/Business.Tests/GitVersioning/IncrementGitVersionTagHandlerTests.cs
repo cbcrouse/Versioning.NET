@@ -92,7 +92,7 @@ namespace Business.Tests.GitVersioning
             var gitService = new Mock<IGitService>();
             var assemblyVersioningService = new Mock<IAssemblyVersioningService>();
 
-            mediator.Setup(x => x.Send(It.IsAny<GetIncrementFromCommitHintsQuery>(), CancellationToken.None)).ReturnsAsync(VersionIncrement.None);
+            mediator.Setup(x => x.Send(It.IsAny<GetIncrementFromCommitHintsQuery>(), CancellationToken.None)).ReturnsAsync(VersionIncrement.Minor);
             mediator.Setup(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
 
             gitService.Setup(x => x.GetCommits(It.IsAny<string>(), It.IsAny<string>())).Returns(Commits);
