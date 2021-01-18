@@ -1,4 +1,7 @@
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.Extensions.Hosting;
+using System;
 using System.Threading.Tasks;
 
 #pragma warning disable 1591
@@ -10,7 +13,23 @@ namespace Presentation.Console
         public static async Task<int> Main(string[] args)
         {
             IHost host = CreateHostBuilder(args).Build();
-            return await host.RunCommandLineApplicationAsync();
+            var resultCode = 0;
+            try
+            {
+                resultCode = await host.RunCommandLineApplicationAsync();
+            }
+            catch (ValidationException e)
+            {
+                foreach (ValidationFailure validationFailure in e.Errors)
+                {
+                    System.Console.ForegroundColor = ConsoleColor.Red;
+                    System.Console.WriteLine(validationFailure.ErrorMessage);
+                    System.Console.ResetColor();
+                    resultCode = -1;
+                }
+            }
+
+            return resultCode;
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args)

@@ -32,19 +32,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>appsettings.core.json</DependentUpon>
     </None>
-    <None Update="appsettings.core.dev.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>appsettings.core.json</DependentUpon>
-    </None>
     <None Update="appsettings.core.qa.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>appsettings.core.json</DependentUpon>
-    </None>
-    <None Update="appsettings.core.stg.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>appsettings.core.json</DependentUpon>
-    </None>
-    <None Update="appsettings.core.prod.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>appsettings.core.json</DependentUpon>
     </None>
