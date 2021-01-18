@@ -2,6 +2,7 @@
 using Domain.Enumerations;
 using Infrastructure.Services;
 using Semver;
+using System;
 using Xunit;
 
 namespace Infrastructure.Tests.Services
@@ -77,6 +78,34 @@ namespace Infrastructure.Tests.Services
             // Assert
             SemVersion actualAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory);
             Assert.Equal(expectedAssemblyVersion, actualAssemblyVersion);
+        }
+
+        [Fact]
+        public void Can_IncrementAssemblyVersion_By_None()
+        {
+            // Arrange
+            var service = new AssemblyVersioningService();
+            SemVersion originalAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory);
+
+            // Act
+            service.IncrementVersion(VersionIncrement.None, TestRepoDirectory);
+
+            // Assert
+            SemVersion actualAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory);
+            Assert.Equal(originalAssemblyVersion, actualAssemblyVersion);
+        }
+
+        [Fact]
+        public void IncrementAssemblyVersion_Throws_WhenInvalidIncrement()
+        {
+            // Arrange
+            var service = new AssemblyVersioningService();
+
+            // Act
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => service.IncrementVersion((VersionIncrement)6, TestRepoDirectory));
+
+            // Assert
+            Assert.Equal("Exception of type 'System.ArgumentOutOfRangeException' was thrown. (Parameter 'increment')\r\nActual value was 6.", ex.Message);
         }
     }
 }

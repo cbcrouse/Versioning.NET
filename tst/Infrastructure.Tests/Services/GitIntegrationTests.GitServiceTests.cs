@@ -1,12 +1,12 @@
 ﻿#nullable enable
-using Domain.Constants;
 using Domain.Entities;
 using Domain.Enumerations;
 using Infrastructure.Services;
+using Semver;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
-using System.Text.RegularExpressions;
 using Xunit;
 
 namespace Infrastructure.Tests.Services
@@ -27,6 +27,34 @@ namespace Infrastructure.Tests.Services
         }
 
         [Fact]
+        public void CanGetGitCommitsWithRevision()
+        {
+            // Arrange
+            var sut = new GitService(new PowerShellService());
+            const string revision = "v0.0.0..HEAD";
+
+            // Act
+            List<GitCommit> results = sut.GetCommits(TestRepoDirectory, revision);
+
+            // Assert
+            Assert.True(results.Any());
+        }
+
+        [Fact]
+        public void NoGitCommitsReturnAtHead()
+        {
+            // Arrange
+            var sut = new GitService(new PowerShellService());
+            const string revision = "HEAD -0";
+
+            // Act
+            List<GitCommit> results = sut.GetCommits(TestRepoDirectory, revision);
+
+            // Assert
+            Assert.False(results.Any());
+        }
+
+        [Fact]
         public void CanGetGitTags()
         {
             // Arrange
@@ -44,13 +72,12 @@ namespace Infrastructure.Tests.Services
         {
             // Arrange
             var sut = new GitService(new PowerShellService());
-            var regex = new Regex(RegexPatterns.GitTagVersion);
 
             // Act
             IEnumerable<string> results = sut.GetTags(TestRepoDirectory);
 
             // Assert
-            Assert.Contains(results, x => regex.Match(x).Success);
+            Assert.Contains(results, x => SemVersion.TryParse(x.ToLower().TrimStart('v'), out SemVersion _));
         }
 
         [Fact]
@@ -85,6 +112,22 @@ namespace Infrastructure.Tests.Services
             // Reset git config
             pwsh.RunScript(TestRepoDirectory, $"git config --global user.email {originalConfigEmail}");
             pwsh.RunScript(TestRepoDirectory, $"git config --global user.name {originalConfigName}");
+        }
+
+        [Fact]
+        public void CanCreateGitTag()
+        {
+            // Arrange
+            var pwsh = new PowerShellService();
+            var sut = new GitService(pwsh);
+            var commitId = sut.GetCommits(TestRepoDirectory).First().Id;
+            var tag = Guid.NewGuid().ToString();
+
+            // Act
+            sut.CreateTag(TestRepoDirectory, tag, commitId);
+
+            // Assert
+            Assert.Contains(sut.GetTags(TestRepoDirectory), x => x.Equals(tag));
         }
     }
 }

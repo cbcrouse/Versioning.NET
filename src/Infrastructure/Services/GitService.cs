@@ -95,5 +95,26 @@ namespace Infrastructure.Services
                     ? "git config --global --unset user.name"
                     : $"git config --global user.name {originalName}");
         }
+
+        /// <summary>
+        /// Create a tag on a specific commit.
+        /// </summary>
+        /// <param name="gitDirectory">The directory containing the .git folder.</param>
+        /// <param name="tagValue">The value of the tag.</param>
+        /// <param name="commitId">The unique identifier of the commit.</param>
+        public void CreateTag(string gitDirectory, string tagValue, string commitId)
+        {
+            _powerShell.RunScript(gitDirectory, $"git tag {tagValue} {commitId}");
+        }
+
+        /// <summary>
+        /// Push a tag or branch to remote.
+        /// </summary>
+        /// <param name="gitDirectory">The directory containing the .git folder.</param>
+        /// <param name="branchOrTagName">The name of the tag or branch to push.</param>
+        public void PushRemote(string gitDirectory, string branchOrTagName)
+        {
+            _powerShell.RunScript(gitDirectory, $"git push {branchOrTagName}");
+        }
     }
 }

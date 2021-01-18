@@ -2,6 +2,7 @@
 using Domain.Constants;
 using Domain.Entities;
 using Domain.Enumerations;
+using Semver;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -13,6 +14,26 @@ namespace Infrastructure.Services
     /// </summary>
     public class GitVersioningService : IGitVersioningService
     {
+        /// <summary>
+        /// Returns the latest git version tag.
+        /// </summary>
+        /// <param name="gitTags">A collection of git tags.</param>
+        public KeyValuePair<string, SemVersion> GetLatestVersionTag(IEnumerable<string> gitTags)
+        {
+            var versions = new Dictionary<string, SemVersion>();
+
+            foreach (string tag in gitTags)
+            {
+                SemVersion.TryParse(tag.ToLower().TrimStart('v'), out SemVersion version);
+                if (version != null)
+                {
+                    versions.Add(tag, version);
+                }
+            }
+
+            return versions.Any() ? versions.OrderByDescending(x => x.Value).Take(1).First() : new KeyValuePair<string, SemVersion>();
+        }
+
         /// <summary>
         /// Retrieve a collection of <see cref="GitCommitVersionInfo"/> from a collection of git commit message subject lines.
         /// </summary>

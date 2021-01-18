@@ -9,9 +9,9 @@ A dotnet tool that automatically versions csproj files semantically with git int
 Build a dotnet tool that can...
 
 - [x] Update version numbers in csproj files
+- [x] Update version numbers based upon git commit messages
+- [x] Push git commits and tags
 - [ ] Compare versions of different git branches
-- [ ] Update version numbers based upon git commit messages
-- [ ] Push git commits and tags
 - [ ] Support trunk based development and gitflow
 
 ---

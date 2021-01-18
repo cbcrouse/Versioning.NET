@@ -21,7 +21,4 @@
     <ProjectReference Include="..\..\src\Application\Application.csproj" />
     <ProjectReference Include="..\..\src\Events\Events.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="AssemblyVersioning\" />
-  </ItemGroup>
 </Project>

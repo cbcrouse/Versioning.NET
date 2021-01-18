@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Enumerations;
 using Infrastructure.Services;
+using Semver;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,38 @@ namespace Infrastructure.Tests.Services
 {
     public class GitVersioningServiceTests
     {
+        public static IEnumerable<object[]> VersionData
+        {
+            get
+            {
+                return new[]
+                {
+                    new object[] { new[] {"v2.2.4", "v2.2.5", "v2.2.6" }, "2.2.6" }, // Patch
+                    new object[] { new[] {"v2.2.4", "v2.2.5", "v2.3.0" }, "2.3.0" }, // Minor
+                    new object[] { new[] {"v2.2.4", "v2.2.5", "v2.2.6" }, "2.2.6" }, // Major
+                    new object[] { new[] {"v2.4.0-alpha", "v2.4.0-beta", "v2.4.0-rc" }, "2.4.0-rc" }, // PreRelease
+                    new object[] { new[] {"v2.4.0-beta.81", "v2.4.0-beta.82", "v2.4.0-beta.99" }, "2.4.0-beta.99" }, // Build
+                    new object[] { new[] {"v2.4.0-alpha.70", "v2.4.0-beta.81", "v2.4.0-beta.99", "v2.4.0-rc.103" }, "2.4.0-rc.103" }, // PreRelease + Build
+                    new object[] { new[] {"v3.0.0-alpha.268", "v3.0.0-rc.289", "v3.0.0" }, "3.0.0" }, // PreRelease + MajorRelease
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(VersionData))]
+        public void CanGetLatestVersionTag(IEnumerable<string> tags, string expectedVersion)
+        {
+            // Arrange
+            var sut = new GitVersioningService();
+            SemVersion.TryParse(expectedVersion, out SemVersion expectedSemVersion);
+
+            // Act
+            KeyValuePair<string, SemVersion> latestVersionTag = sut.GetLatestVersionTag(tags);
+
+            // Assert
+            Assert.Equal(expectedSemVersion, latestVersionTag.Value);
+        }
+
         [Theory]
         [InlineData("build(Pipeline): Downgraded to .net core 3.1 from 5 [skip ci]", "build", "Pipeline", "Downgraded to .net core 3.1 from 5 [skip ci]", VersionIncrement.Patch)]
         [InlineData("feat(Tools): Updated test script to clean out .templateengine directory", "feat", "Tools", "Updated test script to clean out .templateengine directory", VersionIncrement.Minor)]

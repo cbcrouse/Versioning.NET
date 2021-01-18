@@ -8,7 +8,7 @@
     },
     "Presentation.Console - Increment Minor": {
       "commandName": "Project",
-      "commandLineArgs": "-g \"G:\\Git\\CleanArchitecture\\templates\\ca-sln-sql\" -v Minor",
+      "commandLineArgs": "-g \"G:\\Git\\Versioning.NET.Tests\" -v Minor",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

@@ -19,7 +19,7 @@ namespace Infrastructure.Services
         /// <param name="directory">The directory used to determine the latest version.</param>
         public SemVersion GetLatestAssemblyVersion(string directory)
         {
-            string[]? csProjFiles = Directory.GetFiles(directory, "*.csproj", SearchOption.AllDirectories);
+            string[] csProjFiles = Directory.GetFiles(directory, "*.csproj", SearchOption.AllDirectories);
             var highestVersion = new SemVersion(0,0,0);
 
             foreach (string csProjFile in csProjFiles)
@@ -28,8 +28,11 @@ namespace Infrastructure.Services
                 doc.Load(csProjFile);
                 string? versionText = doc.SelectSingleNode("/Project/PropertyGroup/VersionPrefix")?.InnerText ??
                                       doc.SelectSingleNode("/Project/PropertyGroup/Version")?.InnerText;
+
                 if (versionText == null)
+                {
                     continue;
+                }
 
                 SemVersion? version = SemVersion.Parse(versionText);
 
