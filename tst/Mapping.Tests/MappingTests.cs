@@ -1,4 +1,3 @@
-using System;
 using AutoMapper;
 using Common.Configuration;
 using Infrastructure.Startup;
@@ -7,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Mapping.Tests
 {
-	public partial class MappingTests
+    public partial class MappingTests
 	{
 		public IMapper Sut { get; }
 
@@ -15,7 +14,6 @@ namespace Mapping.Tests
 		{
 			var serviceCollection = new ServiceCollection();
 			var configurationBuilder = new ConfigurationBuilder();
-			Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
 			configurationBuilder.AddPrioritizedSettings();
 			var configuration = configurationBuilder.Build();
 			var orchestrator = new AppStartupOrchestrator();
