@@ -12,6 +12,10 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+    "Git Versioning": {
+      "commandName": "Project",
+      "commandLineArgs": "increment-version-with-git -g \"../../../../../\" -a \"crouse.casey@gmail.com\""
     }
   }
 }

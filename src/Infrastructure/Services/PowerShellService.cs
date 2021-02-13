@@ -39,10 +39,12 @@ namespace Infrastructure.Services
             _logger.LogInformation($"Executing script: '{script}'");
             Collection<PSObject> result = pipeline.Invoke();
             runspace.Close();
+
             foreach (PSObject psObject in result)
             {
                 _logger.LogInformation(psObject.ToString());
             }
+
             return result;
         }
     }
