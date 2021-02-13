@@ -66,12 +66,17 @@ namespace Application.GitVersioning.Handlers
             SemVersion currentAssemblyVersion = _assemblyVersioningService.GetLatestAssemblyVersion(request.GitDirectory);
 
             var commitMessage = $"ci(Versioning): Increment version {originalAssemblyVersion} -> {currentAssemblyVersion} [skip ci] [skip hint]";
+            _logger.LogInformation("Committing recent changes");
             _gitService.CommitChanges(request.GitDirectory, commitMessage, request.CommitAuthorEmail);
 
             string commitId = _gitService.GetCommits(request.GitDirectory).First(x => x.Subject.Equals(commitMessage)).Id;
             string tagValue = $"v{currentAssemblyVersion}";
-            _gitService.CreateTag(request.GitDirectory, tagValue, commitId);
+
+            _logger.LogInformation("Pushing committed changes to remote");
             _gitService.PushRemote(request.GitDirectory, string.Empty);
+            _logger.LogInformation($"Creating Tag: {tagValue}");
+            _gitService.CreateTag(request.GitDirectory, tagValue, commitId);
+            _logger.LogInformation("Pushing tag to remote");
             _gitService.PushRemote(request.GitDirectory, tagValue);
 
             return Unit.Value;
