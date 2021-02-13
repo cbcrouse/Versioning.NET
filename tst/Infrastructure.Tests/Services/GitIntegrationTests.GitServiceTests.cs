@@ -2,6 +2,7 @@
 using Domain.Entities;
 using Domain.Enumerations;
 using Infrastructure.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using Semver;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace Infrastructure.Tests.Services
         public void CanGetGitCommits()
         {
             // Arrange
-            var sut = new GitService(new PowerShellService());
+            var sut = new GitService(new PowerShellService(new NullLogger<PowerShellService>()));
 
             // Act
             List<GitCommit> results = sut.GetCommits(TestRepoDirectory);
@@ -30,7 +31,7 @@ namespace Infrastructure.Tests.Services
         public void CanGetGitCommitsWithRevision()
         {
             // Arrange
-            var sut = new GitService(new PowerShellService());
+            var sut = new GitService(new PowerShellService(new NullLogger<PowerShellService>()));
             const string revision = "v0.0.0..HEAD";
 
             // Act
@@ -44,7 +45,7 @@ namespace Infrastructure.Tests.Services
         public void NoGitCommitsReturnAtHead()
         {
             // Arrange
-            var sut = new GitService(new PowerShellService());
+            var sut = new GitService(new PowerShellService(new NullLogger<PowerShellService>()));
             const string revision = "HEAD -0";
 
             // Act
@@ -58,7 +59,7 @@ namespace Infrastructure.Tests.Services
         public void CanGetGitTags()
         {
             // Arrange
-            var sut = new GitService(new PowerShellService());
+            var sut = new GitService(new PowerShellService(new NullLogger<PowerShellService>()));
 
             // Act
             IEnumerable<string> results = sut.GetTags(TestRepoDirectory);
@@ -71,7 +72,7 @@ namespace Infrastructure.Tests.Services
         public void CanGetVersionTag()
         {
             // Arrange
-            var sut = new GitService(new PowerShellService());
+            var sut = new GitService(new PowerShellService(new NullLogger<PowerShellService>()));
 
             // Act
             IEnumerable<string> results = sut.GetTags(TestRepoDirectory);
@@ -84,7 +85,7 @@ namespace Infrastructure.Tests.Services
         public void CanCreateGitCommit()
         {
             // Arrange
-            var pwsh = new PowerShellService();
+            var pwsh = new PowerShellService(new NullLogger<PowerShellService>());
             var sut = new GitService(pwsh);
             var avs = new AssemblyVersioningService();
             avs.IncrementVersion(VersionIncrement.Patch, TestRepoDirectory);
@@ -118,7 +119,7 @@ namespace Infrastructure.Tests.Services
         public void CanCreateGitTag()
         {
             // Arrange
-            var pwsh = new PowerShellService();
+            var pwsh = new PowerShellService(new NullLogger<PowerShellService>());
             var sut = new GitService(pwsh);
             var commitId = sut.GetCommits(TestRepoDirectory).First().Id;
             var tag = Guid.NewGuid().ToString();

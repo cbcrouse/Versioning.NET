@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.IO;
 
@@ -11,7 +12,7 @@ namespace Infrastructure.Tests.Setup
     {
         protected string TestRepoDirectory { get; private set; }
         private string _testRepoParentDirectory;
-        private readonly PowerShellService _powerShell = new PowerShellService();
+        private readonly PowerShellService _powerShell = new PowerShellService(new NullLogger<PowerShellService>());
 
         public GitSetup()
         {

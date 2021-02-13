@@ -3,6 +3,7 @@ using Infrastructure.Services;
 using Infrastructure.Startup;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using Xunit;
 
@@ -15,6 +16,7 @@ namespace Infrastructure.Tests
         public StartupTests()
         {
             var serviceCollection = new ServiceCollection();
+            serviceCollection.AddLogging();
             var configurationBuilder = new ConfigurationBuilder();
             Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
             var configuration = configurationBuilder.Build();
@@ -52,7 +54,7 @@ namespace Infrastructure.Tests
         public void GitService_IsAssignableFrom_IGitService()
         {
             // Arrange
-            var sut = new GitService(new PowerShellService());
+            var sut = new GitService(new PowerShellService(new NullLogger<PowerShellService>()));
 
             // Act & Assert
             Assert.IsAssignableFrom<IGitService>(sut);
@@ -96,7 +98,7 @@ namespace Infrastructure.Tests
         public void PowerShellService_IsAssignableFrom_IPowerShellService()
         {
             // Arrange
-            var sut = new PowerShellService();
+            var sut = new PowerShellService(new NullLogger<PowerShellService>());
 
             // Act & Assert
             Assert.IsAssignableFrom<IPowerShellService>(sut);
