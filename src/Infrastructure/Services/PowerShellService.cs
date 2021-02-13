@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
@@ -10,6 +11,17 @@ namespace Infrastructure.Services
     /// </summary>
     public class PowerShellService : IPowerShellService
     {
+        private readonly ILogger<PowerShellService> _logger;
+
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        /// <param name="logger">A generic interface for logging.</param>
+        public PowerShellService(ILogger<PowerShellService> logger)
+        {
+            _logger = logger;
+        }
+
         /// <summary>
         /// Run a PowerShell script.
         /// </summary>
@@ -24,8 +36,13 @@ namespace Infrastructure.Services
             using Pipeline pipeline = runspace.CreatePipeline();
 
             pipeline.Commands.AddScript(script);
+            _logger.LogInformation($"Executing script: '{script}'");
             Collection<PSObject> result = pipeline.Invoke();
             runspace.Close();
+            foreach (PSObject psObject in result)
+            {
+                _logger.LogInformation(psObject.ToString());
+            }
             return result;
         }
     }
