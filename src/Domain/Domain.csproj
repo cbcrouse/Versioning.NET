@@ -1,17 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <IsTestProject>false</IsTestProject>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsPackable>false</IsPackable>
-    <VersionPrefix>0.0.1</VersionPrefix>
+    <VersionPrefix>0.0.2</VersionPrefix>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="semver" Version="2.0.6" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="Entities\" />
   </ItemGroup>

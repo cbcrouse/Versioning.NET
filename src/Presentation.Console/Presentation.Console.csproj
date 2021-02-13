@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <IsTestProject>false</IsTestProject>
@@ -10,8 +9,7 @@
     <OutputType>Exe</OutputType>
     <StartupObject />
     <ToolCommandName>dotnet-version</ToolCommandName>
-    <VersionPrefix>0.0.1</VersionPrefix>
-
+    <VersionPrefix>0.0.2</VersionPrefix>
     <Authors>Casey Crouse</Authors>
     <PackageId>Versioning.NET</PackageId>
     <Description>A dotnet tool that automatically versions csproj files semantically with git integration.</Description>
@@ -21,21 +19,17 @@
     <PackageTags>dotnet;tool;semver</PackageTags>
     <RepositoryUrl>https://github.com/cbcrouse/Versioning.NET</RepositoryUrl>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="3.1.0" />
     <PackageReference Include="McMaster.Extensions.Hosting.CommandLine" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
   </ItemGroup>
-
   <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -54,8 +48,8 @@
     </None>
     <None Include="..\..\LICENSE">
       <Pack>True</Pack>
-      <PackagePath></PackagePath>
+      <PackagePath>
+      </PackagePath>
     </None>
   </ItemGroup>
-
 </Project>

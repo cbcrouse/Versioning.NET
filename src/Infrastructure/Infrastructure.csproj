@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -6,7 +6,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <nullable>enable</nullable>
     <IsPackable>false</IsPackable>
-    <VersionPrefix>0.0.1</VersionPrefix>
+    <VersionPrefix>0.0.2</VersionPrefix>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="8.6.3" />
