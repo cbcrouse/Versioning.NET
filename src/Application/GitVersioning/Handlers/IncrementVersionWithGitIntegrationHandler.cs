@@ -74,8 +74,10 @@ namespace Application.GitVersioning.Handlers
 
             _logger.LogInformation("Pushing committed changes to remote");
             _gitService.PushRemote(request.GitDirectory, string.Empty);
+
             _logger.LogInformation($"Creating Tag: {tagValue}");
             _gitService.CreateTag(request.GitDirectory, tagValue, commitId);
+
             _logger.LogInformation("Pushing tag to remote");
             _gitService.PushRemote(request.GitDirectory, tagValue);
 
