@@ -41,6 +41,19 @@ namespace Presentation.Console.Commands
         public string? Revision { get; set; }
 
         /// <summary>
+        /// The git remote target.
+        /// </summary>
+        [Option(ShortName = "t")]
+        public string RemoteTarget { get; set; }
+
+        /// <summary>
+        /// The name of the branch to update.
+        /// </summary>
+        [Option]
+        [Required]
+        public string BranchName { get; set; }
+
+        /// <summary>
         /// The git commit author's email address.
         /// </summary>
         [Option]
@@ -52,7 +65,9 @@ namespace Presentation.Console.Commands
             {
                 GitDirectory = GitDirectory,
                 Revision = Revision,
-                CommitAuthorEmail = AuthorEmail
+                CommitAuthorEmail = AuthorEmail,
+                RemoteTarget = RemoteTarget,
+                BranchName = BranchName
             };
             await _mediator.Send(command, CancellationToken.None);
 

@@ -17,6 +17,7 @@ namespace Application.GitVersioning.Validators
             RuleFor(x => x.GitDirectory).Must(Directory.Exists).WithMessage("Must be a valid directory.");
             RuleFor(x => x.GitDirectory).Must(x => Directory.Exists(Path.Join(x, ".git"))).WithMessage("Must be a valid .git directory.");
             RuleFor(x => x.CommitAuthorEmail).NotNull().NotEmpty();
+            RuleFor(x => x.BranchName).NotNull().NotEmpty();
         }
     }
 }

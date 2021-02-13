@@ -22,5 +22,15 @@ namespace Application.GitVersioning.Commands
         /// The author email to use when creating a commit.
         /// </summary>
         public string CommitAuthorEmail { get; set; } = string.Empty;
+
+        /// <summary>
+        /// The git remote target. Defaults to 'origin'.
+        /// </summary>
+        public string RemoteTarget { get; set; } = "origin";
+
+        /// <summary>
+        /// The name of the branch to update.
+        /// </summary>
+        public string BranchName { get; set; } = string.Empty;
     }
 }
