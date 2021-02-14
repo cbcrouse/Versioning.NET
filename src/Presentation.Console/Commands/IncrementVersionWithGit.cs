@@ -41,10 +41,10 @@ namespace Presentation.Console.Commands
         public string? Revision { get; set; }
 
         /// <summary>
-        /// The git remote target.
+        /// The git remote target. Defaults to 'origin'.
         /// </summary>
         [Option(ShortName = "t")]
-        public string RemoteTarget { get; set; }
+        public string RemoteTarget { get; set; } = "origin";
 
         /// <summary>
         /// The name of the branch to update.
