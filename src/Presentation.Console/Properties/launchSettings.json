@@ -15,7 +15,7 @@
     },
     "Git Versioning": {
       "commandName": "Project",
-      "commandLineArgs": "increment-version-with-git -g \"../../../../../\" -a \"crouse.casey@gmail.com\""
+      "commandLineArgs": "increment-version-with-git -g \"../../../../../\" -a \"devops@versioning.net\" -b main"
     }
   }
 }
