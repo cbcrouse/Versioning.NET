@@ -6,7 +6,6 @@ using Application.Interfaces;
 using Domain.Entities;
 using Domain.Enumerations;
 using MediatR;
-using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Semver;
 using System.Collections.Generic;
@@ -42,8 +41,7 @@ namespace Business.Tests.GitVersioning
 
             mediator.Setup(x => x.Send(It.IsAny<GetIncrementFromCommitHintsQuery>(), CancellationToken.None)).ReturnsAsync(VersionIncrement.None);
             mediator.Setup(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
-            var logger = new NullLogger<IncrementVersionWithGitIntegrationHandler>();
-            var sut = new IncrementVersionWithGitIntegrationHandler(mediator.Object, gitService.Object, assemblyVersioningService.Object, logger);
+            var sut = new IncrementVersionWithGitIntegrationHandler(mediator.Object, gitService.Object, assemblyVersioningService.Object);
 
             // Act
             await sut.Handle(new IncrementVersionWithGitIntegrationCommand(), CancellationToken.None);
@@ -65,8 +63,7 @@ namespace Business.Tests.GitVersioning
 
             mediator.Setup(x => x.Send(It.IsAny<GetIncrementFromCommitHintsQuery>(), CancellationToken.None)).ReturnsAsync(VersionIncrement.Unknown);
             mediator.Setup(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
-            var logger = new NullLogger<IncrementVersionWithGitIntegrationHandler>();
-            var sut = new IncrementVersionWithGitIntegrationHandler(mediator.Object, gitService.Object, assemblyVersioningService.Object, logger);
+            var sut = new IncrementVersionWithGitIntegrationHandler(mediator.Object, gitService.Object, assemblyVersioningService.Object);
 
             // Act
             await sut.Handle(new IncrementVersionWithGitIntegrationCommand(), CancellationToken.None);
@@ -97,8 +94,7 @@ namespace Business.Tests.GitVersioning
 
             gitService.Setup(x => x.GetCommits(It.IsAny<string>(), It.IsAny<string>())).Returns(Commits);
             assemblyVersioningService.Setup(x => x.GetLatestAssemblyVersion(request.GitDirectory)).Returns(new SemVersion(0));
-            var logger = new NullLogger<IncrementVersionWithGitIntegrationHandler>();
-            var sut = new IncrementVersionWithGitIntegrationHandler(mediator.Object, gitService.Object, assemblyVersioningService.Object, logger);
+            var sut = new IncrementVersionWithGitIntegrationHandler(mediator.Object, gitService.Object, assemblyVersioningService.Object);
 
             // Act
             await sut.Handle(request, CancellationToken.None);

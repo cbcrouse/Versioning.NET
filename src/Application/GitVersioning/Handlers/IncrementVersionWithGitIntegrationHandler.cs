@@ -4,7 +4,6 @@ using Application.GitVersioning.Queries;
 using Application.Interfaces;
 using Domain.Enumerations;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using Semver;
 using System.Linq;
 using System.Threading;
@@ -20,7 +19,6 @@ namespace Application.GitVersioning.Handlers
         private readonly IMediator _mediator;
         private readonly IGitService _gitService;
         private readonly IAssemblyVersioningService _assemblyVersioningService;
-        private readonly ILogger<IncrementVersionWithGitIntegrationHandler> _logger;
 
         /// <summary>
         /// Default Constructor
@@ -28,17 +26,14 @@ namespace Application.GitVersioning.Handlers
         /// <param name="mediator">An abstraction for accessing application behaviors.</param>
         /// <param name="gitService">An abstraction to facilitate testing without using the git integration.</param>
         /// <param name="assemblyVersioningService">An abstraction for working with assembly versions.</param>
-        /// <param name="logger">A generic interface for logging.</param>
         public IncrementVersionWithGitIntegrationHandler(
             IMediator mediator,
             IGitService gitService,
-            IAssemblyVersioningService assemblyVersioningService,
-            ILogger<IncrementVersionWithGitIntegrationHandler> logger)
+            IAssemblyVersioningService assemblyVersioningService)
         {
             _mediator = mediator;
             _gitService = gitService;
             _assemblyVersioningService = assemblyVersioningService;
-            _logger = logger;
         }
 
         /// <summary>Handles the request to increment the version with git integration.</summary>
