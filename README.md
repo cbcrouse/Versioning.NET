@@ -20,9 +20,12 @@ Build a dotnet tool that can...
 - [x] Update version numbers based upon git commit messages
 - [x] Push git commits and tags
 
+### v0.0.7
+
+- [x] Implement self-versioning in CI/CD
+
 ### Coming Soon
 
-- [ ] Implement self-versioning using tool
 - [ ] Compare versions of different git branches
 - [ ] Support trunk based development and gitflow
 
