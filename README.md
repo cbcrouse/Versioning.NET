@@ -24,9 +24,13 @@ Build a dotnet tool that can...
 
 - [x] Implement self-versioning in CI/CD
 
-### Coming Soon
+### Backlog
 
-- [ ] Compare versions of different git branches
-- [ ] Support trunk based development and gitflow
+- [ ] Define beta exit strategy
+- [ ] Update project version and referenced versions
+- [ ] Update version based on comparison of different git branches
+- [ ] Support trunk based development
+- [ ] Support gitflow development
+- [ ] Documentation for tool
 
 ---
