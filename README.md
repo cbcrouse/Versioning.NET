@@ -26,7 +26,7 @@ Build a dotnet tool that can...
 
 ### Backlog
 
-- [ ] Define beta exit strategy
+- [x] Define beta exit strategy (Syntax parsing in commit message [Release])
 - [ ] Update project version and referenced versions
 - [ ] Update version based on comparison of different git branches
 - [ ] Support trunk based development
