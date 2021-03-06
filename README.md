@@ -28,6 +28,10 @@ Build a dotnet tool that can...
 
 - [x] Increased test coverage for GitCommitVersionInfo.cs
 
+### v0.0.9
+
+- [x] Extracted Increment lowering functionality from IncrementAssemblyVersionhandler
+
 ### Backlog
 
 - [x] Define beta exit strategy (Syntax parsing in commit message [Release])

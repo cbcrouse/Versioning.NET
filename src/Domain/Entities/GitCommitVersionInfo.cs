@@ -50,10 +50,14 @@ namespace Domain.Entities
             string lowerCaseSubject = subject.ToLower();
 
             if (lowerCaseSubject.Contains("[skip hint]"))
+            {
                 return VersionIncrement.None;
+            }
 
             if (lowerCaseSubject.Contains("#breaking"))
+            {
                 return VersionIncrement.Major;
+            }
 
             return type.ToLower() switch
             {

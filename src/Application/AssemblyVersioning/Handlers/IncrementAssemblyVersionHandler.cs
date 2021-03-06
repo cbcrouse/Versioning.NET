@@ -1,10 +1,9 @@
 ﻿using Application.AssemblyVersioning.Commands;
+using Application.Extensions;
 using Application.Interfaces;
-using Domain.Enumerations;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Semver;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,23 +40,7 @@ namespace Application.AssemblyVersioning.Handlers
             if (assemblyVersion < new SemVersion(1))
             {
                 _logger.LogInformation($"Assembly currently in beta. Lowering increment: {request.VersionIncrement}.");
-                switch (request.VersionIncrement)
-                {
-                    case VersionIncrement.Unknown:
-                        request.VersionIncrement = VersionIncrement.None;
-                        break;
-                    case VersionIncrement.None:
-                    case VersionIncrement.Patch:
-                        break;
-                    case VersionIncrement.Minor:
-                        request.VersionIncrement = VersionIncrement.Patch;
-                        break;
-                    case VersionIncrement.Major:
-                        request.VersionIncrement = VersionIncrement.Minor;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(request.VersionIncrement), request.VersionIncrement, null);
-                }
+                request.VersionIncrement = request.VersionIncrement.Lower();
                 _logger.LogInformation($"Increment lowered to: {request.VersionIncrement}");
             }
 

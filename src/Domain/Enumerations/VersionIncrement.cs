@@ -29,6 +29,5 @@
         /// Indicates the version increment is Major.
         /// </summary>
         Major
-
     }
 }
