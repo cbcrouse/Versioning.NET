@@ -1,4 +1,4 @@
-# Versioning.NET ![Main Status](https://github.com/cbcrouse/Versioning.NET/workflows/Main%20Status/badge.svg?branch=main) [![Build Status](https://caseycrouse.visualstudio.com/Github/_apis/build/status/Versioning.NET/Versioning.NET-CD?branchName=main)](https://caseycrouse.visualstudio.com/Github/_build/latest?definitionId=8&branchName=main) ![NuGet Downloads](https://img.shields.io/nuget/dt/Versioning.NET)
+# Versioning.NET ![Main Status](https://github.com/cbcrouse/Versioning.NET/workflows/Main%20Status/badge.svg?branch=main) [![Build Status](https://caseycrouse.visualstudio.com/Github/_apis/build/status/Versioning.NET/Versioning.NET-CD?branchName=main)](https://caseycrouse.visualstudio.com/Github/_build/latest?definitionId=8&branchName=main) ![NuGet Downloads](https://img.shields.io/nuget/dt/Versioning.NET) [![NuGet Version](https://img.shields.io/nuget/v/Versioning.NET)](https://www.nuget.org/packages/Versioning.NET)
 
 A dotnet tool that automatically versions csproj files semantically with git integration.
 
