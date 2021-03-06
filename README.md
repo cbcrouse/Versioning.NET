@@ -24,6 +24,10 @@ Build a dotnet tool that can...
 
 - [x] Implement self-versioning in CI/CD
 
+### v0.0.8
+
+- [x] Increased test coverage for GitCommitVersionInfo.cs
+
 ### Backlog
 
 - [x] Define beta exit strategy (Syntax parsing in commit message [Release])

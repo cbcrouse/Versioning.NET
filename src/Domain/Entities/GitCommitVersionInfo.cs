@@ -19,7 +19,7 @@ namespace Domain.Entities
             Type = type;
             Scope = scope;
             Subject = subject;
-            VersionIncrement = GetVersionIncrement();
+            VersionIncrement = GetVersionIncrement(subject, type);
         }
 
         /// <summary>
@@ -45,9 +45,9 @@ namespace Domain.Entities
         /// <summary>
         /// Calculates the version increment from the git commit message.
         /// </summary>
-        public VersionIncrement GetVersionIncrement()
+        private static VersionIncrement GetVersionIncrement(string subject, string type)
         {
-            string lowerCaseSubject = Subject.ToLower();
+            string lowerCaseSubject = subject.ToLower();
 
             if (lowerCaseSubject.Contains("[skip hint]"))
                 return VersionIncrement.None;
@@ -55,10 +55,9 @@ namespace Domain.Entities
             if (lowerCaseSubject.Contains("#breaking"))
                 return VersionIncrement.Major;
 
-            return Type.ToLower() switch
+            return type.ToLower() switch
             {
                 "feat" => VersionIncrement.Minor,
-                "bug" => VersionIncrement.Patch,
                 "fix" => VersionIncrement.Patch,
                 "build" => VersionIncrement.Patch,
                 "config" => VersionIncrement.Patch,

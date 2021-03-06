@@ -53,6 +53,10 @@ namespace Infrastructure.Tests.Services
         [InlineData("ci(Build): Updated build.yml to target the template solution file", "ci", "Build", "Updated build.yml to target the template solution file", VersionIncrement.Patch)]
         [InlineData("fake(Build): Updated build.yml to target the template solution file", "fake", "Build", "Updated build.yml to target the template solution file", VersionIncrement.Unknown)]
         [InlineData("fake(Build): Updated build.yml to target the template solution file [skip hint]", "fake", "Build", "Updated build.yml to target the template solution file [skip hint]", VersionIncrement.None)]
+        [InlineData("perf(API): Decreased response time to <200ms", "perf", "API", "Decreased response time to <200ms", VersionIncrement.Patch)]
+        [InlineData("refactor(Application): Removed duplicate code", "refactor", "Application", "Removed duplicate code", VersionIncrement.Patch)]
+        [InlineData("resolve(Persistence): Resolved a merge conflict", "resolve", "Persistence", "Resolved a merge conflict", VersionIncrement.Patch)]
+        [InlineData("test(Infrastructure): Added additional mapping tests", "test", "Infrastructure", "Added additional mapping tests", VersionIncrement.Patch)]
         public void CanMatchSubjectLine(string input, string expectedType, string expectedScope, string expectedSubject, VersionIncrement expectedIncrement)
         {
             // Arrange
