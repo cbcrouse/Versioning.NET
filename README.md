@@ -27,6 +27,7 @@ Build a dotnet tool that can...
 ### Backlog
 
 - [x] Define beta exit strategy (Syntax parsing in commit message [Release])
+- [ ] Replace PowerShell git interactions with [GitLib2Sharp](https://github.com/libgit2/libgit2sharp)
 - [ ] Update project version and referenced versions
 - [ ] Update version based on comparison of different git branches
 - [ ] Support trunk based development
