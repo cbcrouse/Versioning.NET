@@ -41,7 +41,7 @@ namespace Application.GitVersioning.Handlers
         /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
         public async Task<Unit> Handle(IncrementVersionWithGitIntegrationCommand request, CancellationToken cancellationToken)
         {
-            var query = new GetIncrementFromCommitHintsQuery { GitDirectory = request.GitDirectory, Revision = request.Revision};
+            var query = new GetIncrementFromCommitHintsQuery { GitDirectory = request.GitDirectory, TipBranchName = request.BranchName };
             VersionIncrement increment = await _mediator.Send(query, cancellationToken);
 
             if (increment == VersionIncrement.None || increment == VersionIncrement.Unknown)

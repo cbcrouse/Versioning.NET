@@ -3,7 +3,6 @@ using Infrastructure.Services;
 using Infrastructure.Startup;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using Xunit;
 
@@ -51,10 +50,10 @@ namespace Infrastructure.Tests
         }
 
         [Fact]
-        public void GitService_IsAssignableFrom_IGitService()
+        public void LibGit2Service_IsAssignableFrom_IGitService()
         {
             // Arrange
-            var sut = new GitService(new PowerShellService(new NullLogger<PowerShellService>()));
+            var sut = new LibGit2Service();
 
             // Act & Assert
             Assert.IsAssignableFrom<IGitService>(sut);
@@ -68,7 +67,7 @@ namespace Infrastructure.Tests
             var sut = ServiceProvider.GetRequiredService<IGitService>();
 
             // Act & Assert
-            Assert.IsType<GitService>(sut);
+            Assert.IsType<LibGit2Service>(sut);
 
         }
 
@@ -91,28 +90,6 @@ namespace Infrastructure.Tests
 
             // Act & Assert
             Assert.IsType<GitVersioningService>(sut);
-
-        }
-
-        [Fact]
-        public void PowerShellService_IsAssignableFrom_IPowerShellService()
-        {
-            // Arrange
-            var sut = new PowerShellService(new NullLogger<PowerShellService>());
-
-            // Act & Assert
-            Assert.IsAssignableFrom<IPowerShellService>(sut);
-
-        }
-
-        [Fact]
-        public void IPowerShellService_IsRegisteredCorrectly()
-        {
-            // Arrange
-            var sut = ServiceProvider.GetRequiredService<IPowerShellService>();
-
-            // Act & Assert
-            Assert.IsType<PowerShellService>(sut);
 
         }
     }

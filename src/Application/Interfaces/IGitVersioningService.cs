@@ -19,8 +19,8 @@ namespace Application.Interfaces
         /// <summary>
         /// Retrieve a collection of <see cref="GitCommitVersionInfo"/> from a collection of git commit message subject lines.
         /// </summary>
-        /// <param name="gitCommitSubjectLines">A collection of git commit message subject lines.</param>
-        IEnumerable<GitCommitVersionInfo> GetCommitVersionInfo(IEnumerable<string> gitCommitSubjectLines);
+        /// <param name="gitCommits">A collection of git commits.</param>
+        IEnumerable<GitCommitVersionInfo> GetCommitVersionInfo(IEnumerable<GitCommit> gitCommits);
 
         /// <summary>
         /// Returns the prioritized <see cref="VersionIncrement"/> from a collection of <see cref="VersionIncrement"/>s.

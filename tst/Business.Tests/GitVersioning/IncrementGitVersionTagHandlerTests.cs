@@ -19,9 +19,9 @@ namespace Business.Tests.GitVersioning
     {
         private List<GitCommit> Commits {get; } = new List<GitCommit>
         {
-            new GitCommit("27d8879","fake(Build): Updated build.yml to target the template solution file [skip hint]"),
-            new GitCommit("27d8880","build(Pipeline): Downgraded to .net core 3.1 from 5 [skip ci]"),
-            new GitCommit("27d8881","ci(Versioning): Increment version 0.0.0 -> 0.0.0 [skip ci] [skip hint]")
+            new GitCommit("27d8879","fake(Build): Updated build.yml to target the template solution file [skip hint]", new List<GitCommitFileInfo>()),
+            new GitCommit("27d8880","build(Pipeline): Downgraded to .net core 3.1 from 5 [skip ci]", new List<GitCommitFileInfo>()),
+            new GitCommit("27d8881","ci(Versioning): Increment version 0.0.0 -> 0.0.0 [skip ci] [skip hint]", new List<GitCommitFileInfo>())
         };
 
         private IEnumerable<GitCommitVersionInfo> VersionInfos { get; } = new List<GitCommitVersionInfo>
@@ -49,7 +49,7 @@ namespace Business.Tests.GitVersioning
             // Assert
             mediator.Verify(x => x.Send(It.IsAny<GetIncrementFromCommitHintsQuery>(), CancellationToken.None), Times.Once);
             mediator.Verify(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None), Times.Never);
-            gitService.Verify(x => x.GetCommits(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            gitService.Verify(x => x.GetCommits(It.IsAny<string>()), Times.Never);
             assemblyVersioningService.Verify(x => x.GetLatestAssemblyVersion(It.IsAny<string>()), Times.Never);
         }
 
@@ -71,7 +71,7 @@ namespace Business.Tests.GitVersioning
             // Assert
             mediator.Verify(x => x.Send(It.IsAny<GetIncrementFromCommitHintsQuery>(), CancellationToken.None), Times.Once);
             mediator.Verify(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None), Times.Never);
-            gitService.Verify(x => x.GetCommits(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            gitService.Verify(x => x.GetCommits(It.IsAny<string>()), Times.Never);
             assemblyVersioningService.Verify(x => x.GetLatestAssemblyVersion(It.IsAny<string>()), Times.Never);
         }
 
@@ -92,7 +92,7 @@ namespace Business.Tests.GitVersioning
             mediator.Setup(x => x.Send(It.IsAny<GetIncrementFromCommitHintsQuery>(), CancellationToken.None)).ReturnsAsync(VersionIncrement.Minor);
             mediator.Setup(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
 
-            gitService.Setup(x => x.GetCommits(It.IsAny<string>(), It.IsAny<string>())).Returns(Commits);
+            gitService.Setup(x => x.GetCommits(It.IsAny<string>())).Returns(Commits);
             assemblyVersioningService.Setup(x => x.GetLatestAssemblyVersion(request.GitDirectory)).Returns(new SemVersion(0));
             var sut = new IncrementVersionWithGitIntegrationHandler(mediator.Object, gitService.Object, assemblyVersioningService.Object);
 
@@ -104,7 +104,7 @@ namespace Business.Tests.GitVersioning
             mediator.Verify(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None), Times.Once);
             assemblyVersioningService.Verify(x => x.GetLatestAssemblyVersion(request.GitDirectory), Times.Exactly(2));
             gitService.Verify(x => x.CommitChanges(request.GitDirectory, It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-            gitService.Verify(x => x.GetCommits(request.GitDirectory, It.IsAny<string>()), Times.Once);
+            gitService.Verify(x => x.GetCommits(request.GitDirectory), Times.Once);
             gitService.Verify(x => x.CreateTag(request.GitDirectory, It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
     }

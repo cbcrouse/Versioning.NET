@@ -10,11 +10,31 @@ namespace Application.Interfaces
     public interface IGitService
     {
         /// <summary>
-        /// Retrieve a collection of one line commit messages that have changes associated to files in the filter paths.
+        /// Retrieve a collection of git commits.
         /// </summary>
         /// <param name="gitDirectory">The directory containing the .git folder.</param>
-        /// <param name="gitLogRevision">The revision to use with the 'git log' command.</param>
-        public List<GitCommit> GetCommits(string gitDirectory, string? gitLogRevision = null);
+        public List<GitCommit> GetCommits(string gitDirectory);
+
+        /// <summary>
+        /// Retrieve a collection of filtered commits.
+        /// </summary>
+        /// <param name="filter">A filter object for git commit queries.</param>
+        /// <param name="gitDirectory">The directory containing the .git folder.</param>
+        public List<GitCommit> GetCommitsByFilter(string gitDirectory, GitCommitFilter filter);
+
+        /// <summary>
+        /// Retrieve the hash identifier for the tag.
+        /// </summary>
+        /// <param name="gitDirectory">The directory containing the .git folder.</param>
+        /// <param name="tagValue">The value of the tag.</param>
+        public string GetTagId(string gitDirectory, string tagValue);
+
+        /// <summary>
+        /// Retrieve the hash identifier for the commit at the tip of the branch.
+        /// </summary>
+        /// <param name="gitDirectory">The directory containing the .git folder.</param>
+        /// <param name="branchName">The name of the branch.</param>
+        public string GetBranchTipId(string gitDirectory, string branchName);
 
         /// <summary>
         /// Retrieve a collection of git tags.

@@ -1,5 +1,4 @@
-﻿using Infrastructure.Services;
-using Microsoft.Extensions.Logging.Abstractions;
+﻿using LibGit2Sharp;
 using System;
 using System.IO;
 
@@ -12,7 +11,6 @@ namespace Infrastructure.Tests.Setup
     {
         protected string TestRepoDirectory { get; private set; }
         private string _testRepoParentDirectory;
-        private readonly PowerShellService _powerShell = new PowerShellService(new NullLogger<PowerShellService>());
 
         public GitSetup()
         {
@@ -22,8 +20,8 @@ namespace Infrastructure.Tests.Setup
         private void CloneTestRepository()
         {
             CreateTempDirectory();
-            _powerShell.RunScript(_testRepoParentDirectory, "git clone https://github.com/cbcrouse/Versioning.NET.Tests");
-            TestRepoDirectory = Path.Join(_testRepoParentDirectory, "Versioning.NET.Tests");
+            var gitPath = Repository.Clone("https://github.com/cbcrouse/Versioning.NET.Tests", _testRepoParentDirectory);
+            TestRepoDirectory = Directory.GetParent(gitPath)!.Parent!.FullName;
         }
 
         private void CreateTempDirectory()
@@ -40,9 +38,33 @@ namespace Infrastructure.Tests.Setup
         {
             if (!Directory.Exists(_testRepoParentDirectory))
                 return;
-            // Directory.Delete does not work here "Access is denied".
-            var script = $"Remove-Item -Path \"{_testRepoParentDirectory}\" -Recurse -Force";
-            _powerShell.RunScript(Path.GetTempPath(), script);
+
+            var di = new DirectoryInfo(_testRepoParentDirectory);
+
+            ClearAttributes(_testRepoParentDirectory);
+            foreach (FileInfo file in di.EnumerateFiles())
+            {
+                file.Delete();
+            }
+            foreach (DirectoryInfo directory in di.EnumerateDirectories())
+            {
+                directory.Delete(true);
+            }
+            Directory.Delete(_testRepoParentDirectory, true);
+        }
+
+        /// <summary>
+        /// https://social.msdn.microsoft.com/Forums/vstudio/en-US/b79d5e07-bd8a-446e-8c44-3a2f2a262d5e/iodirectorydelete-readonly-quotaccess-deniedquot
+        /// </summary>
+        private static void ClearAttributes(string currentDir)
+        {
+            if (!Directory.Exists(currentDir)) return;
+            string[] subDirs = Directory.GetDirectories(currentDir);
+            foreach(string dir in subDirs)
+                ClearAttributes(dir);
+            string[] files = Directory.GetFiles(currentDir);
+            foreach (string file in files)
+                File.SetAttributes(file, FileAttributes.Normal);
         }
 
         /// <summary>

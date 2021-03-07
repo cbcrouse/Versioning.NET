@@ -1,5 +1,4 @@
-﻿#nullable enable
-using Domain.Enumerations;
+﻿using Domain.Enumerations;
 using MediatR;
 
 namespace Application.GitVersioning.Queries
@@ -15,8 +14,8 @@ namespace Application.GitVersioning.Queries
         public string GitDirectory { get; set; } = string.Empty;
 
         /// <summary>
-        /// Git revision used to filter git commits from log.
+        /// The branch name to use as the TIP.
         /// </summary>
-        public string? Revision { get; set; }
+        public string TipBranchName { get; set; } = string.Empty;
     }
 }

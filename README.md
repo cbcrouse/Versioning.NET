@@ -16,26 +16,52 @@ Build a dotnet tool that can...
 
 ### v0.0.1
 
-- [x] Update version numbers in csproj files
-- [x] Update version numbers based upon git commit messages
-- [x] Push git commits and tags
+* Update version numbers in csproj files
+* Update version numbers based upon git commit messages
+* Push git commits and tags
 
 ### v0.0.7
 
-- [x] Implement self-versioning in CI/CD
+Minor Changes
+
+* Implement self-versioning in CI/CD
 
 ### v0.0.8
 
-- [x] Increased test coverage for GitCommitVersionInfo.cs
+Minor Changes
+
+* Increased test coverage for GitCommitVersionInfo.cs
 
 ### v0.0.9
 
-- [x] Extracted Increment lowering functionality from IncrementAssemblyVersionhandler
+Minor Changes
+
+* Extracted Increment lowering functionality from IncrementAssemblyVersionhandler
+
+### v0.1.0
+
+Major Changes
+
+* Replaced PowerShell-Git integration with LibGit2Sharp
+* GetIncrementFromCommitHintsQuery now requires a branch name instead of a git log revision. Using a git log revision leaked implementation details.
+* IGitVersioningService.GetCommitVersionInfo now accepts GitCommit objects instead of strings.
+* IPowerShellService/PowerShellService were removed.
+* GitService.cs was removed.
+
+Minor Changes
+
+* Several new methods added to the IGitService.cs.
+* Added new extensions for GitCommit.
+* GetIncrementFromCommitHintsHandler now utilizes new filtering functionality from GitService.
+* Extension methods were added for LibGit2Sharp's Commit object.
+* Added VersionIncrement extensions
+* Tests were heavily updated and GitSetup was reworked to remove dependency on PowerShellService.
 
 ### Backlog
 
 - [x] Define beta exit strategy (Syntax parsing in commit message [Release])
-- [ ] Replace PowerShell git interactions with [GitLib2Sharp](https://github.com/libgit2/libgit2sharp)
+- [ ] Implement beta exit strategy
+- [x] Replace PowerShell git interactions with [GitLib2Sharp](https://github.com/libgit2/libgit2sharp)
 - [ ] Update project version and referenced versions
 - [ ] Update version based on comparison of different git branches
 - [ ] Support trunk based development

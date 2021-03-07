@@ -3,9 +3,7 @@ using Domain.Enumerations;
 using Infrastructure.Services;
 using Semver;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using Xunit;
 
 namespace Infrastructure.Tests.Services
@@ -45,25 +43,26 @@ namespace Infrastructure.Tests.Services
         }
 
         [Theory]
-        [InlineData("build(Pipeline): Downgraded to .net core 3.1 from 5 [skip ci]", "build", "Pipeline", "Downgraded to .net core 3.1 from 5 [skip ci]", VersionIncrement.Patch)]
-        [InlineData("feat(Tools): Updated test script to clean out .templateengine directory", "feat", "Tools", "Updated test script to clean out .templateengine directory", VersionIncrement.Minor)]
-        [InlineData("feat(Template): Added ability to see template in Visual Studio", "feat", "Template", "Added ability to see template in Visual Studio", VersionIncrement.Minor)]
-        [InlineData("config(Projects): Loaded unloaded projects [skip ci]", "config", "Projects", "Loaded unloaded projects [skip ci]", VersionIncrement.Patch)]
-        [InlineData("docs(README): Added \"Startup Orchestration\" docs and Solution Overview [skip ci]", "docs", "README", "Added \"Startup Orchestration\" docs and Solution Overview [skip ci]", VersionIncrement.Patch)]
-        [InlineData("ci(Build): Updated build.yml to target the template solution file", "ci", "Build", "Updated build.yml to target the template solution file", VersionIncrement.Patch)]
-        [InlineData("fake(Build): Updated build.yml to target the template solution file", "fake", "Build", "Updated build.yml to target the template solution file", VersionIncrement.Unknown)]
-        [InlineData("fake(Build): Updated build.yml to target the template solution file [skip hint]", "fake", "Build", "Updated build.yml to target the template solution file [skip hint]", VersionIncrement.None)]
-        [InlineData("perf(API): Decreased response time to <200ms", "perf", "API", "Decreased response time to <200ms", VersionIncrement.Patch)]
-        [InlineData("refactor(Application): Removed duplicate code", "refactor", "Application", "Removed duplicate code", VersionIncrement.Patch)]
-        [InlineData("resolve(Persistence): Resolved a merge conflict", "resolve", "Persistence", "Resolved a merge conflict", VersionIncrement.Patch)]
-        [InlineData("test(Infrastructure): Added additional mapping tests", "test", "Infrastructure", "Added additional mapping tests", VersionIncrement.Patch)]
-        public void CanMatchSubjectLine(string input, string expectedType, string expectedScope, string expectedSubject, VersionIncrement expectedIncrement)
+        [InlineData("2838s830", "build(Pipeline): Downgraded to .net core 3.1 from 5 [skip ci]", "build", "Pipeline", "Downgraded to .net core 3.1 from 5 [skip ci]", VersionIncrement.Patch)]
+        [InlineData("2838s830", "feat(Tools): Updated test script to clean out .templateengine directory", "feat", "Tools", "Updated test script to clean out .templateengine directory", VersionIncrement.Minor)]
+        [InlineData("2838s830", "feat(Template): Added ability to see template in Visual Studio", "feat", "Template", "Added ability to see template in Visual Studio", VersionIncrement.Minor)]
+        [InlineData("2838s830", "config(Projects): Loaded unloaded projects [skip ci]", "config", "Projects", "Loaded unloaded projects [skip ci]", VersionIncrement.Patch)]
+        [InlineData("2838s830", "docs(README): Added \"Startup Orchestration\" docs and Solution Overview [skip ci]", "docs", "README", "Added \"Startup Orchestration\" docs and Solution Overview [skip ci]", VersionIncrement.Patch)]
+        [InlineData("2838s830", "ci(Build): Updated build.yml to target the template solution file", "ci", "Build", "Updated build.yml to target the template solution file", VersionIncrement.Patch)]
+        [InlineData("2838s830", "fake(Build): Updated build.yml to target the template solution file", "fake", "Build", "Updated build.yml to target the template solution file", VersionIncrement.Unknown)]
+        [InlineData("2838s830", "fake(Build): Updated build.yml to target the template solution file [skip hint]", "fake", "Build", "Updated build.yml to target the template solution file [skip hint]", VersionIncrement.None)]
+        [InlineData("2838s830", "perf(API): Decreased response time to <200ms", "perf", "API", "Decreased response time to <200ms", VersionIncrement.Patch)]
+        [InlineData("2838s830", "refactor(Application): Removed duplicate code", "refactor", "Application", "Removed duplicate code", VersionIncrement.Patch)]
+        [InlineData("2838s830", "resolve(Persistence): Resolved a merge conflict", "resolve", "Persistence", "Resolved a merge conflict", VersionIncrement.Patch)]
+        [InlineData("2838s830", "test(Infrastructure): Added additional mapping tests", "test", "Infrastructure", "Added additional mapping tests", VersionIncrement.Patch)]
+        public void CanMatchSubjectLine(string id, string subject, string expectedType, string expectedScope, string expectedSubject, VersionIncrement expectedIncrement)
         {
             // Arrange
+            var commit = new GitCommit(id, subject, new List<GitCommitFileInfo>());
             var sut = new GitVersioningService();
 
             // Act
-            GitCommitVersionInfo info = sut.GetCommitVersionInfo(new List<string>{ input }).First();
+            GitCommitVersionInfo info = sut.GetCommitVersionInfo(new List<GitCommit>{ commit }).First();
 
             // Assert
             Assert.Equal(expectedType, info.Type);
@@ -77,16 +76,35 @@ namespace Infrastructure.Tests.Services
         {
             // Arrange
             var sut = new GitVersioningService();
-            string executableLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string fileLocation = Path.Combine(executableLocation ?? string.Empty, "CommitMessageSamples.txt");
-            string[] messages = File.ReadAllLines(fileLocation);
+            var commits = new Dictionary<string, string>
+            {
+                {"54s6848", "fake(Build): Updated build.yml to target the template solution file [skip hint]"},
+                {"27d8880", "build(Pipeline): Downgraded to .net core 3.1 from 5 [skip ci]"},
+                {"9588148", "build(Actions): Updated dotnet version in PR Action [skip ci]"},
+                {"adfe3d6", "docs(README): Updated Getting Started section [skip ci]"},
+                {"65003d2", "feat(Tools): Updated test script to clean out .templateengine directory #breaking"},
+                {"1889a29", "feat(Template): Added ability to see template in Visual Studio"},
+                {"cef6fff", "update to use port gen. It will fallback to generated port if none provided"},
+                {"21d4172", "Update to use sourceName instead of app-name and app-name-lower parameters"},
+                {"82fb127", "Updates to make the template work in Visual Studio. This is a work in progress. We should replace the app name and port symbols to use the built-in support to provide a good experience. Since the app name param is not appearing, when run in VS the name given has to be DefaultAppName. After changes to use built-in support things will work as expected."},
+                {"d2b8e8b", "updating package version to 1.3.1"},
+                {"c41daee", "update to ps1 file to restore previous working directory"},
+                {"d7df356", "feat(Template): Updated primaryOutput to list all projects instead of sln"},
+                {"70a8f91", "feat(Template): Added ability to see template in Visual Studio"},
+                {"07766a9", "docs(README): Updated azure pipeline status badge [skip ci]"},
+                {"0dd8382", "feat(Docker): Added container orchestration support"},
+                {"4db6707", "fix(Build): dotnet new & Package Downgrade Detected"},
+                {"05a5def", "config(Projects): Loaded unloaded projects [skip ci]"},
+                {"60c25be", "style(AppStartupOrchestrator): Removed extraneous TODO [skip ci]"}
+
+            }.Select(x => new GitCommit(x.Key, x.Value, new List<GitCommitFileInfo>()));
             int expectedPatchCount = 7;
             int expectedMinorCount = 4;
             int expectedMajorCount = 1;
             int expectedNoneCount = 1;
 
             // Act
-            IEnumerable<GitCommitVersionInfo> results = sut.GetCommitVersionInfo(messages);
+            IEnumerable<GitCommitVersionInfo> results = sut.GetCommitVersionInfo(commits);
             IEnumerable<GitCommitVersionInfo> gitCommitVersionInfos = results.ToList();
             int patchCount = gitCommitVersionInfos.Count(x => x.VersionIncrement == VersionIncrement.Patch);
             int minorCount = gitCommitVersionInfos.Count(x => x.VersionIncrement == VersionIncrement.Minor);

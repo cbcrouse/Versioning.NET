@@ -1,4 +1,5 @@
-﻿using Application.GitVersioning.Queries;
+﻿#nullable enable
+using Application.GitVersioning.Queries;
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.Enumerations;
@@ -39,24 +40,26 @@ namespace Application.GitVersioning.Handlers
         /// <returns>Response from the request</returns>
         public Task<VersionIncrement> Handle(GetIncrementFromCommitHintsQuery request, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(request.Revision))
+            var tags = _gitService.GetTags(request.GitDirectory);
+            var latestTag = _gitVersioningService.GetLatestVersionTag(tags);
+            var untilHash = _gitService.GetTagId(request.GitDirectory, latestTag.Key);
+            var fromHash = _gitService.GetBranchTipId(request.GitDirectory, request.TipBranchName);
+            var filter = new GitCommitFilter
             {
-                List<string> tags = _gitService.GetTags(request.GitDirectory).ToList();
-                string latestTag = _gitVersioningService.GetLatestVersionTag(tags).Key;
-                request.Revision = latestTag + "..HEAD";
-            }
-
-            List<GitCommit> commits = _gitService.GetCommits(request.GitDirectory, request.Revision);
+                FromHash = fromHash,
+                UntilHash = untilHash
+            };
+            List<GitCommit> commits = _gitService.GetCommitsByFilter(request.GitDirectory, filter);
 
             if (!commits.Any())
             {
-                _logger.LogInformation($"No commits were found using revision: {request.Revision}");
+                _logger.LogInformation("No new commits were found.");
                 return Task.FromResult(VersionIncrement.None);
             }
 
-            IEnumerable<GitCommitVersionInfo> versionInfos = _gitVersioningService.GetCommitVersionInfo(commits.Select(x => x.Subject));
+            IEnumerable<GitCommitVersionInfo> versionInfos = _gitVersioningService.GetCommitVersionInfo(commits);
             VersionIncrement increment = _gitVersioningService.DeterminePriorityIncrement(versionInfos.Select(x => x.VersionIncrement));
-            _logger.LogInformation($"Increment '{increment}' was determined from the commits found with revision: {request.Revision}.");
+            _logger.LogInformation($"Increment '{increment}' was determined from the commits.");
             return Task.FromResult(increment);
         }
     }

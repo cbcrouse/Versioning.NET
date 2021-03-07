@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Domain.Entities
 {
@@ -12,10 +13,12 @@ namespace Domain.Entities
         /// </summary>
         /// <param name="id">The commit identifier.</param>
         /// <param name="subject">The commit message subject line.</param>
-        public GitCommit(string id, string subject)
+        /// <param name="updates">The file updates associated to the commit.</param>
+        public GitCommit(string id, string subject, IEnumerable<GitCommitFileInfo> updates)
         {
             Id = id;
             Subject = subject;
+            Updates = updates.ToList();
         }
 
         /// <summary>
@@ -29,8 +32,8 @@ namespace Domain.Entities
         public string Subject { get; }
 
         /// <summary>
-        /// A collection of associated file changes for the commit.
+        /// A collection of associated file updates for the commit.
         /// </summary>
-        public List<GitCommitFileInfo> Files { get; } = new List<GitCommitFileInfo>();
+        public List<GitCommitFileInfo> Updates { get; }
     }
 }

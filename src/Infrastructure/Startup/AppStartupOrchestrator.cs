@@ -48,10 +48,9 @@ namespace Infrastructure.Startup
 			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddSingleton<ISystemClock, SystemClock>());
 
 			//Services
-			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddSingleton<IGitService, GitService>());
+			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddSingleton<IGitService, LibGit2Service>());
 			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddSingleton<IGitVersioningService, GitVersioningService>());
 			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddSingleton<IAssemblyVersioningService, AssemblyVersioningService>());
-			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddSingleton<IPowerShellService, PowerShellService>());
 		}
 
 		private void RegisterAutoMapper()

@@ -1,11 +1,10 @@
-﻿using Application.Interfaces;
-using Domain.Constants;
+﻿using Application.Extensions;
+using Application.Interfaces;
 using Domain.Entities;
 using Domain.Enumerations;
 using Semver;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Infrastructure.Services
 {
@@ -37,25 +36,10 @@ namespace Infrastructure.Services
         /// <summary>
         /// Retrieve a collection of <see cref="GitCommitVersionInfo"/> from a collection of git commit message subject lines.
         /// </summary>
-        /// <param name="gitCommitSubjectLines">A collection of git commit message subject lines.</param>
-        public IEnumerable<GitCommitVersionInfo> GetCommitVersionInfo(IEnumerable<string> gitCommitSubjectLines)
+        /// <param name="gitCommits">A collection of git commits.</param>
+        public IEnumerable<GitCommitVersionInfo> GetCommitVersionInfo(IEnumerable<GitCommit> gitCommits)
         {
-            var regex = new Regex(RegexPatterns.GitLogCommitSubject);
-            var versionInfos = new List<GitCommitVersionInfo>();
-
-            foreach (string gitCommitSubjectLine in gitCommitSubjectLines)
-            {
-                Match match = regex.Match(gitCommitSubjectLine);
-                if (!match.Success)
-                    continue;
-
-                string type = match.Groups["Type"].Value.Trim();
-                string scope = match.Groups["Scope"].Value.Trim();
-                string subject = match.Groups["Subject"].Value.Trim();
-                versionInfos.Add(new GitCommitVersionInfo(type, scope, subject));
-            }
-
-            return versionInfos;
+            return gitCommits.Select(commit => commit.GetVersionInfo()).Where(versionInfo => versionInfo != null).ToList();
         }
 
         /// <summary>

@@ -22,14 +22,14 @@ namespace Business.Tests.GitVersioning
         public async Task Handler_CallsDependencies()
         {
             // Arrange
-            var commits = new List<GitCommit> { new("1889a29", "feat(Template): Added ability to see template in Visual Studio") };
+            var commits = new List<GitCommit> { new("1889a29", "feat(Template): Added ability to see template in Visual Studio", new List<GitCommitFileInfo>()) };
             var versionInfos = new List<GitCommitVersionInfo> { new("feat", "Template", commits.First().Subject)};
             var gitService = new Mock<IGitService>();
             gitService.Setup(x => x.GetTags(It.IsAny<string>())).Returns(Tags);
-            gitService.Setup(x => x.GetCommits(It.IsAny<string>(), It.IsAny<string>())).Returns(commits);
+            gitService.Setup(x => x.GetCommitsByFilter(It.IsAny<string>(), It.IsAny<GitCommitFilter>())).Returns(commits);
             var gitVersioningService = new Mock<IGitVersioningService>();
             gitVersioningService.Setup(x => x.GetLatestVersionTag(Tags)).Returns(new KeyValuePair<string, SemVersion>("v3.1.0", new SemVersion(3, 1)));
-            gitVersioningService.Setup(x => x.GetCommitVersionInfo(commits.Select(x => x.Subject))).Returns(versionInfos);
+            gitVersioningService.Setup(x => x.GetCommitVersionInfo(commits)).Returns(versionInfos);
             gitVersioningService.Setup(x => x.DeterminePriorityIncrement(versionInfos.Select(x => x.VersionIncrement))).Returns(VersionIncrement.None);
             var logger = new NullLogger<GetIncrementFromCommitHintsHandler>();
             var sut = new GetIncrementFromCommitHintsHandler(gitService.Object, gitVersioningService.Object, logger);
@@ -39,9 +39,10 @@ namespace Business.Tests.GitVersioning
 
             // Assert
             gitService.Verify(x => x.GetTags(It.IsAny<string>()), Times.Once);
-            gitService.Verify(x => x.GetCommits(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            gitService.Verify(x => x.GetTagId(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            gitService.Verify(x => x.GetCommitsByFilter(It.IsAny<string>(), It.IsAny<GitCommitFilter>()), Times.Once);
             gitVersioningService.Verify(x => x.GetLatestVersionTag(It.IsAny<IEnumerable<string>>()), Times.Once);
-            gitVersioningService.Verify(x => x.GetCommitVersionInfo(It.IsAny<IEnumerable<string>>()), Times.Once);
+            gitVersioningService.Verify(x => x.GetCommitVersionInfo(It.IsAny<IEnumerable<GitCommit>>()), Times.Once);
             gitVersioningService.Verify(x => x.DeterminePriorityIncrement(It.IsAny<IEnumerable<VersionIncrement>>()), Times.Once);
         }
 
@@ -50,10 +51,9 @@ namespace Business.Tests.GitVersioning
         {
             // Arrange
             var gitService = new Mock<IGitService>();
-            gitService.Setup(x => x.GetTags(It.IsAny<string>())).Returns(Tags);
-            gitService.Setup(x => x.GetCommits(It.IsAny<string>(), It.IsAny<string>())).Returns(new List<GitCommit>());
+            gitService.Setup(x => x.GetCommits(It.IsAny<string>())).Returns(new List<GitCommit>());
+            gitService.Setup(x => x.GetCommitsByFilter(It.IsAny<string>(), It.IsAny<GitCommitFilter>())).Returns(new List<GitCommit>());
             var gitVersioningService = new Mock<IGitVersioningService>();
-            gitVersioningService.Setup(x => x.GetLatestVersionTag(Tags)).Returns(new KeyValuePair<string, SemVersion>("v3.1.0", new SemVersion(3, 1)));
             var logger = new NullLogger<GetIncrementFromCommitHintsHandler>();
             var sut = new GetIncrementFromCommitHintsHandler(gitService.Object, gitVersioningService.Object, logger);
 
