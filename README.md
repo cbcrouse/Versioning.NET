@@ -10,33 +10,15 @@ A dotnet tool that automatically versions csproj files semantically with git int
 dotnet tool install --global Versioning.NET
 ```
 
-## Roadmap
+---
 
-Build a dotnet tool that can...
+## Changelog
 
-### v0.0.1
-
-* Update version numbers in csproj files
-* Update version numbers based upon git commit messages
-* Push git commits and tags
-
-### v0.0.7
+### v0.1.1
 
 Minor Changes
 
-* Implement self-versioning in CI/CD
-
-### v0.0.8
-
-Minor Changes
-
-* Increased test coverage for GitCommitVersionInfo.cs
-
-### v0.0.9
-
-Minor Changes
-
-* Extracted Increment lowering functionality from IncrementAssemblyVersionhandler
+* AppStartupOrchestrator spacing updates to test self-versioning still works.
 
 ### v0.1.0
 
@@ -57,13 +39,33 @@ Minor Changes
 * Added VersionIncrement extensions
 * Tests were heavily updated and GitSetup was reworked to remove dependency on PowerShellService.
 
-### v0.1.1
+### v0.0.9
 
 Minor Changes
 
-* AppStartupOrchestrator spacing updates to test self-versioning still works.
+* Extracted Increment lowering functionality from IncrementAssemblyVersionhandler
 
-### Backlog
+### v0.0.8
+
+Minor Changes
+
+* Increased test coverage for GitCommitVersionInfo.cs
+
+### v0.0.7
+
+Minor Changes
+
+* Implement self-versioning in CI/CD
+
+### v0.0.1
+
+* Update version numbers in csproj files
+* Update version numbers based upon git commit messages
+* Push git commits and tags
+
+---
+
+## Backlog
 
 - [x] Define beta exit strategy (Syntax parsing in commit message [Release])
 - [ ] Implement beta exit strategy
