@@ -21,54 +21,54 @@ namespace Infrastructure.Startup
     /// Facilitates dependency registrations for the application.
     /// </summary>
     public class AppStartupOrchestrator : CoreStartupOrchestrator
-	{
-		/// <summary>
-		/// Default Constructor
-		/// </summary>
-		public AppStartupOrchestrator()
-		{
-			// Configuration Options
-			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddOptions());
-			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddTransient(typeof(OptionsFactory<>)));
-			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddTransient(typeof(OptionsMonitor<>)));
-			ServiceRegistrationExpressions.Add(() => ServiceCollection.RegisterConfiguredOptions<ApplicationOptions>(Configuration));
-			ServiceRegistrationExpressions.Add(() => ServiceCollection.RegisterConfiguredOptions<InfrastructureOptions>(Configuration));
+    {
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        public AppStartupOrchestrator()
+        {
+            // Configuration Options
+            ServiceRegistrationExpressions.Add(() => ServiceCollection.AddOptions());
+            ServiceRegistrationExpressions.Add(() => ServiceCollection.AddTransient(typeof(OptionsFactory<>)));
+            ServiceRegistrationExpressions.Add(() => ServiceCollection.AddTransient(typeof(OptionsMonitor<>)));
+            ServiceRegistrationExpressions.Add(() => ServiceCollection.RegisterConfiguredOptions<ApplicationOptions>(Configuration));
+            ServiceRegistrationExpressions.Add(() => ServiceCollection.RegisterConfiguredOptions<InfrastructureOptions>(Configuration));
 
-			// Add MediatR and FluentValidation
-			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddTransient(typeof(IRequestPreProcessor<>), typeof(RequestLogger<>)));
-			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>)));
-			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>)));
-			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestMetricsBehavior<,>)));
-			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddMediatR(typeof(ApplicationOptions).Assembly));
-			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddValidatorsFromAssemblyContaining(typeof(ApplicationOptions), ServiceLifetime.Transient));
+            // Add MediatR and FluentValidation
+            ServiceRegistrationExpressions.Add(() => ServiceCollection.AddTransient(typeof(IRequestPreProcessor<>), typeof(RequestLogger<>)));
+            ServiceRegistrationExpressions.Add(() => ServiceCollection.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>)));
+            ServiceRegistrationExpressions.Add(() => ServiceCollection.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>)));
+            ServiceRegistrationExpressions.Add(() => ServiceCollection.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestMetricsBehavior<,>)));
+            ServiceRegistrationExpressions.Add(() => ServiceCollection.AddMediatR(typeof(ApplicationOptions).Assembly));
+            ServiceRegistrationExpressions.Add(() => ServiceCollection.AddValidatorsFromAssemblyContaining(typeof(ApplicationOptions), ServiceLifetime.Transient));
 
-			// AutoMapper
-			ServiceRegistrationExpressions.Add(() => RegisterAutoMapper());
+            // AutoMapper
+            ServiceRegistrationExpressions.Add(() => RegisterAutoMapper());
 
-			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddSingleton<ISystemClock, SystemClock>());
+            ServiceRegistrationExpressions.Add(() => ServiceCollection.AddSingleton<ISystemClock, SystemClock>());
 
-			//Services
-			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddSingleton<IGitService, LibGit2Service>());
-			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddSingleton<IGitVersioningService, GitVersioningService>());
-			ServiceRegistrationExpressions.Add(() => ServiceCollection.AddSingleton<IAssemblyVersioningService, AssemblyVersioningService>());
-		}
+            //Services
+            ServiceRegistrationExpressions.Add(() => ServiceCollection.AddSingleton<IGitService, LibGit2Service>());
+            ServiceRegistrationExpressions.Add(() => ServiceCollection.AddSingleton<IGitVersioningService, GitVersioningService>());
+            ServiceRegistrationExpressions.Add(() => ServiceCollection.AddSingleton<IAssemblyVersioningService, AssemblyVersioningService>());
+        }
 
-		private void RegisterAutoMapper()
-		{
-			ServiceCollection.AddSingleton(serviceProvider =>
-			{
-				var configurationExpression = new MapperConfigurationExpression();
-				AugmentExpressionExecution(() => configurationExpression.ConstructServicesUsing(serviceProvider.GetService));
-				AugmentExpressionExecutions(MapperExtensionExpressions, configurationExpression);
-				var configuration = new MapperConfiguration(configurationExpression);
-				return configuration.CreateMapper();
-			});
+        private void RegisterAutoMapper()
+        {
+            ServiceCollection.AddSingleton(serviceProvider =>
+            {
+                var configurationExpression = new MapperConfigurationExpression();
+                AugmentExpressionExecution(() => configurationExpression.ConstructServicesUsing(serviceProvider.GetService));
+                AugmentExpressionExecutions(MapperExtensionExpressions, configurationExpression);
+                var configuration = new MapperConfiguration(configurationExpression);
+                return configuration.CreateMapper();
+            });
 
-			// Profiles
-			MapperExtensionExpressions.Add(mapperConfig => mapperConfig.AddProfile(typeof(ApplicationProfile)));
+            // Profiles
+            MapperExtensionExpressions.Add(mapperConfig => mapperConfig.AddProfile(typeof(ApplicationProfile)));
 
-			// AutoMapper Resolvers
-			ServiceCollection.AddSingleton(typeof(INowValueResolver<,>), typeof(NowValueResolver<,>));
-		}
-	}
+            // AutoMapper Resolvers
+            ServiceCollection.AddSingleton(typeof(INowValueResolver<,>), typeof(NowValueResolver<,>));
+        }
+    }
 }

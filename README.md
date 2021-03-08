@@ -57,6 +57,12 @@ Minor Changes
 * Added VersionIncrement extensions
 * Tests were heavily updated and GitSetup was reworked to remove dependency on PowerShellService.
 
+### v0.1.1
+
+Minor Changes
+
+* AppStartupOrchestrator spacing updates to test self-versioning still works.
+
 ### Backlog
 
 - [x] Define beta exit strategy (Syntax parsing in commit message [Release])
