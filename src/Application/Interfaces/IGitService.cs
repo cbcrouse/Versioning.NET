@@ -63,7 +63,7 @@ namespace Application.Interfaces
         /// </summary>
         /// <param name="gitDirectory">The directory containing the .git folder.</param>
         /// <param name="remoteTarget">The git target location identifier. Typically this value is 'origin'.</param>
-        /// <param name="branchOrTagName">The name of the tag or branch to push.</param>
-        public void PushRemote(string gitDirectory, string remoteTarget, string branchOrTagName);
+        /// <param name="pushRefSpec">The pushRefSpec to push.</param>
+        public void PushRemote(string gitDirectory, string remoteTarget, string pushRefSpec);
     }
 }

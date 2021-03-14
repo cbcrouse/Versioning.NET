@@ -82,9 +82,12 @@ namespace Business.Tests.GitVersioning
             var request = new IncrementVersionWithGitIntegrationCommand
             {
                 GitDirectory = "C:\\Temp",
-                CommitAuthorEmail = "support@versioning.net"
+                CommitAuthorEmail = "support@versioning.net",
+                BranchName = "test",
+                RemoteTarget = "origin"
             };
-
+            var commitMessage = $"ci(Versioning): Increment version 0.0.0 -> 0.0.0 [skip ci] [skip hint]";
+            var assemblyVersion = new SemVersion(0);
             var mediator = new Mock<IMediator>();
             var gitService = new Mock<IGitService>();
             var assemblyVersioningService = new Mock<IAssemblyVersioningService>();
@@ -93,7 +96,7 @@ namespace Business.Tests.GitVersioning
             mediator.Setup(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
 
             gitService.Setup(x => x.GetCommits(It.IsAny<string>())).Returns(Commits);
-            assemblyVersioningService.Setup(x => x.GetLatestAssemblyVersion(request.GitDirectory)).Returns(new SemVersion(0));
+            assemblyVersioningService.Setup(x => x.GetLatestAssemblyVersion(request.GitDirectory)).Returns(assemblyVersion);
             var sut = new IncrementVersionWithGitIntegrationHandler(mediator.Object, gitService.Object, assemblyVersioningService.Object);
 
             // Act
@@ -103,9 +106,11 @@ namespace Business.Tests.GitVersioning
             mediator.Verify(x => x.Send(It.IsAny<GetIncrementFromCommitHintsQuery>(), CancellationToken.None), Times.Once);
             mediator.Verify(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None), Times.Once);
             assemblyVersioningService.Verify(x => x.GetLatestAssemblyVersion(request.GitDirectory), Times.Exactly(2));
-            gitService.Verify(x => x.CommitChanges(request.GitDirectory, It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            gitService.Verify(x => x.CommitChanges(request.GitDirectory, commitMessage, request.CommitAuthorEmail), Times.Once);
             gitService.Verify(x => x.GetCommits(request.GitDirectory), Times.Once);
             gitService.Verify(x => x.CreateTag(request.GitDirectory, It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            gitService.Verify(x => x.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/heads/{request.BranchName}"), Times.Once);
+            gitService.Verify(x => x.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/heads/v{assemblyVersion}"), Times.Once);
         }
     }
 }

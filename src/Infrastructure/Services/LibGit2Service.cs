@@ -143,13 +143,13 @@ namespace Infrastructure.Services
         /// </summary>
         /// <param name="gitDirectory">The directory containing the .git folder.</param>
         /// <param name="remoteTarget">The git target location identifier. Typically this value is 'origin'.</param>
-        /// <param name="branchOrTagName">The name of the tag or branch to push.</param>
-        public void PushRemote(string gitDirectory, string remoteTarget, string branchOrTagName)
+        /// <param name="pushRefSpec">The pushRefSpec to push.</param>
+        public void PushRemote(string gitDirectory, string remoteTarget, string pushRefSpec)
         {
             using var repo = new Repository(gitDirectory);
             var remote = repo.Network.Remotes[remoteTarget];
             var options = new PushOptions();
-            repo.Network.Push(remote, $"refs/heads/{branchOrTagName}", options);
+            repo.Network.Push(remote, pushRefSpec, options);
         }
     }
 }
