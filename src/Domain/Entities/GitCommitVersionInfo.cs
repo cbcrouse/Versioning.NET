@@ -19,6 +19,7 @@ namespace Domain.Entities
             Type = type;
             Scope = scope;
             Subject = subject;
+            ExitBeta = DetermineBetaExit(subject);
             VersionIncrement = GetVersionIncrement(subject, type);
         }
 
@@ -38,9 +39,19 @@ namespace Domain.Entities
         public string Subject { get; }
 
         /// <summary>
+        /// Determines whether the commit signifies beta mode should be exited.
+        /// </summary>
+        public bool ExitBeta { get; }
+
+        /// <summary>
         /// Indicates the version increment of the commit.
         /// </summary>
         public VersionIncrement VersionIncrement { get; }
+
+        private static bool DetermineBetaExit(string subject)
+        {
+            return subject.ToLower().Contains("[exit beta]");
+        }
 
         /// <summary>
         /// Calculates the version increment from the git commit message.

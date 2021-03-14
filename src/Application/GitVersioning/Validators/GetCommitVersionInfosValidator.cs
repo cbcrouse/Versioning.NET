@@ -4,14 +4,14 @@ using FluentValidation;
 namespace Application.GitVersioning.Validators
 {
     /// <summary>
-    /// Provides the business rules for <see cref="GetIncrementFromCommitHintsQuery"/>.
+    /// Provides the business rules for <see cref="GetCommitVersionInfosQuery"/>.
     /// </summary>
-    public class GetIncrementFromCommitHintsValidator : AbstractValidator<GetIncrementFromCommitHintsQuery>
+    public class GetCommitVersionInfosValidator : AbstractValidator<GetCommitVersionInfosQuery>
     {
         /// <summary>
         /// Default Constructor
         /// </summary>
-        public GetIncrementFromCommitHintsValidator()
+        public GetCommitVersionInfosValidator()
         {
             RuleFor(x => x.GitDirectory).NotNull().NotEmpty();
             RuleFor(x => x.TipBranchName).NotNull().NotEmpty();

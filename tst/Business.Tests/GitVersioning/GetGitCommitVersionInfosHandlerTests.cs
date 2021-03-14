@@ -14,7 +14,7 @@ using Xunit;
 
 namespace Business.Tests.GitVersioning
 {
-    public class GetIncrementFromCommitHintsHandlerTests
+    public class GetGitCommitVersionInfosHandlerTests
     {
         private IEnumerable<string> Tags { get; } = new List<string> {"v2.4.1", "v2.4.2", "v3.1.0", "v3.1.0-beta.336", "v3.1.0-rc.371"};
 
@@ -31,11 +31,11 @@ namespace Business.Tests.GitVersioning
             gitVersioningService.Setup(x => x.GetLatestVersionTag(Tags)).Returns(new KeyValuePair<string, SemVersion>("v3.1.0", new SemVersion(3, 1)));
             gitVersioningService.Setup(x => x.GetCommitVersionInfo(commits)).Returns(versionInfos);
             gitVersioningService.Setup(x => x.DeterminePriorityIncrement(versionInfos.Select(x => x.VersionIncrement))).Returns(VersionIncrement.None);
-            var logger = new NullLogger<GetIncrementFromCommitHintsHandler>();
-            var sut = new GetIncrementFromCommitHintsHandler(gitService.Object, gitVersioningService.Object, logger);
+            var logger = new NullLogger<GetCommitVersionInfosHandler>();
+            var sut = new GetCommitVersionInfosHandler(gitService.Object, gitVersioningService.Object, logger);
 
             // Act
-            _ = await sut.Handle(new GetIncrementFromCommitHintsQuery(), CancellationToken.None);
+            _ = await sut.Handle(new GetCommitVersionInfosQuery(), CancellationToken.None);
 
             // Assert
             gitService.Verify(x => x.GetTags(It.IsAny<string>()), Times.Once);
@@ -43,25 +43,24 @@ namespace Business.Tests.GitVersioning
             gitService.Verify(x => x.GetCommitsByFilter(It.IsAny<string>(), It.IsAny<GitCommitFilter>()), Times.Once);
             gitVersioningService.Verify(x => x.GetLatestVersionTag(It.IsAny<IEnumerable<string>>()), Times.Once);
             gitVersioningService.Verify(x => x.GetCommitVersionInfo(It.IsAny<IEnumerable<GitCommit>>()), Times.Once);
-            gitVersioningService.Verify(x => x.DeterminePriorityIncrement(It.IsAny<IEnumerable<VersionIncrement>>()), Times.Once);
         }
 
         [Fact]
-        public async Task Handler_ReturnsNoneIncrement_WhenNoCommitsFound()
+        public async Task Handler_ReturnsEmptyCollection_WhenNoCommitsFound()
         {
             // Arrange
             var gitService = new Mock<IGitService>();
             gitService.Setup(x => x.GetCommits(It.IsAny<string>())).Returns(new List<GitCommit>());
             gitService.Setup(x => x.GetCommitsByFilter(It.IsAny<string>(), It.IsAny<GitCommitFilter>())).Returns(new List<GitCommit>());
             var gitVersioningService = new Mock<IGitVersioningService>();
-            var logger = new NullLogger<GetIncrementFromCommitHintsHandler>();
-            var sut = new GetIncrementFromCommitHintsHandler(gitService.Object, gitVersioningService.Object, logger);
+            var logger = new NullLogger<GetCommitVersionInfosHandler>();
+            var sut = new GetCommitVersionInfosHandler(gitService.Object, gitVersioningService.Object, logger);
 
             // Act
-            VersionIncrement increment = await sut.Handle(new GetIncrementFromCommitHintsQuery(), CancellationToken.None);
+            var result = await sut.Handle(new GetCommitVersionInfosQuery(), CancellationToken.None);
 
             // Assert
-            Assert.Equal(VersionIncrement.None, increment);
+            Assert.Empty(result);
         }
     }
 }

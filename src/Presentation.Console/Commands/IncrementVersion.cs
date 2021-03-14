@@ -41,12 +41,19 @@ namespace Presentation.Console.Commands
         [Required]
         public VersionIncrement VersionIncrement { get; set; } = VersionIncrement.None;
 
+        /// <summary>
+        /// Determines whether beta mode should be exited.
+        /// </summary>
+        [Option]
+        public bool ExitBeta { get; set; }
+
         private async Task<int> OnExecuteAsync(CommandLineApplication app)
         {
             var command = new IncrementAssemblyVersionCommand
             {
                 Directory = Directory,
-                VersionIncrement = VersionIncrement
+                VersionIncrement = VersionIncrement,
+                ExitBeta = ExitBeta
             };
             await _mediator.Send(command, CancellationToken.None);
 

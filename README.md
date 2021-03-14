@@ -14,6 +14,12 @@ dotnet tool install --global Versioning.NET
 
 ## Changelog
 
+### v0.2.1
+
+Minor Changes
+
+* Implemented Beta Exit Strategy
+
 ### v0.2.0
 
 Major Changes
@@ -88,7 +94,7 @@ Minor Changes
 ## Backlog
 
 - [x] Define beta exit strategy (Syntax parsing in commit message [Release])
-- [ ] Implement beta exit strategy
+- [x] Implement beta exit strategy
 - [x] Replace PowerShell git interactions with [GitLib2Sharp](https://github.com/libgit2/libgit2sharp)
 - [ ] Update project version and referenced versions
 - [ ] Update version based on comparison of different git branches

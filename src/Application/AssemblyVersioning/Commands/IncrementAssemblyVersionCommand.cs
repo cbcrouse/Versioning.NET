@@ -9,12 +9,17 @@ namespace Application.AssemblyVersioning.Commands
     public class IncrementAssemblyVersionCommand : IRequest<Unit>
     {
         /// <summary>
-        /// The directory containing the csproj files.
+        /// Gets or sets the directory containing the csproj files.
         /// </summary>
         public string Directory { get; set; }
 
         /// <summary>
-        /// Indicates how to increment the version.
+        /// Gets or sets whether beta mode should be exited.
+        /// </summary>
+        public bool ExitBeta { get; set; }
+
+        /// <summary>
+        /// Gets or sets how to increment the version.
         /// </summary>
         public VersionIncrement VersionIncrement { get; set; }
     }

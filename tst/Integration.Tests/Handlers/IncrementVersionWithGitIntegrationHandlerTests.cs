@@ -5,6 +5,7 @@ using Integration.Tests.Setup;
 using LibGit2Sharp;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using Xunit;
 
@@ -33,8 +34,10 @@ namespace Integration.Tests.Handlers
             });
             var mediator = _serviceProvider.GetRequiredService<IMediator>();
             var gitService = _serviceProvider.GetRequiredService<IGitService>();
+            var gitVersioningService = _serviceProvider.GetRequiredService<IGitVersioningService>();
             var versioningService = _serviceProvider.GetRequiredService<IAssemblyVersioningService>();
-            var sut = new IncrementVersionWithGitIntegrationHandler(mediator, gitService, versioningService);
+            var logger = _serviceProvider.GetRequiredService<ILogger<IncrementVersionWithGitIntegrationHandler>>();
+            var sut = new IncrementVersionWithGitIntegrationHandler(mediator, gitService, gitVersioningService, versioningService, logger);
 
             var command = new IncrementVersionWithGitIntegrationCommand
             {
