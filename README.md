@@ -14,6 +14,18 @@ dotnet tool install --global Versioning.NET
 
 ## Changelog
 
+### v0.2.0
+
+Major Changes
+
+* Changed IGitService.GetBranchTipId to support remote target
+* Removed Revision support from IncrementVersionWithGitIntegrationCommand
+
+Minor Changes
+
+* Fixed an issue finding the branch tip ID in GetIncrementFromCommitHintsHandler
+* Fixed an issue pushing tags to remote from IncrementVersionWithGitIntegrationHandler
+
 ### v0.1.2
 
 Minor Changes

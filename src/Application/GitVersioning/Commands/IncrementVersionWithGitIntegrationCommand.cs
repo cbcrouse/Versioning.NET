@@ -14,11 +14,6 @@ namespace Application.GitVersioning.Commands
         public string GitDirectory { get; set; } = string.Empty;
 
         /// <summary>
-        /// Git revision used to filter git commits from log.
-        /// </summary>
-        public string? Revision { get; set; }
-
-        /// <summary>
         /// The author email to use when creating a commit.
         /// </summary>
         public string CommitAuthorEmail { get; set; } = string.Empty;

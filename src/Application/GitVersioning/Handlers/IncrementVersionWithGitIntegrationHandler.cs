@@ -41,7 +41,7 @@ namespace Application.GitVersioning.Handlers
         /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
         public async Task<Unit> Handle(IncrementVersionWithGitIntegrationCommand request, CancellationToken cancellationToken)
         {
-            var query = new GetIncrementFromCommitHintsQuery { GitDirectory = request.GitDirectory, TipBranchName = request.BranchName };
+            var query = new GetIncrementFromCommitHintsQuery { GitDirectory = request.GitDirectory, RemoteTarget = request.RemoteTarget, TipBranchName = request.BranchName };
             VersionIncrement increment = await _mediator.Send(query, cancellationToken);
 
             if (increment == VersionIncrement.None || increment == VersionIncrement.Unknown)
@@ -68,7 +68,7 @@ namespace Application.GitVersioning.Handlers
 
             _gitService.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/heads/{request.BranchName}");
             _gitService.CreateTag(request.GitDirectory, tagValue, commitId);
-            _gitService.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/heads/{tagValue}");
+            _gitService.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/tags/{tagValue}");
 
             return Unit.Value;
         }

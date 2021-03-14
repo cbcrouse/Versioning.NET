@@ -84,11 +84,12 @@ namespace Infrastructure.Services
         /// Retrieve the hash identifier for the commit at the tip of the branch.
         /// </summary>
         /// <param name="gitDirectory">The directory containing the .git folder.</param>
+        /// <param name="remoteTarget">The git target location identifier. Typically this value is 'origin'.</param>
         /// <param name="branchName">The name of the branch.</param>
-        public string GetBranchTipId(string gitDirectory, string branchName)
+        public string GetBranchTipId(string gitDirectory, string remoteTarget, string branchName)
         {
             using var repo = new Repository(gitDirectory);
-            return repo.Branches[branchName]?.Tip.Id.ToString() ?? string.Empty;
+            return repo.Branches[$"{remoteTarget}/{branchName}"]?.Tip.Id.ToString() ?? string.Empty;
         }
 
         /// <summary>
@@ -98,7 +99,6 @@ namespace Infrastructure.Services
         public IEnumerable<string> GetTags(string gitDirectory)
         {
             using var repo = new Repository(gitDirectory);
-
             return repo.Tags.Select(repoTag => repoTag.FriendlyName).ToList();
         }
 

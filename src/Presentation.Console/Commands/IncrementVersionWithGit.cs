@@ -64,7 +64,6 @@ namespace Presentation.Console.Commands
             var command = new IncrementVersionWithGitIntegrationCommand
             {
                 GitDirectory = GitDirectory,
-                Revision = Revision,
                 CommitAuthorEmail = AuthorEmail,
                 RemoteTarget = RemoteTarget,
                 BranchName = BranchName

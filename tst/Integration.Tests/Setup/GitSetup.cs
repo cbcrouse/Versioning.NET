@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace Infrastructure.Tests.Setup
+namespace Integration.Tests.Setup
 {
     /// <summary>
     /// Helper class for tests to setup git directory

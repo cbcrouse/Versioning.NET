@@ -1,18 +1,18 @@
-using AutoMapper;
-using Common.Configuration;
+﻿using Common.Configuration;
 using Infrastructure.Startup;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
 
-namespace Mapping.Tests
+namespace Integration.Tests.Setup
 {
-    public partial class MappingTests
+    public class Orchestrator
     {
-        public IMapper Sut { get; }
-
-        public MappingTests()
+        public IServiceProvider BuildServiceProvider()
         {
             var serviceCollection = new ServiceCollection();
+            serviceCollection.AddLogging(builder => builder.AddConsole());
             var configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddPrioritizedSettings();
             var configuration = configurationBuilder.Build();
@@ -20,9 +20,7 @@ namespace Mapping.Tests
             orchestrator.InitializeConfiguration(configuration);
             orchestrator.InitializeServiceCollection(serviceCollection);
             orchestrator.Orchestrate();
-
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-            Sut = serviceProvider.GetRequiredService<IMapper>();
+            return serviceCollection.BuildServiceProvider();
         }
     }
 }

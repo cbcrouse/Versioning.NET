@@ -14,6 +14,11 @@ namespace Application.GitVersioning.Queries
         public string GitDirectory { get; set; } = string.Empty;
 
         /// <summary>
+        /// The git remote target. Defaults to 'origin'.
+        /// </summary>
+        public string RemoteTarget { get; set; } = "origin";
+
+        /// <summary>
         /// The branch name to use as the TIP.
         /// </summary>
         public string TipBranchName { get; set; } = string.Empty;
