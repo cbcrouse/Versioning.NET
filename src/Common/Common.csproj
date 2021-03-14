@@ -5,7 +5,7 @@
     <IsTestProject>false</IsTestProject>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsPackable>false</IsPackable>
-    <VersionPrefix>0.2.0</VersionPrefix>
+    <VersionPrefix>0.2.1</VersionPrefix>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AutoFixture.AutoMoq" Version="4.15.0" />
