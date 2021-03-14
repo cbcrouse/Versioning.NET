@@ -5,7 +5,7 @@ using Semver;
 using System;
 using Xunit;
 
-namespace Infrastructure.Tests.Services
+namespace Integration.Tests.Services
 {
     public partial class GitIntegrationTests
     {

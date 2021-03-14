@@ -9,6 +9,7 @@ using MediatR;
 using Moq;
 using Semver;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -86,7 +87,7 @@ namespace Business.Tests.GitVersioning
                 BranchName = "test",
                 RemoteTarget = "origin"
             };
-            var commitMessage = $"ci(Versioning): Increment version 0.0.0 -> 0.0.0 [skip ci] [skip hint]";
+            var commit = Commits.First(x => x.Subject == "ci(Versioning): Increment version 0.0.0 -> 0.0.0 [skip ci] [skip hint]");
             var assemblyVersion = new SemVersion(0);
             var mediator = new Mock<IMediator>();
             var gitService = new Mock<IGitService>();
@@ -106,11 +107,11 @@ namespace Business.Tests.GitVersioning
             mediator.Verify(x => x.Send(It.IsAny<GetIncrementFromCommitHintsQuery>(), CancellationToken.None), Times.Once);
             mediator.Verify(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None), Times.Once);
             assemblyVersioningService.Verify(x => x.GetLatestAssemblyVersion(request.GitDirectory), Times.Exactly(2));
-            gitService.Verify(x => x.CommitChanges(request.GitDirectory, commitMessage, request.CommitAuthorEmail), Times.Once);
+            gitService.Verify(x => x.CommitChanges(request.GitDirectory, commit.Subject, request.CommitAuthorEmail), Times.Once);
             gitService.Verify(x => x.GetCommits(request.GitDirectory), Times.Once);
-            gitService.Verify(x => x.CreateTag(request.GitDirectory, It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            gitService.Verify(x => x.CreateTag(request.GitDirectory, $"v{assemblyVersion}", commit.Id), Times.Once);
             gitService.Verify(x => x.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/heads/{request.BranchName}"), Times.Once);
-            gitService.Verify(x => x.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/heads/v{assemblyVersion}"), Times.Once);
+            gitService.Verify(x => x.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/tags/v{assemblyVersion}"), Times.Once);
         }
     }
 }

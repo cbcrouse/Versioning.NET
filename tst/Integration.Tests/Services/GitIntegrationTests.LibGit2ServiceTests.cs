@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using Xunit;
 
-namespace Infrastructure.Tests.Services
+namespace Integration.Tests.Services
 {
     public partial class GitIntegrationTests
     {
@@ -93,10 +93,11 @@ namespace Infrastructure.Tests.Services
             // Arrange
             var sut = new LibGit2Service();
             var expectedHash = "7097663ae5037990a057417aa7b1a8f99730f1ad";
-            var branchName = "origin/branch-tip-control-state";
+            var remoteTarget = "origin";
+            var branchName = "branch-tip-control-state";
 
             // Act
-            var actualHash = sut.GetBranchTipId(TestRepoDirectory, branchName);
+            var actualHash = sut.GetBranchTipId(TestRepoDirectory, remoteTarget, branchName);
 
             // Assert
             Assert.Equal(expectedHash, actualHash);

@@ -43,7 +43,7 @@ namespace Application.GitVersioning.Handlers
             var tags = _gitService.GetTags(request.GitDirectory);
             var latestTag = _gitVersioningService.GetLatestVersionTag(tags);
             var untilHash = _gitService.GetTagId(request.GitDirectory, latestTag.Key);
-            var fromHash = _gitService.GetBranchTipId(request.GitDirectory, request.TipBranchName);
+            var fromHash = _gitService.GetBranchTipId(request.GitDirectory, request.RemoteTarget, request.TipBranchName);
             var filter = new GitCommitFilter
             {
                 FromHash = fromHash,

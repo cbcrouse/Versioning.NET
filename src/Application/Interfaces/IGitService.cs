@@ -33,8 +33,9 @@ namespace Application.Interfaces
         /// Retrieve the hash identifier for the commit at the tip of the branch.
         /// </summary>
         /// <param name="gitDirectory">The directory containing the .git folder.</param>
+        /// <param name="remoteTarget">The git target location identifier. Typically this value is 'origin'.</param>
         /// <param name="branchName">The name of the branch.</param>
-        public string GetBranchTipId(string gitDirectory, string branchName);
+        public string GetBranchTipId(string gitDirectory, string remoteTarget, string branchName);
 
         /// <summary>
         /// Retrieve a collection of git tags.

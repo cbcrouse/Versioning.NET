@@ -1,6 +1,6 @@
-﻿using Infrastructure.Tests.Setup;
+﻿using Integration.Tests.Setup;
 
-namespace Infrastructure.Tests.Services
+namespace Integration.Tests.Services
 {
     public partial class GitIntegrationTests : GitSetup
     {
