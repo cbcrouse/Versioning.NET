@@ -2,7 +2,6 @@
 using Application.GitVersioning.Queries;
 using Application.Interfaces;
 using Domain.Entities;
-using Domain.Enumerations;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -13,13 +12,13 @@ using System.Threading.Tasks;
 namespace Application.GitVersioning.Handlers
 {
     /// <summary>
-    /// The <see cref="IRequestHandler{TRequest,TResponse}"/> responsible for returning the <see cref="VersionIncrement"/> based on git commit messages.
+    /// The <see cref="IRequestHandler{TRequest,TResponse}"/> responsible for retrieving a collection of <see cref="GitCommitVersionInfo"/>s.
     /// </summary>
-    public class GetIncrementFromCommitHintsHandler : IRequestHandler<GetIncrementFromCommitHintsQuery, VersionIncrement>
+    public class GetCommitVersionInfosHandler : IRequestHandler<GetCommitVersionInfosQuery, IEnumerable<GitCommitVersionInfo>>
     {
         private readonly IGitService _gitService;
         private readonly IGitVersioningService _gitVersioningService;
-        private readonly ILogger<GetIncrementFromCommitHintsHandler> _logger;
+        private readonly ILogger<GetCommitVersionInfosHandler> _logger;
 
         /// <summary>
         /// Default Constructor
@@ -27,7 +26,7 @@ namespace Application.GitVersioning.Handlers
         /// <param name="gitService">An abstraction to facilitate testing without using the git integration.</param>
         /// <param name="gitVersioningService">An abstraction for retrieving version hint info from git commit messages.</param>
         /// <param name="logger">A generic interface for logging.</param>
-        public GetIncrementFromCommitHintsHandler(IGitService gitService, IGitVersioningService gitVersioningService, ILogger<GetIncrementFromCommitHintsHandler> logger)
+        public GetCommitVersionInfosHandler(IGitService gitService, IGitVersioningService gitVersioningService, ILogger<GetCommitVersionInfosHandler> logger)
         {
             _gitService = gitService;
             _gitVersioningService = gitVersioningService;
@@ -38,7 +37,7 @@ namespace Application.GitVersioning.Handlers
         /// <param name="request">The request</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Response from the request</returns>
-        public Task<VersionIncrement> Handle(GetIncrementFromCommitHintsQuery request, CancellationToken cancellationToken)
+        public Task<IEnumerable<GitCommitVersionInfo>> Handle(GetCommitVersionInfosQuery request, CancellationToken cancellationToken)
         {
             var tags = _gitService.GetTags(request.GitDirectory);
             var latestTag = _gitVersioningService.GetLatestVersionTag(tags);
@@ -54,13 +53,12 @@ namespace Application.GitVersioning.Handlers
             if (!commits.Any())
             {
                 _logger.LogInformation("No new commits were found.");
-                return Task.FromResult(VersionIncrement.None);
+                return Task.FromResult<IEnumerable<GitCommitVersionInfo>>(new List<GitCommitVersionInfo>());
             }
 
             IEnumerable<GitCommitVersionInfo> versionInfos = _gitVersioningService.GetCommitVersionInfo(commits);
-            VersionIncrement increment = _gitVersioningService.DeterminePriorityIncrement(versionInfos.Select(x => x.VersionIncrement));
-            _logger.LogInformation($"Increment '{increment}' was determined from the commits.");
-            return Task.FromResult(increment);
+
+            return Task.FromResult(versionInfos);
         }
     }
 }

@@ -37,7 +37,7 @@ namespace Application.AssemblyVersioning.Handlers
         {
             SemVersion assemblyVersion = _assemblyVersioningService.GetLatestAssemblyVersion(request.Directory);
 
-            if (assemblyVersion < new SemVersion(1))
+            if (assemblyVersion < new SemVersion(1) && !request.ExitBeta)
             {
                 _logger.LogInformation($"Assembly currently in beta. Lowering increment: {request.VersionIncrement}.");
                 request.VersionIncrement = request.VersionIncrement.Lower();

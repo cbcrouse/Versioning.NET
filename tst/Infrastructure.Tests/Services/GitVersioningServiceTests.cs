@@ -92,7 +92,7 @@ namespace Infrastructure.Tests.Services
                 {"d7df356", "feat(Template): Updated primaryOutput to list all projects instead of sln"},
                 {"70a8f91", "feat(Template): Added ability to see template in Visual Studio"},
                 {"07766a9", "docs(README): Updated azure pipeline status badge [skip ci]"},
-                {"0dd8382", "feat(Docker): Added container orchestration support"},
+                {"0dd8382", "feat(Docker): Added container orchestration support [exit beta]"},
                 {"4db6707", "fix(Build): dotnet new & Package Downgrade Detected"},
                 {"05a5def", "config(Projects): Loaded unloaded projects [skip ci]"},
                 {"60c25be", "style(AppStartupOrchestrator): Removed extraneous TODO [skip ci]"}
@@ -104,8 +104,7 @@ namespace Infrastructure.Tests.Services
             int expectedNoneCount = 1;
 
             // Act
-            IEnumerable<GitCommitVersionInfo> results = sut.GetCommitVersionInfo(commits);
-            IEnumerable<GitCommitVersionInfo> gitCommitVersionInfos = results.ToList();
+            IEnumerable<GitCommitVersionInfo> gitCommitVersionInfos = sut.GetCommitVersionInfo(commits).ToList();
             int patchCount = gitCommitVersionInfos.Count(x => x.VersionIncrement == VersionIncrement.Patch);
             int minorCount = gitCommitVersionInfos.Count(x => x.VersionIncrement == VersionIncrement.Minor);
             int majorCount = gitCommitVersionInfos.Count(x => x.VersionIncrement == VersionIncrement.Major);
@@ -116,6 +115,7 @@ namespace Infrastructure.Tests.Services
             Assert.Equal(expectedMinorCount, minorCount);
             Assert.Equal(expectedMajorCount, majorCount);
             Assert.Equal(expectedNoneCount, noneCount);
+            Assert.Contains(gitCommitVersionInfos, x => x.ExitBeta);
         }
 
         [Theory]

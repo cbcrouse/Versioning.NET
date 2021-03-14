@@ -1,12 +1,13 @@
-﻿using Domain.Enumerations;
+﻿using Domain.Entities;
 using MediatR;
+using System.Collections.Generic;
 
 namespace Application.GitVersioning.Queries
 {
     /// <summary>
-    /// The <see cref="IRequest{TResponse}"/> object responsible for requesting the <see cref="VersionIncrement"/> based on git commit messages.
+    /// The <see cref="IRequest{TResponse}"/> object responsible for retrieving a collection of <see cref="GitCommitVersionInfo"/>s.
     /// </summary>
-    public class GetIncrementFromCommitHintsQuery : IRequest<VersionIncrement>
+    public class GetCommitVersionInfosQuery : IRequest<IEnumerable<GitCommitVersionInfo>>
     {
         /// <summary>
         /// The directory containing the .git folder.
