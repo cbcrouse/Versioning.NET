@@ -148,7 +148,7 @@ namespace Infrastructure.Tests.Services
         }
 
         [Fact]
-        public void CanPushRemote()
+        public void CanPushRemoteBranch()
         {
             // Arrange
             using var repo = new Repository(TestRepoDirectory);
@@ -166,11 +166,10 @@ namespace Infrastructure.Tests.Services
             var branchName = Guid.NewGuid().ToString();
             var branch = repo.CreateBranch(branchName);
             Commands.Checkout(repo, branch);
-            repo.Checkout(branch.Tip.Tree, new []{ $"origin/{branchName}"}, new CheckoutOptions());
             sut.CommitChanges(TestRepoDirectory, commitMessage, authorEmail);
 
             // Act
-            sut.PushRemote(TestRepoDirectory, "origin", branchName);
+            sut.PushRemote(TestRepoDirectory, "origin", $"refs/heads/{branchName}");
 
             // Assert
             Assert.NotNull(branch);
@@ -179,6 +178,35 @@ namespace Infrastructure.Tests.Services
             repo.Branches.Remove(branchName);
             var deletedBranch = repo.Branches[branchName];
             Assert.Null(deletedBranch);
+        }
+
+        [Fact]
+        public void CanPushRemoteTag()
+        {
+            // Arrange
+            using var repo = new Repository(TestRepoDirectory);
+            repo.Network.Remotes.Update("origin", updater =>
+            {
+                var token = Environment.GetEnvironmentVariable("GitHubAccessToken");
+                var url = $"https://cbcrouse:{token}@github.com/cbcrouse/Versioning.NET.Tests.git";
+                updater.Url = url;
+                updater.PushUrl = url;
+            });
+            var sut = new LibGit2Service();
+            var tagName = Guid.NewGuid().ToString();
+            Tag tag = repo.ApplyTag(tagName);
+            Commands.Checkout(repo, tag.Target.Id.ToString());
+
+            // Act
+            sut.PushRemote(TestRepoDirectory, "origin", $":refs/heads/{tagName}");
+
+            // Assert
+            Assert.NotNull(tag);
+            repo.Network.Push(repo.Network.Remotes["origin"], $":refs/heads/{tagName}");
+            Commands.Checkout(repo, "main");
+            repo.Tags.Remove(tagName);
+            Tag deletedTag = repo.Tags[tagName];
+            Assert.Null(deletedTag);
         }
     }
 }

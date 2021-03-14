@@ -66,9 +66,9 @@ namespace Application.GitVersioning.Handlers
             string commitId = _gitService.GetCommits(request.GitDirectory).First(x => x.Subject.Equals(commitMessage)).Id;
             string tagValue = $"v{currentAssemblyVersion}";
 
-            _gitService.PushRemote(request.GitDirectory, request.RemoteTarget, request.BranchName);
+            _gitService.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/heads/{request.BranchName}");
             _gitService.CreateTag(request.GitDirectory, tagValue, commitId);
-            _gitService.PushRemote(request.GitDirectory, request.RemoteTarget, tagValue);
+            _gitService.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/heads/{tagValue}");
 
             return Unit.Value;
         }

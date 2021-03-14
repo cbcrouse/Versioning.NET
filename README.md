@@ -14,6 +14,14 @@ dotnet tool install --global Versioning.NET
 
 ## Changelog
 
+### v0.1.2
+
+Minor Changes
+
+* Fixed [issue #2](https://github.com/cbcrouse/Versioning.NET/issues/2) where tags were not pushing to remote
+* Added test coverage for pushing remote branches and tags
+* Increased test coverage on IncrementVersionWithGitIntegrationHandler
+
 ### v0.1.1
 
 Minor Changes
