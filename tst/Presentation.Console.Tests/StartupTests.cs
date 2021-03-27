@@ -6,29 +6,42 @@ namespace Presentation.Console.Tests
     public class StartupTests
     {
         [Fact]
+        public async Task CanStartup_Base()
+        {
+            // Arrange
+            var args = new string[0];
+
+            // Act
+            int resultCode = await Program.Main(args);
+
+            // Assert
+            Assert.Equal(0, resultCode);
+        }
+
+        [Fact]
         public async Task CanStartup_IncrementVersion()
         {
             // Arrange
-            var args = new[] {"increment-version"};
+            var args = new[] {"increment-version", "--help"};
 
             // Act
-            await Program.Main(args);
+            int resultCode = await Program.Main(args);
 
-            // Act will throw an exception for a failure
-            Assert.True(true);
+            // Assert
+            Assert.Equal(0, resultCode);
         }
 
         [Fact]
         public async Task CanStartup_IncrementVersionWithGit()
         {
             // Arrange
-            var args = new[] {"increment-version-with-git"};
+            var args = new[] {"increment-version-with-git", "--help"};
 
             // Act
-            await Program.Main(args);
+            int resultCode = await Program.Main(args);
 
-            // Act will throw an exception for a failure
-            Assert.True(true);
+            // Assert
+            Assert.Equal(0, resultCode);
         }
     }
 }
