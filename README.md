@@ -17,7 +17,6 @@ dotnet tool install --global Versioning.NET
 - [x] Define beta exit strategy (Syntax parsing in commit message [Release])
 - [x] Implement beta exit strategy
 - [x] Replace PowerShell git interactions with [GitLib2Sharp](https://github.com/libgit2/libgit2sharp)
-- [ ] Update project version and referenced versions - [issue #7](https://github.com/cbcrouse/Versioning.NET/issues/7)
 - [ ] Increase code coverage to at least 80% - [issue #8](https://github.com/cbcrouse/Versioning.NET/issues/8)
 - [ ] Add code coverage reporting to readme - [issue #9](https://github.com/cbcrouse/Versioning.NET/issues/9)
 - [ ] Ensure project is ready for open-source contributing - [issue #11](https://github.com/cbcrouse/Versioning.NET/issues/11)
