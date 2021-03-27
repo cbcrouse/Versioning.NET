@@ -59,7 +59,11 @@ namespace Presentation.Console.Commands
         [Option]
         public string AuthorEmail { get; set; } = "tool@versioning.net";
 
-        private async Task<int> OnExecuteAsync(CommandLineApplication app)
+        /// <summary>
+        /// Handles the command execution.
+        /// </summary>
+        /// <param name="app">Describes a set of command line arguments, options, and execution behavior.</param>
+        protected async Task<int> OnExecuteAsync(CommandLineApplication app)
         {
             var command = new IncrementVersionWithGitIntegrationCommand
             {
