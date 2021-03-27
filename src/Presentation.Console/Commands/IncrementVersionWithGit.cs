@@ -1,4 +1,4 @@
-using Application.GitVersioning.Commands;
+﻿using Application.GitVersioning.Commands;
 using McMaster.Extensions.CommandLineUtils;
 using MediatR;
 using System.ComponentModel.DataAnnotations;
@@ -34,13 +34,6 @@ namespace Presentation.Console.Commands
         [Option]
         [Required]
         public string GitDirectory { get; set; }
-
-        /// <summary>
-        /// The git revision used to filter commits (e.g. v1.0.0..HEAD).
-        /// If no revision is passed, then the latest semver git tags will be used.
-        /// </summary>
-        [Option]
-        public string? Revision { get; set; }
 
         /// <summary>
         /// The git remote target. Defaults to 'origin'.
