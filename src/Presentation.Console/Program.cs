@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Presentation.Console
 {
-    public class Program
+    public static class Program
     {
         public static async Task<int> Main(string[] args)
         {

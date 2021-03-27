@@ -47,7 +47,11 @@ namespace Presentation.Console.Commands
         [Option]
         public bool ExitBeta { get; set; }
 
-        private async Task<int> OnExecuteAsync(CommandLineApplication app)
+        /// <summary>
+        /// Handles the command execution.
+        /// </summary>
+        /// <param name="app">Describes a set of command line arguments, options, and execution behavior.</param>
+        protected async Task<int> OnExecuteAsync(CommandLineApplication app)
         {
             var command = new IncrementAssemblyVersionCommand
             {

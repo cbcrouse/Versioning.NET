@@ -13,6 +13,9 @@ namespace Presentation.Console.Tests
 
             // Act
             await Program.Main(args);
+
+            // Act will throw an exception for a failure
+            Assert.True(true);
         }
 
         [Fact]
@@ -23,6 +26,9 @@ namespace Presentation.Console.Tests
 
             // Act
             await Program.Main(args);
+
+            // Act will throw an exception for a failure
+            Assert.True(true);
         }
     }
 }
