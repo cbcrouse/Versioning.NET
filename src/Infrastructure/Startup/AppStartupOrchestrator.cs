@@ -1,7 +1,6 @@
 using Application.Configuration;
 using Application.Interfaces;
 using Application.Interfaces.ValueResolvers;
-using Application.Mapping;
 using AutoMapper;
 using AutoMapper.Configuration;
 using FluentValidation;
@@ -63,9 +62,6 @@ namespace Infrastructure.Startup
                 var configuration = new MapperConfiguration(configurationExpression);
                 return configuration.CreateMapper();
             });
-
-            // Profiles
-            MapperExtensionExpressions.Add(mapperConfig => mapperConfig.AddProfile(typeof(ApplicationProfile)));
 
             // AutoMapper Resolvers
             ServiceCollection.AddSingleton(typeof(INowValueResolver<,>), typeof(NowValueResolver<,>));

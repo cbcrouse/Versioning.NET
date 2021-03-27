@@ -1,4 +1,4 @@
-﻿using Application.GitVersioning.Commands;
+using Application.GitVersioning.Commands;
 using McMaster.Extensions.CommandLineUtils;
 using MediatR;
 using System.ComponentModel.DataAnnotations;
@@ -24,6 +24,8 @@ namespace Presentation.Console.Commands
 #pragma warning restore 8618
         {
             _mediator = mediator;
+            RemoteTarget = "origin";
+            AuthorEmail = "tool@versioning.net";
         }
 
         /// <summary>
@@ -44,7 +46,7 @@ namespace Presentation.Console.Commands
         /// The git remote target. Defaults to 'origin'.
         /// </summary>
         [Option(ShortName = "t")]
-        public string RemoteTarget { get; set; } = "origin";
+        public string RemoteTarget { get; set; }
 
         /// <summary>
         /// The name of the branch to update.
@@ -57,13 +59,10 @@ namespace Presentation.Console.Commands
         /// The git commit author's email address.
         /// </summary>
         [Option]
-        public string AuthorEmail { get; set; } = "tool@versioning.net";
+        public string AuthorEmail { get; set; }
 
-        /// <summary>
-        /// Handles the command execution.
-        /// </summary>
-        /// <param name="app">Describes a set of command line arguments, options, and execution behavior.</param>
-        protected async Task<int> OnExecuteAsync(CommandLineApplication app)
+        // ReSharper disable once UnusedMember.Local
+        private async Task OnExecuteAsync()
         {
             var command = new IncrementVersionWithGitIntegrationCommand
             {
@@ -73,8 +72,6 @@ namespace Presentation.Console.Commands
                 BranchName = BranchName
             };
             await _mediator.Send(command, CancellationToken.None);
-
-            return 0;
         }
     }
 }
