@@ -25,6 +25,7 @@ namespace Presentation.Console.Commands
 #pragma warning restore 8618
         {
             _mediator = mediator;
+            ExitBeta = false;
         }
 
         /// <summary>
@@ -47,11 +48,8 @@ namespace Presentation.Console.Commands
         [Option]
         public bool ExitBeta { get; set; }
 
-        /// <summary>
-        /// Handles the command execution.
-        /// </summary>
-        /// <param name="app">Describes a set of command line arguments, options, and execution behavior.</param>
-        protected async Task<int> OnExecuteAsync(CommandLineApplication app)
+        // ReSharper disable once UnusedMember.Local
+        private async Task OnExecuteAsync()
         {
             var command = new IncrementAssemblyVersionCommand
             {
@@ -60,8 +58,6 @@ namespace Presentation.Console.Commands
                 ExitBeta = ExitBeta
             };
             await _mediator.Send(command, CancellationToken.None);
-
-            return 0;
         }
     }
 }

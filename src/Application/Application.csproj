@@ -18,7 +18,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Interfaces\" />
-    <Folder Include="Mapping\" />
     <Folder Include="Interfaces\ValueResolvers\" />
   </ItemGroup>
 </Project>

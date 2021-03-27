@@ -9,6 +9,7 @@ namespace Presentation.Console.Commands
     [Subcommand(typeof(IncrementVersion), typeof(IncrementVersionWithGit))]
     public class App
     {
+        // ReSharper disable once UnusedMember.Local
         private int OnExecuteAsync(CommandLineApplication app)
         {
             app.ShowHelp();
