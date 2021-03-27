@@ -72,7 +72,18 @@ namespace Integration.Tests.Setup
         /// </summary>
         public void Dispose()
         {
-            DeleteTempDirectory();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // free managed resources
+                DeleteTempDirectory();
+            }
+            // free native resources if there are any.
         }
     }
 }
