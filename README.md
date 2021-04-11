@@ -58,6 +58,66 @@ This commit will not trigger another build, provided that the CI server supports
 
 ---
 
+## Example Scenario
+
+This section will provide an example scenario to give a more clear picture of what is happening.
+
+Assume that the following commits exist on the master branch.
+
+```csharp
+// HEAD on master
+82d2d2a feat(Versioning): Changed git integration from PowerShell to LibGit2Sharp #breaking
+38basd2 fix(Versioning): Fixed issue where git tag could not be found
+23a32s3 feat(Versioning): Added support to modify .csproj files
+828asd2 docs(README): Updated overview section [skip hint]
+28s8d28 Updated some files
+// Latest version tag: v1.1.5 (targeting 67ds273)
+67ds273 ci(Versioning): Increment version 1.1.4 -> 1.1.5 [skip ci] [skip hint]
+```
+
+The commits above the v1.1.5 tag will be used to determine the version increment, here's what the tool will do:
+
+1. 82d2d2a - Major is determined for increment because `#breaking` is found.
+1. 38basd2 - Patch is determined for increment because `fix` is found.
+1. 23a32s3 - Minor is determined for increment because `feat` is found.
+1. 828asd2 - None is determined for the increment because `[skip hint]` was found.
+1. 28s8d28 - None is determined for increment because no hint was found.
+
+> In a later version, when no hint is found, the increment will default to Patch.
+
+When all the commits have been assigned a version increment, the highest priority is used to determine what the final increment will be. The version increment that will result from the above commits is **Major**.
+
+```csharp
+// HEAD on master
+// Latest version tag: v2.0.0 (targeting 87sd2s2)
+87sd2s2 ci(Versioning): Increment version 1.1.5 -> 2.0.0 [skip ci] [skip hint]
+82d2d2a feat(Versioning): Changed git integration from PowerShell to LibGit2Sharp #breaking
+38basd2 fix(Versioning): Fixed issue where git tag could not be found
+23a32s3 feat(Versioning): Added support to modify .csproj files
+828asd2 docs(README): Updated overview section [skip hint]
+28s8d28 Updated some files
+// Latest version tag: v1.1.5 (targeting 67ds273)
+67ds273 ci(Versioning): Increment version 1.1.4 -> 1.1.5 [skip ci] [skip hint]
+```
+
+Below is an excerpt from the [code](https://github.com/cbcrouse/Versioning.NET/blob/main/src/Infrastructure/Services/GitVersioningService.cs) showing how increment priority is determined.
+
+```csharp
+List<VersionIncrement> incrementsList = increments.ToList();
+bool isBreaking = incrementsList.Any(x => x == VersionIncrement.Major);
+bool isMinor = incrementsList.Any(x => x == VersionIncrement.Minor);
+bool isPatch = incrementsList.Any(x => x == VersionIncrement.Patch);
+bool isNone = incrementsList.Any(x => x == VersionIncrement.None);
+
+return isBreaking ? VersionIncrement.Major
+    : isMinor ? VersionIncrement.Minor
+    : isPatch ? VersionIncrement.Patch
+    : isNone ? VersionIncrement.None
+    : VersionIncrement.Unknown;
+```
+
+---
+
 ## ![Download](./docs/media/download_icon.png) Getting Started
 
 Get started by first installing the tool.
