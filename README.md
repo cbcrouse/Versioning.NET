@@ -12,6 +12,8 @@ A dotnet tool that automatically versions csproj files semantically with git int
 dotnet tool install --global Versioning.NET
 ```
 
+For more detailed instructions, be sure to checkout the [Wiki](https://github.com/cbcrouse/Versioning.NET/wiki)!
+
 ---
 
 ## ![Puzzle](./docs/media/puzzle.png) Contributing
