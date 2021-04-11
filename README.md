@@ -24,7 +24,7 @@ A dotnet core CLI tool that maintains the semantic version of your dotnet assemb
 
 ## How does it work?
 
-In short, the tool will read the commits on the specified branch, parse through the commit history starting from HEAD and traversing back to the latest version tag (commonly referred to as `git height`) looking for [commit hints](https://github.com/cbcrouse/Versioning.NET/wiki/Commit-Hints) in order to determine the version increment (Major, Minor, Patch, or None), update all of the .csproj files in a single commit using the determined increment, and finally create and push a git tag to that commit representing the semantic version.
+In short, the tool will read the commits on the specified branch (passed in as a command parameter), parse through the commit history starting from HEAD and traversing back to the latest version tag (commonly referred to as `git height`) looking for [commit hints](https://github.com/cbcrouse/Versioning.NET/wiki/Commit-Hints) in order to determine the version increment (Major, Minor, Patch, or None), update all of the .csproj files in a single commit using the determined increment, and finally create and push a git tag to that commit representing the semantic version.
 
 #### **Branching**
 
