@@ -48,7 +48,7 @@ Currently, this tool only supports updating .csproj files targeting the `<Versio
 
 #### **Version Increment Commit**
 
-Once the version increment has been determined and the files have been updated, the tool will create a git commit with a message (not yet configurable) describing the version changes. In order to avoid circular builds, CI servers are required to support `[skip ci]` (both Azure DevOps Pipelines and GitHub Actions support this) in the commit message to stop the version commit from triggering another build. The following is an example commit from the tool:
+Once the version increment has been determined and the files have been updated, the tool will create a git commit with a message (not yet configurable) describing the version changes. In order to avoid circular builds, CI servers are required to support `[skip ci]` (both [Azure DevOps Pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/azure-repos-git?view=azure-devops&tabs=yaml#skipping-ci-for-individual-commits) and [GitHub Actions](https://github.blog/changelog/2021-02-08-github-actions-skip-pull-request-and-push-workflows-with-skip-ci/) support this) in the commit message to stop the version commit from triggering another build. The following is an example commit from the tool:
 
 ```bash
 ci(Versioning): Increment version 0.3.1 -> 0.3.2 [skip ci] [skip hint]
