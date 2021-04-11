@@ -58,9 +58,10 @@ namespace Integration.Tests.Setup
         /// </summary>
         private static void ClearAttributes(string currentDir)
         {
-            if (!Directory.Exists(currentDir)) return;
+            if (!Directory.Exists(currentDir))
+                return;
             string[] subDirs = Directory.GetDirectories(currentDir);
-            foreach(string dir in subDirs)
+            foreach (string dir in subDirs)
                 ClearAttributes(dir);
             string[] files = Directory.GetFiles(currentDir);
             foreach (string file in files)
@@ -81,7 +82,15 @@ namespace Integration.Tests.Setup
             if (disposing)
             {
                 // free managed resources
-                DeleteTempDirectory();
+                try
+                {
+                    DeleteTempDirectory();
+                }
+                catch
+                {
+                    // Do nothing. It's nice to delete the temp files, but not worth the headaches of exceptions in different environments.
+                    // The directories are always created in the temp directory anyway and will eventually be removed.
+                }
             }
             // free native resources if there are any.
         }
