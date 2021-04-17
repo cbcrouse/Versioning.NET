@@ -31,21 +31,21 @@ namespace Presentation.Console.Commands
         /// <summary>
         /// The directory containing the csproj files.
         /// </summary>
-        [Option]
+        [Option(Description = "The directory containing the csproj files.")]
         [Required]
         public string Directory { get; set; }
 
         /// <summary>
         /// Indicates how to increment the version.
         /// </summary>
-        [Option]
+        [Option(Description = "Indicates how to increment the version.")]
         [Required]
         public VersionIncrement VersionIncrement { get; set; } = VersionIncrement.None;
 
         /// <summary>
         /// Determines whether beta mode should be exited.
         /// </summary>
-        [Option]
+        [Option(Description = "Determines whether beta mode should be exited.")]
         public bool ExitBeta { get; set; }
 
         // ReSharper disable once UnusedMember.Local
