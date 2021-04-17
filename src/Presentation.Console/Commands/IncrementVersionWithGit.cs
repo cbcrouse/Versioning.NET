@@ -31,27 +31,27 @@ namespace Presentation.Console.Commands
         /// <summary>
         /// The directory containing the .git folder.
         /// </summary>
-        [Option]
+        [Option(Description = "The directory containing the .git folder.")]
         [Required]
         public string GitDirectory { get; set; }
 
         /// <summary>
         /// The git remote target. Defaults to 'origin'.
         /// </summary>
-        [Option(ShortName = "t")]
+        [Option(ShortName = "t", Description = "The git remote target. Defaults to 'origin'.")]
         public string RemoteTarget { get; set; }
 
         /// <summary>
         /// The name of the branch to update.
         /// </summary>
-        [Option]
+        [Option(Description = "The name of the branch to update.")]
         [Required]
         public string BranchName { get; set; }
 
         /// <summary>
         /// The git commit author's email address.
         /// </summary>
-        [Option]
+        [Option(Description = "The git commit author's email address.")]
         public string AuthorEmail { get; set; }
 
         // ReSharper disable once UnusedMember.Local
