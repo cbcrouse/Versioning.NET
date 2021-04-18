@@ -2,8 +2,6 @@ using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using Serilog.Events;
-using Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.TelemetryConverters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -94,7 +92,6 @@ namespace Infrastructure.Startup
 #else
             .MinimumLevel.Error()
 #endif
-            .WriteTo.ApplicationInsights(new TraceTelemetryConverter(), LogEventLevel.Information)
             .WriteTo.Console(outputTemplate:"[{Timestamp:yyyy:MM:dd hh:mm:ss.fff tt}] [{Level}] [{SourceContext}] {Message}{NewLine}{Exception}")
             .CreateLogger();
 
@@ -124,6 +121,18 @@ namespace Infrastructure.Startup
         }
 
         /// <summary>
+        /// Augments a collection of <see cref="Action{T}"/> expressions.
+        /// </summary>
+        protected void AugmentExpressionExecutions<T>(IEnumerable<Expression<Action<T>>> expressions, T parameter)
+        {
+            var expList = expressions.ToList();
+            foreach (Expression<Action<T>> expression in expList)
+            {
+                AugmentExpressionExecution(expression, parameter);
+            }
+        }
+
+        /// <summary>
         /// Augments an <see cref="Action"/> expression.
         /// </summary>
         protected void AugmentExpressionExecution(Expression<Action> expression)
@@ -140,18 +149,6 @@ namespace Infrastructure.Startup
             {
                 Logger.Verbose(e, "'{Expression}' failed with an unhandled exception.", expression.Body.ToString());
                 throw;
-            }
-        }
-
-        /// <summary>
-        /// Augments a collection of <see cref="Action{T}"/> expressions.
-        /// </summary>
-        protected void AugmentExpressionExecutions<T>(IEnumerable<Expression<Action<T>>> expressions, T parameter)
-        {
-            var expList = expressions.ToList();
-            foreach (Expression<Action<T>> expression in expList)
-            {
-                AugmentExpressionExecution(expression, parameter);
             }
         }
 
