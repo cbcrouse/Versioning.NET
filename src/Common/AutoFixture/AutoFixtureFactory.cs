@@ -22,13 +22,13 @@ namespace Common.AutoFixture
 		/// Only loads assemblies that starts with this string.
 		/// Assemblies that end with "Tests" are always loaded.
 		/// </param>
-		public static Func<IFixture> Get(HashSet<Type> targetAssemblyTypes = null, string assemblyStartsWith = "AgSurfer")
+		public static Func<IFixture> Get(HashSet<Type>? targetAssemblyTypes = null, string assemblyStartsWith = "Versioning.NET")
 		{
 			IFixture Factory()
 			{
 				var assemblies = new HashSet<Assembly>(AppDomain.CurrentDomain.GetAssemblies())
 				{
-					Assembly.GetEntryAssembly()
+					Assembly.GetEntryAssembly()!
 				};
 
 				if (targetAssemblyTypes != null)
@@ -62,11 +62,11 @@ namespace Common.AutoFixture
 
 			foreach (Assembly targetAssembly in targetAssemblies)
 			{
-				var refAssemblies = targetAssembly
+				List<Assembly> refAssemblies = targetAssembly
 					.GetReferencedAssemblies()
 					.Where(x =>
 						x.FullName.StartsWith(assemblyStartsWith) ||
-						x.FullName.Contains("Tests")).ToList()
+						x.FullName.Contains("Tests")).AsEnumerable()
 					.Select(Assembly.Load).ToList();
 
 				foreach (Assembly assemblyName in refAssemblies)

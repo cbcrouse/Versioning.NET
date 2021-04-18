@@ -4,7 +4,6 @@ using Application.Interfaces.ValueResolvers;
 using AutoMapper;
 using AutoMapper.Configuration;
 using FluentValidation;
-using Infrastructure.Configuration;
 using Infrastructure.MediatR;
 using Infrastructure.Services;
 using Infrastructure.ValueResolvers;
@@ -30,8 +29,6 @@ namespace Infrastructure.Startup
             ServiceRegistrationExpressions.Add(() => ServiceCollection.AddOptions());
             ServiceRegistrationExpressions.Add(() => ServiceCollection.AddTransient(typeof(OptionsFactory<>)));
             ServiceRegistrationExpressions.Add(() => ServiceCollection.AddTransient(typeof(OptionsMonitor<>)));
-            ServiceRegistrationExpressions.Add(() => ServiceCollection.RegisterConfiguredOptions<ApplicationOptions>(Configuration));
-            ServiceRegistrationExpressions.Add(() => ServiceCollection.RegisterConfiguredOptions<InfrastructureOptions>(Configuration));
 
             // Add MediatR and FluentValidation
             ServiceRegistrationExpressions.Add(() => ServiceCollection.AddTransient(typeof(IRequestPreProcessor<>), typeof(RequestLogger<>)));

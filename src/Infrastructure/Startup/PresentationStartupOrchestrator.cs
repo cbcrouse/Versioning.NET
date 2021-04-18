@@ -1,5 +1,4 @@
 using AutoMapper;
-using Common.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -77,7 +76,7 @@ namespace Infrastructure.Startup
 		/// <param name="builder">Represents a type used to build application configuration.</param>
 		protected virtual void AddConfigurations(IConfigurationBuilder builder)
 		{
-			builder.AddPrioritizedSettings();
+			// do nothing
 		}
 
 		/// <summary>

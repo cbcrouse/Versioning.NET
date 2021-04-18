@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Domain.Entities
@@ -16,6 +17,9 @@ namespace Domain.Entities
         /// <param name="updates">The file updates associated to the commit.</param>
         public GitCommit(string id, string subject, IEnumerable<GitCommitFileInfo> updates)
         {
+            if (string.IsNullOrWhiteSpace(id)) throw new ArgumentException(id);
+            if (string.IsNullOrWhiteSpace(subject)) throw new ArgumentException(subject);
+
             Id = id;
             Subject = subject;
             Updates = updates.ToList();

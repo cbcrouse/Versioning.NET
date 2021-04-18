@@ -1,5 +1,4 @@
 using AutoMapper;
-using Common.Configuration;
 using Infrastructure.Startup;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +13,6 @@ namespace Mapping.Tests
         {
             var serviceCollection = new ServiceCollection();
             var configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.AddPrioritizedSettings();
             var configuration = configurationBuilder.Build();
             var orchestrator = new AppStartupOrchestrator();
             orchestrator.InitializeConfiguration(configuration);
