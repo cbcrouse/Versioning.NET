@@ -50,15 +50,17 @@ namespace Infrastructure.Services
         {
             List<VersionIncrement> incrementsList = increments.ToList();
             bool isBreaking = incrementsList.Any(x => x == VersionIncrement.Major);
+            if (isBreaking) return VersionIncrement.Major;
+
             bool isMinor = incrementsList.Any(x => x == VersionIncrement.Minor);
+            if (isMinor) return VersionIncrement.Minor;
+
             bool isPatch = incrementsList.Any(x => x == VersionIncrement.Patch);
+            if (isPatch) return VersionIncrement.Patch;
+
             bool isNone = incrementsList.Any(x => x == VersionIncrement.None);
 
-            return isBreaking ? VersionIncrement.Major
-                : isMinor ? VersionIncrement.Minor
-                : isPatch ? VersionIncrement.Patch
-                : isNone ? VersionIncrement.None
-                : VersionIncrement.Unknown;
+            return isNone ? VersionIncrement.None : VersionIncrement.Unknown;
         }
     }
 }
