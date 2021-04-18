@@ -39,7 +39,7 @@ namespace Infrastructure.Services
         /// <param name="gitCommits">A collection of git commits.</param>
         public IEnumerable<GitCommitVersionInfo> GetCommitVersionInfo(IEnumerable<GitCommit> gitCommits)
         {
-            return gitCommits.Select(commit => commit.GetVersionInfo()).Where(versionInfo => versionInfo != null).ToList();
+            return gitCommits.Select(commit => commit.GetVersionInfo()).Where(versionInfo => versionInfo != null)!;
         }
 
         /// <summary>

@@ -11,7 +11,7 @@ namespace Application.AssemblyVersioning.Commands
         /// <summary>
         /// Gets or sets the directory containing the csproj files.
         /// </summary>
-        public string Directory { get; set; }
+        public string Directory { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets whether beta mode should be exited.

@@ -1,5 +1,4 @@
-﻿using Common.Configuration;
-using Infrastructure.Startup;
+﻿using Infrastructure.Startup;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,7 +13,6 @@ namespace Integration.Tests.Setup
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddLogging(builder => builder.AddConsole());
             var configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.AddPrioritizedSettings();
             var configuration = configurationBuilder.Build();
             var orchestrator = new AppStartupOrchestrator();
             orchestrator.InitializeConfiguration(configuration);
