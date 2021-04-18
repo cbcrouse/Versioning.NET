@@ -9,10 +9,10 @@ using System.Reflection;
 
 namespace Common.AutoFixture
 {
-	/// <summary>
-	/// A factory for generating instances of <see cref="IFixture"/>.
-	/// </summary>
-	public static class AutoFixtureFactory
+    /// <summary>
+    /// A factory for generating instances of <see cref="IFixture"/>.
+    /// </summary>
+    public static class AutoFixtureFactory
 	{
 		/// <summary>
 		/// Retrieves the factory that creates the customized <see cref="IFixture"/>.
@@ -80,7 +80,7 @@ namespace Common.AutoFixture
 				try
 				{
 					// Attempting to assign ExportedTypes will validate whether the assembly will load.
-					var exported = x.ExportedTypes;
+					_ = x.ExportedTypes;
 					return true;
 				}
 				catch
@@ -93,14 +93,14 @@ namespace Common.AutoFixture
 
 			foreach (Type customization in customizations)
 			{
-				fixture.Customize((ICustomization)Activator.CreateInstance(customization));
+				fixture.Customize((ICustomization)Activator.CreateInstance(customization)!);
 			}
 
 			IEnumerable<Type> specimenBuilders = FilterTypesByInterfaceType(types, typeof(ISpecimenBuilder));
 
 			foreach (Type specimenBuilder in specimenBuilders)
 			{
-				fixture.Customizations.Add((ISpecimenBuilder)Activator.CreateInstance(specimenBuilder));
+				fixture.Customizations.Add((ISpecimenBuilder)Activator.CreateInstance(specimenBuilder)!);
 			}
 
 			fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()

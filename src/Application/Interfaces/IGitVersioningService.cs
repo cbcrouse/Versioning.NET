@@ -14,7 +14,7 @@ namespace Application.Interfaces
         /// Returns the latest git version tag.
         /// </summary>
         /// <param name="gitTags">A collection of git tags.</param>
-        KeyValuePair<string, SemVersion> GetLatestVersionTag(IEnumerable<string> gitTags);
+        KeyValuePair<string, SemVersion>? GetLatestVersionTag(IEnumerable<string> gitTags);
 
         /// <summary>
         /// Retrieve a collection of <see cref="GitCommitVersionInfo"/> from a collection of git commit message subject lines.

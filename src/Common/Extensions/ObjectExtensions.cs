@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace Common.Extensions
 {
     /// <summary>
@@ -14,9 +16,9 @@ namespace Common.Extensions
         {
             object objValue = string.Empty;
 
-            var propertyInfo = o.GetType().GetProperty(propertyName);
+            PropertyInfo? propertyInfo = o.GetType().GetProperty(propertyName);
             if (propertyInfo != null)
-                objValue = propertyInfo.GetValue(o, null);
+                objValue = propertyInfo.GetValue(o, null) ?? string.Empty;
 
             return objValue;
         }

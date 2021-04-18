@@ -13,8 +13,8 @@ namespace Application.Extensions
         /// Determine version information from the subject of a commit.
         /// </summary>
         /// <param name="commit"></param>
-        /// <returns></returns>
-        public static GitCommitVersionInfo GetVersionInfo(this GitCommit commit)
+        /// <returns>Returns an instance of <see cref="GitCommitVersionInfo"/> if commit subject matches required format.</returns>
+        public static GitCommitVersionInfo? GetVersionInfo(this GitCommit commit)
         {
             var regex = new Regex(RegexPatterns.GitLogCommitSubject);
 

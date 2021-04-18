@@ -1,5 +1,4 @@
 ﻿using Domain.Entities;
-using Domain.Enumerations;
 using Infrastructure.Services;
 using LibGit2Sharp;
 using System;
@@ -54,12 +53,7 @@ namespace Integration.Tests.Services
         {
             // Arrange
             var sut = new LibGit2Service();
-            var filter = new GitCommitFilter
-            {
-                SortMode = GitCommitSortMode.None,
-                FromHash = fromHash,
-                UntilHash = untilHash
-            };
+            var filter = new GitCommitFilter(fromHash, untilHash);
 
             // Act
             var commits = sut.GetCommitsByFilter(TestRepoDirectory, filter);
@@ -71,6 +65,7 @@ namespace Integration.Tests.Services
         }
 
         [Theory]
+        [InlineData(null, "")]
         [InlineData("not-exist", "")]
         [InlineData("v0.0.3", "9ed2a15974ccc61c63a432689aa0bfaa4554af1f")]
         [InlineData("v0.0.1", "9248a828e8037bf2ea0b59ee29af81eaccad134e")]
