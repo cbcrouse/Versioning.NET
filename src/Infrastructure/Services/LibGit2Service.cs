@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Castle.Core.Internal;
 using Domain.Entities;
 using Domain.Enumerations;
 using Infrastructure.Extensions;
@@ -54,7 +55,9 @@ namespace Infrastructure.Services
                     sortStrategy = CommitSortStrategies.Reverse | CommitSortStrategies.Time;
                     break;
                 default:
+#pragma warning disable S3928 // Parameter names used into ArgumentException constructors should match an existing one 
                     throw new ArgumentOutOfRangeException(nameof(filter.SortMode));
+#pragma warning restore S3928 // Parameter names used into ArgumentException constructors should match an existing one 
             }
 
             var commitFilter = new CommitFilter
@@ -76,6 +79,9 @@ namespace Infrastructure.Services
         /// <param name="tagValue">The value of the tag.</param>
         public string GetTagId(string gitDirectory, string tagValue)
         {
+            if (tagValue.IsNullOrEmpty() || gitDirectory.IsNullOrEmpty())
+                return string.Empty;
+
             using var repo = new Repository(gitDirectory);
             return repo.Tags[tagValue]?.PeeledTarget.Id.ToString() ?? string.Empty;
         }

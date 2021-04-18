@@ -36,10 +36,10 @@ namespace Infrastructure.Tests.Services
             SemVersion.TryParse(expectedVersion, out SemVersion expectedSemVersion);
 
             // Act
-            KeyValuePair<string, SemVersion> latestVersionTag = sut.GetLatestVersionTag(tags);
+            KeyValuePair<string, SemVersion>? latestVersionTag = sut.GetLatestVersionTag(tags);
 
             // Assert
-            Assert.Equal(expectedSemVersion, latestVersionTag.Value);
+            Assert.Equal(expectedSemVersion, latestVersionTag?.Value);
         }
 
         [Theory]

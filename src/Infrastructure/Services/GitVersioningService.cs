@@ -17,7 +17,7 @@ namespace Infrastructure.Services
         /// Returns the latest git version tag.
         /// </summary>
         /// <param name="gitTags">A collection of git tags.</param>
-        public KeyValuePair<string, SemVersion> GetLatestVersionTag(IEnumerable<string> gitTags)
+        public KeyValuePair<string, SemVersion>? GetLatestVersionTag(IEnumerable<string> gitTags)
         {
             var versions = new Dictionary<string, SemVersion>();
 
@@ -30,7 +30,7 @@ namespace Infrastructure.Services
                 }
             }
 
-            return versions.Any() ? versions.OrderByDescending(x => x.Value).Take(1).First() : new KeyValuePair<string, SemVersion>();
+            return versions.Any() ? versions.OrderByDescending(x => x.Value).Take(1).First() : null;
         }
 
         /// <summary>
