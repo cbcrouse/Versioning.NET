@@ -9,10 +9,10 @@ namespace Application.Extensions
     public static class VersionIncrementExtensions
     {
         /// <summary>
-        /// Lowers the increment. (e.g. Major -> Minor)
+        /// Lowers the increment to Minor if Major.
         /// </summary>
         /// <param name="increment">Represents various version increments based on semver.org.</param>
-        public static VersionIncrement Lower(this VersionIncrement increment)
+        public static VersionIncrement ToBeta(this VersionIncrement increment)
         {
             switch (increment)
             {
@@ -21,9 +21,7 @@ namespace Application.Extensions
                     break;
                 case VersionIncrement.None:
                 case VersionIncrement.Patch:
-                    break;
                 case VersionIncrement.Minor:
-                    increment = VersionIncrement.Patch;
                     break;
                 case VersionIncrement.Major:
                     increment = VersionIncrement.Minor;

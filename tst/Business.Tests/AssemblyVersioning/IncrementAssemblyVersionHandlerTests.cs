@@ -56,7 +56,7 @@ namespace Business.Tests.AssemblyVersioning
         }
 
         [Fact]
-        public async Task BetaVersion_LoweredToPatch_FromMinor()
+        public async Task BetaVersion_StaysMinor_WhenIncrementIsMinor()
         {
             // Arrange
             var request = new IncrementAssemblyVersionCommand
@@ -73,7 +73,7 @@ namespace Business.Tests.AssemblyVersioning
             await sut.Handle(request, CancellationToken.None);
 
             // Assert
-            service.Verify(x => x.IncrementVersion(VersionIncrement.Patch, It.IsAny<string>()), Times.Once);
+            service.Verify(x => x.IncrementVersion(VersionIncrement.Minor, It.IsAny<string>()), Times.Once);
         }
 
         [Fact]

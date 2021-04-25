@@ -40,7 +40,7 @@ namespace Application.AssemblyVersioning.Handlers
             if (assemblyVersion < new SemVersion(1) && !request.ExitBeta)
             {
                 _logger.LogInformation($"Assembly currently in beta. Lowering increment: {request.VersionIncrement}.");
-                request.VersionIncrement = request.VersionIncrement.Lower();
+                request.VersionIncrement = request.VersionIncrement.ToBeta();
                 _logger.LogInformation($"Increment lowered to: {request.VersionIncrement}");
             }
 
