@@ -9,13 +9,13 @@ namespace Business.Tests
     {
         [Theory]
         [InlineData(VersionIncrement.Major, VersionIncrement.Minor)]
-        [InlineData(VersionIncrement.Minor, VersionIncrement.Patch)]
+        [InlineData(VersionIncrement.Minor, VersionIncrement.Minor)]
         [InlineData(VersionIncrement.Patch, VersionIncrement.Patch)]
         [InlineData(VersionIncrement.None, VersionIncrement.None)]
         public void CanLowerIncrement(VersionIncrement initial, VersionIncrement expected)
         {
             // Act
-            var actual = initial.Lower();
+            var actual = initial.ToBeta();
 
             // Assert
             Assert.Equal(expected, actual);
@@ -30,7 +30,7 @@ namespace Business.Tests
             // Act
             VersionIncrement Act()
             {
-                return badIncrement.Lower();
+                return badIncrement.ToBeta();
             }
 
             // Assert
