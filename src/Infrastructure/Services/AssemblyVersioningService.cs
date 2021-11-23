@@ -17,9 +17,10 @@ namespace Infrastructure.Services
         /// Returns the latest semantic version found amongst the files within the given directory.
         /// </summary>
         /// <param name="directory">The directory used to determine the latest version.</param>
-        public SemVersion GetLatestAssemblyVersion(string directory)
+        /// <param name="searchOption">Specifies whether to search the current directory, or the current directory and all subdirectories.</param>
+        public SemVersion GetLatestAssemblyVersion(string directory, SearchOption searchOption)
         {
-            string[] csProjFiles = Directory.GetFiles(directory, "*.csproj", SearchOption.AllDirectories);
+            string[] csProjFiles = Directory.GetFiles(directory, "*.csproj", searchOption);
             var highestVersion = new SemVersion(0,0,0);
 
             foreach (string csProjFile in csProjFiles)
@@ -48,9 +49,10 @@ namespace Infrastructure.Services
         /// </summary>
         /// <param name="increment">The increment to use when updating the version.</param>
         /// <param name="directory">The directory of the assemblies to version.</param>
-        public void IncrementVersion(VersionIncrement increment, string directory)
+        /// <param name="searchOption">Specifies whether to search the current directory, or the current directory and all subdirectories.</param>
+        public void IncrementVersion(VersionIncrement increment, string directory, SearchOption searchOption)
         {
-            string[] csProjFiles = Directory.GetFiles(directory, "*.csproj", SearchOption.AllDirectories);
+            string[] csProjFiles = Directory.GetFiles(directory, "*.csproj", searchOption);
 
             foreach (string csProjFile in csProjFiles)
             {

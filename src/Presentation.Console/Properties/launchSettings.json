@@ -18,6 +18,14 @@
     "No Tags": {
       "commandName": "Project",
       "commandLineArgs": "increment-version-with-git -g \"G:\\Git\\InsaneTools\" -a \"devops@versioning.net\" -b master"
+    },
+    "Git Versioning Targeted Directory": {
+      "commandName": "Project",
+      "commandLineArgs": "increment-version-with-git -g \"../../../../../\" -d \"../../../../../src/Infrastructure\" -a \"devops@versioning.net\" -b main -s TopDirectoryOnly"
+    },
+    "Git Versioning Invalid Targeted Directory": {
+      "commandName": "Project",
+      "commandLineArgs": "increment-version-with-git -g \"../../../../../\" -d \"invalid directory\" -a \"devops@versioning.net\" -b main -s TopDirectoryOnly"
     }
   }
 }

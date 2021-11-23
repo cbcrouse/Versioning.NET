@@ -9,15 +9,15 @@ namespace Business.Tests.Entities
         [Fact]
         public void Instantiation_Throws_ArgumentException_When_FromHash_IsNullOrEmpty()
         {
-            Assert.Throws<ArgumentException>(() => new GitCommitFilter(null!, "notEmpty"));
-            Assert.Throws<ArgumentException>(() => new GitCommitFilter(string.Empty, "notEmpty"));
+            Assert.Throws<ArgumentNullException>(() => new GitCommitFilter(null!, "notEmpty"));
+            Assert.Throws<ArgumentNullException>(() => new GitCommitFilter(string.Empty, "notEmpty"));
         }
 
         [Fact]
         public void Instantiation_Throws_ArgumentException_When_UntilHash_IsNullOrEmpty()
         {
-            Assert.Throws<ArgumentException>(() => new GitCommitFilter("notEmpty", null!));
-            Assert.Throws<ArgumentException>(() => new GitCommitFilter("notEmpty", string.Empty));
+            Assert.Throws<ArgumentNullException>(() => new GitCommitFilter("notEmpty", null!));
+            Assert.Throws<ArgumentNullException>(() => new GitCommitFilter("notEmpty", string.Empty));
         }
     }
 }

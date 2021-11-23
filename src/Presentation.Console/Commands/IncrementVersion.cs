@@ -3,6 +3,7 @@ using Domain.Enumerations;
 using McMaster.Extensions.CommandLineUtils;
 using MediatR;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,6 +37,13 @@ namespace Presentation.Console.Commands
         public string Directory { get; set; }
 
         /// <summary>
+        /// The search option to use with the <see cref="Directory"/>. Defaults to <see cref="SearchOption.AllDirectories"/>.
+        /// </summary>
+        [Option(Description = "The search option to use with the target directory. Defaults to AllDirectories.")]
+        [AllowedValues("AllDirectories", "TopDirectoryOnly", IgnoreCase = true)]
+        public SearchOption SearchOption { get; set; } = SearchOption.AllDirectories;
+
+        /// <summary>
         /// Indicates how to increment the version.
         /// </summary>
         [Option(Description = "Indicates how to increment the version.")]
@@ -54,6 +62,7 @@ namespace Presentation.Console.Commands
             var command = new IncrementAssemblyVersionCommand
             {
                 Directory = Directory,
+                SearchOption = SearchOption,
                 VersionIncrement = VersionIncrement,
                 ExitBeta = ExitBeta
             };

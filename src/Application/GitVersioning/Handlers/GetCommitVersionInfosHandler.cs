@@ -50,6 +50,13 @@ namespace Application.GitVersioning.Handlers
 
             string untilHash = _gitService.GetTagId(request.GitDirectory, latestTag?.Key ?? "");
             string fromHash = _gitService.GetBranchTipId(request.GitDirectory, request.RemoteTarget, request.TipBranchName);
+
+            if (string.IsNullOrEmpty(fromHash))
+            {
+                _logger.LogInformation("HEAD commit was not found. Make sure the specified branch '{BranchName}' exists in '{RemoteTarget}'.", request.TipBranchName, request.RemoteTarget);
+                return Task.FromResult<IEnumerable<GitCommitVersionInfo>>(new List<GitCommitVersionInfo>());
+            }
+
             var filter = new GitCommitFilter(fromHash, untilHash);
             List<GitCommit> commits = _gitService.GetCommitsByFilter(request.GitDirectory, filter);
 

@@ -14,7 +14,7 @@ using Xunit;
 
 namespace Business.Tests.GitVersioning
 {
-    public class GetGitCommitVersionInfosHandlerTests
+    public class GetCommitVersionInfosHandlerTests
     {
         private IEnumerable<string> Tags { get; } = new List<string> {"v2.4.1", "v2.4.2", "v3.1.0", "v3.1.0-beta.336", "v3.1.0-rc.371"};
 
@@ -53,9 +53,12 @@ namespace Business.Tests.GitVersioning
         {
             // Arrange
             var gitService = new Mock<IGitService>();
+            gitService.Setup(x => x.GetTagId(It.IsAny<string>(), It.IsAny<string>())).Returns(new System.Guid().ToString());
+            gitService.Setup(x => x.GetBranchTipId(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(new System.Guid().ToString());
             gitService.Setup(x => x.GetCommits(It.IsAny<string>())).Returns(new List<GitCommit>());
             gitService.Setup(x => x.GetCommitsByFilter(It.IsAny<string>(), It.IsAny<GitCommitFilter>())).Returns(new List<GitCommit>());
             var gitVersioningService = new Mock<IGitVersioningService>();
+            gitVersioningService.Setup(x => x.GetLatestVersionTag(It.IsAny<IEnumerable<string>>())).Returns(It.IsAny<KeyValuePair<string, SemVersion>>());
             var logger = new NullLogger<GetCommitVersionInfosHandler>();
             var sut = new GetCommitVersionInfosHandler(gitService.Object, gitVersioningService.Object, logger);
 
@@ -75,6 +78,26 @@ namespace Business.Tests.GitVersioning
             gitService.Setup(x => x.GetCommits(It.IsAny<string>())).Returns(new List<GitCommit>());
             gitService.Setup(x => x.GetCommitsByFilter(It.IsAny<string>(), It.IsAny<GitCommitFilter>())).Returns(new List<GitCommit>());
             var gitVersioningService = new Mock<IGitVersioningService>();
+            var logger = new NullLogger<GetCommitVersionInfosHandler>();
+            var sut = new GetCommitVersionInfosHandler(gitService.Object, gitVersioningService.Object, logger);
+
+            // Act
+            var result = await sut.Handle(new GetCommitVersionInfosQuery(), CancellationToken.None);
+
+            // Assert
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public async Task Handler_ReturnsEmptyCollection_WhenHeadCommitNotFound()
+        {
+            // Arrange
+            var gitService = new Mock<IGitService>();
+            gitService.Setup(x => x.GetTags(It.IsAny<string>())).Returns(new List<string>());
+            gitService.Setup(x => x.GetTagId(It.IsAny<string>(), It.IsAny<string>())).Returns(It.IsAny<string>());
+            gitService.Setup(x => x.GetBranchTipId(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(string.Empty);
+            var gitVersioningService = new Mock<IGitVersioningService>();
+            gitVersioningService.Setup(x => x.GetLatestVersionTag(It.IsAny<IEnumerable<string>>())).Returns(It.IsAny<KeyValuePair<string, SemVersion>>());
             var logger = new NullLogger<GetCommitVersionInfosHandler>();
             var sut = new GetCommitVersionInfosHandler(gitService.Object, gitVersioningService.Object, logger);
 
