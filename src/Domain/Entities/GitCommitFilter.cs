@@ -16,8 +16,8 @@ namespace Domain.Entities
         /// <param name="sortMode">Indicates the sort mode.</param>
         public GitCommitFilter(string fromHash, string untilHash, GitCommitSortMode sortMode = GitCommitSortMode.None)
         {
-            if (string.IsNullOrEmpty(fromHash)) throw new ArgumentException(fromHash);
-            if (string.IsNullOrEmpty(untilHash)) throw new ArgumentException(untilHash);
+            if (string.IsNullOrEmpty(fromHash)) throw new ArgumentNullException(nameof(fromHash));
+            if (string.IsNullOrEmpty(untilHash)) throw new ArgumentNullException(nameof(untilHash));
 
             FromHash = fromHash;
             UntilHash = untilHash;

@@ -2,6 +2,7 @@
 using McMaster.Extensions.CommandLineUtils;
 using MediatR;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,6 +37,19 @@ namespace Presentation.Console.Commands
         public string GitDirectory { get; set; }
 
         /// <summary>
+        /// The directory to use for file versioning. Defaults to the GitDirectory if not provided.
+        /// </summary>
+        [Option(ShortName = "d", Description = "The directory to use for file versioning. Defaults to the GitDirectory if not provided.")]
+        public string TargetDirectory { get; set; } = string.Empty;
+
+        /// <summary>
+        /// The search option to use with the <see cref="TargetDirectory"/>. Defaults to <see cref="SearchOption.AllDirectories"/>.
+        /// </summary>
+        [Option(Description = "The search option to use with the target directory. Defaults to AllDirectories.")]
+        [AllowedValues("AllDirectories", "TopDirectoryOnly", IgnoreCase = true)]
+        public SearchOption SearchOption { get; set; } = SearchOption.AllDirectories;
+
+        /// <summary>
         /// The git remote target. Defaults to 'origin'.
         /// </summary>
         [Option(ShortName = "t", Description = "The git remote target. Defaults to 'origin'.")]
@@ -60,6 +74,8 @@ namespace Presentation.Console.Commands
             var command = new IncrementVersionWithGitIntegrationCommand
             {
                 GitDirectory = GitDirectory,
+                TargetDirectory = TargetDirectory,
+                SearchOption = SearchOption,
                 CommitAuthorEmail = AuthorEmail,
                 RemoteTarget = RemoteTarget,
                 BranchName = BranchName

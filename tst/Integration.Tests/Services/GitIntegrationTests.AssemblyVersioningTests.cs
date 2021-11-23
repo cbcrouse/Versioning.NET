@@ -3,6 +3,7 @@ using Domain.Enumerations;
 using Infrastructure.Services;
 using Semver;
 using System;
+using System.IO;
 using Xunit;
 
 namespace Integration.Tests.Services
@@ -26,7 +27,7 @@ namespace Integration.Tests.Services
             var service = new AssemblyVersioningService();
 
             // Act
-            SemVersion result = service.GetLatestAssemblyVersion(TestRepoDirectory);
+            SemVersion result = service.GetLatestAssemblyVersion(TestRepoDirectory, SearchOption.AllDirectories);
 
             // Assert
             Assert.True(result != default);
@@ -37,14 +38,14 @@ namespace Integration.Tests.Services
         {
             // Arrange
             var service = new AssemblyVersioningService();
-            SemVersion originalAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory);
+            SemVersion originalAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory, SearchOption.AllDirectories);
             SemVersion expectedAssemblyVersion = new SemVersion(originalAssemblyVersion.Major, originalAssemblyVersion.Minor, originalAssemblyVersion.Patch+1);
 
             // Act
-            service.IncrementVersion(VersionIncrement.Patch, TestRepoDirectory);
+            service.IncrementVersion(VersionIncrement.Patch, TestRepoDirectory, SearchOption.AllDirectories);
 
             // Assert
-            SemVersion actualAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory);
+            SemVersion actualAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory, SearchOption.AllDirectories);
             Assert.Equal(expectedAssemblyVersion, actualAssemblyVersion);
         }
 
@@ -53,14 +54,14 @@ namespace Integration.Tests.Services
         {
             // Arrange
             var service = new AssemblyVersioningService();
-            SemVersion originalAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory);
+            SemVersion originalAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory, SearchOption.AllDirectories);
             SemVersion expectedAssemblyVersion = new SemVersion(originalAssemblyVersion.Major, originalAssemblyVersion.Minor+1);
 
             // Act
-            service.IncrementVersion(VersionIncrement.Minor, TestRepoDirectory);
+            service.IncrementVersion(VersionIncrement.Minor, TestRepoDirectory, SearchOption.AllDirectories);
 
             // Assert
-            SemVersion actualAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory);
+            SemVersion actualAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory, SearchOption.AllDirectories);
             Assert.Equal(expectedAssemblyVersion, actualAssemblyVersion);
         }
 
@@ -69,14 +70,14 @@ namespace Integration.Tests.Services
         {
             // Arrange
             var service = new AssemblyVersioningService();
-            SemVersion originalAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory);
+            SemVersion originalAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory, SearchOption.AllDirectories);
             SemVersion expectedAssemblyVersion = new SemVersion(originalAssemblyVersion.Major+1);
 
             // Act
-            service.IncrementVersion(VersionIncrement.Major, TestRepoDirectory);
+            service.IncrementVersion(VersionIncrement.Major, TestRepoDirectory, SearchOption.AllDirectories);
 
             // Assert
-            SemVersion actualAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory);
+            SemVersion actualAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory, SearchOption.AllDirectories);
             Assert.Equal(expectedAssemblyVersion, actualAssemblyVersion);
         }
 
@@ -85,13 +86,13 @@ namespace Integration.Tests.Services
         {
             // Arrange
             var service = new AssemblyVersioningService();
-            SemVersion originalAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory);
+            SemVersion originalAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory, SearchOption.AllDirectories);
 
             // Act
-            service.IncrementVersion(VersionIncrement.None, TestRepoDirectory);
+            service.IncrementVersion(VersionIncrement.None, TestRepoDirectory, SearchOption.AllDirectories);
 
             // Assert
-            SemVersion actualAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory);
+            SemVersion actualAssemblyVersion = service.GetLatestAssemblyVersion(TestRepoDirectory, SearchOption.AllDirectories);
             Assert.Equal(originalAssemblyVersion, actualAssemblyVersion);
         }
 
@@ -102,7 +103,7 @@ namespace Integration.Tests.Services
             var service = new AssemblyVersioningService();
 
             // Act
-            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => service.IncrementVersion((VersionIncrement)6, TestRepoDirectory));
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => service.IncrementVersion((VersionIncrement)6, TestRepoDirectory, SearchOption.AllDirectories));
 
             // Assert
             Assert.Contains("Exception of type 'System.ArgumentOutOfRangeException' was thrown.", ex.Message);

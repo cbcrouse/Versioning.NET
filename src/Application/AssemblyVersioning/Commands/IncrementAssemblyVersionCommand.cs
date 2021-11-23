@@ -1,5 +1,6 @@
 ﻿using Domain.Enumerations;
 using MediatR;
+using System.IO;
 
 namespace Application.AssemblyVersioning.Commands
 {
@@ -12,6 +13,11 @@ namespace Application.AssemblyVersioning.Commands
         /// Gets or sets the directory containing the csproj files.
         /// </summary>
         public string Directory { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the search option for the <see cref="Directory"/>.
+        /// </summary>
+        public SearchOption SearchOption { get; set; } = SearchOption.AllDirectories;
 
         /// <summary>
         /// Gets or sets whether beta mode should be exited.

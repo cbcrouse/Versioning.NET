@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Business.Tests.GitVersioning
 {
-    public class IncrementGitVersionTagValidatorTests
+    public class IncrementVersionWithGitIntegrationValidatorTests
     {
         [Fact]
         public void Validator_Fails_OnInvalidDirectory()
@@ -48,6 +48,17 @@ namespace Business.Tests.GitVersioning
 
             // Act & Assert
             sut.ShouldNotHaveValidationErrorFor(x => x.GitDirectory, slnDir);
+        }
+
+        [Fact]
+        public void Validator_Fails_OnInvalidTargetDirectory()
+        {
+            // Arrange
+            string invalidDirectory = "invalid directory";
+            var sut = new IncrementVersionWithGitIntegrationValidator();
+
+            // Act & Assert
+            sut.ShouldHaveValidationErrorFor(x => x.TargetDirectory, invalidDirectory).WithErrorMessage("Must be a valid directory.");
         }
 
         [Fact]

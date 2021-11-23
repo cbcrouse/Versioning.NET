@@ -35,7 +35,7 @@ namespace Application.AssemblyVersioning.Handlers
         /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
         public Task<Unit> Handle(IncrementAssemblyVersionCommand request, CancellationToken cancellationToken)
         {
-            SemVersion assemblyVersion = _assemblyVersioningService.GetLatestAssemblyVersion(request.Directory);
+            SemVersion assemblyVersion = _assemblyVersioningService.GetLatestAssemblyVersion(request.Directory, request.SearchOption);
 
             if (assemblyVersion < new SemVersion(1) && !request.ExitBeta)
             {
@@ -44,7 +44,7 @@ namespace Application.AssemblyVersioning.Handlers
                 _logger.LogInformation($"Increment lowered to: {request.VersionIncrement}");
             }
 
-            _assemblyVersioningService.IncrementVersion(request.VersionIncrement, request.Directory);
+            _assemblyVersioningService.IncrementVersion(request.VersionIncrement, request.Directory, request.SearchOption);
             _logger.LogInformation($"Incremented assembly versions by {request.VersionIncrement}.");
             return Task.FromResult(Unit.Value);
         }

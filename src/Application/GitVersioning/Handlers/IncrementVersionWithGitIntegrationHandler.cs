@@ -63,17 +63,23 @@ namespace Application.GitVersioning.Handlers
                 return Unit.Value;
             }
 
-            SemVersion originalAssemblyVersion = _assemblyVersioningService.GetLatestAssemblyVersion(request.GitDirectory);
+            if (string.IsNullOrWhiteSpace(request.TargetDirectory))
+            {
+                request.TargetDirectory = request.GitDirectory;
+            }
+
+            SemVersion originalAssemblyVersion = _assemblyVersioningService.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption);
 
             var command = new IncrementAssemblyVersionCommand
             {
-                Directory = request.GitDirectory,
+                Directory = request.TargetDirectory,
+                SearchOption = request.SearchOption,
                 VersionIncrement = increment,
                 ExitBeta = versionInfos.Any(x => x.ExitBeta)
             };
             await _mediator.Send(command, cancellationToken);
 
-            SemVersion currentAssemblyVersion = _assemblyVersioningService.GetLatestAssemblyVersion(request.GitDirectory);
+            SemVersion currentAssemblyVersion = _assemblyVersioningService.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption);
 
             var commitMessage = $"ci(Versioning): Increment version {originalAssemblyVersion} -> {currentAssemblyVersion} [skip ci] [skip hint]";
             _gitService.CommitChanges(request.GitDirectory, commitMessage, request.CommitAuthorEmail);
