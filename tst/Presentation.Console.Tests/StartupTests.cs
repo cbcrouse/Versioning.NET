@@ -20,6 +20,19 @@ namespace Presentation.Console.Tests
         }
 
         [Fact]
+        public async Task CanStartup_Version()
+        {
+            // Arrange
+            var args = new[] { "--version" };
+
+            // Act
+            int resultCode = await Program.Main(args);
+
+            // Assert
+            Assert.Equal(0, resultCode);
+        }
+
+        [Fact]
         public async Task CanStartupHelp_IncrementVersion()
         {
             // Arrange

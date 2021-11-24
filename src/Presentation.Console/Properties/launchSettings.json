@@ -26,6 +26,14 @@
     "Git Versioning Invalid Targeted Directory": {
       "commandName": "Project",
       "commandLineArgs": "increment-version-with-git -g \"../../../../../\" -d \"invalid directory\" -a \"devops@versioning.net\" -b main -s TopDirectoryOnly"
+    },
+    "Version": {
+      "commandName": "Project",
+      "commandLineArgs": "--version"
+    },
+    "Help": {
+      "commandName": "Project",
+      "commandLineArgs": "--help"
     }
   }
 }
