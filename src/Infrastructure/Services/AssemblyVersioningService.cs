@@ -23,6 +23,11 @@ namespace Infrastructure.Services
             string[] csProjFiles = Directory.GetFiles(directory, "*.csproj", searchOption);
             var highestVersion = new SemVersion(0,0,0);
 
+            if (csProjFiles.Length == 0)
+            {
+                throw new FileNotFoundException("A file with an extension matching '.csproj' was not found.");
+            }
+
             foreach (string csProjFile in csProjFiles)
             {
                 var doc = new XmlDocument();

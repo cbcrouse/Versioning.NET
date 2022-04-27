@@ -34,6 +34,23 @@ namespace Integration.Tests.Services
         }
 
         [Fact]
+        public void GetLatestAssemblyVersion_Throws_OnMissingCsProjFiles()
+        {
+            // Arrange
+            var service = new AssemblyVersioningService();
+
+            // Act
+            SemVersion Act()
+            {
+                return service.GetLatestAssemblyVersion(Path.Join(TestRepoDirectory, ".git"), SearchOption.TopDirectoryOnly);
+            }
+
+            // Assert
+            var ex = Assert.Throws<FileNotFoundException>(Act);
+            Assert.Equal("A file with an extension matching '.csproj' was not found.", ex.Message);
+        }
+
+        [Fact]
         public void Can_IncrementAssemblyVersion_By_Patch()
         {
             // Arrange
