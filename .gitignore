@@ -357,3 +357,4 @@ MigrationBackup/
 
 # Azure Functions local settings file
 local.settings.json
+/tst/Integration.Tests/SECRET.cs
