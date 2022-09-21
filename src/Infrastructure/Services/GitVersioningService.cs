@@ -5,6 +5,7 @@ using Domain.Enumerations;
 using Semver;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Infrastructure.Services
 {
@@ -24,7 +25,9 @@ namespace Infrastructure.Services
             foreach (string tag in gitTags)
             {
                 SemVersion.TryParse(tag.ToLower().TrimStart('v'), out SemVersion version);
-                if (version != null)
+                if (version == null && Regex.IsMatch(tag, @"^((\d+)\.(\d+)\.(\d+))"))
+                    SemVersion.TryParse(tag.ToLower().Trim(), out version);
+                else if (version != null)
                 {
                     versions.Add(tag, version);
                 }
