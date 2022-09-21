@@ -148,6 +148,7 @@ namespace Business.Tests.GitVersioning
             mediator.Setup(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
 
             gitService.Setup(x => x.GetCommits(It.IsAny<string>())).Returns(Commits);
+            gitVersioningService.Setup(x => x.GetLatestVersionTag(It.IsAny<IEnumerable<string>>())).Returns(new KeyValuePair<string, SemVersion>("v0.0.0", null));
             assemblyVersioningService.Setup(x => x.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption)).Returns(assemblyVersion);
             var sut = new IncrementVersionWithGitIntegrationHandler(mediator.Object, gitService.Object, gitVersioningService.Object, assemblyVersioningService.Object, logger);
 
@@ -160,6 +161,8 @@ namespace Business.Tests.GitVersioning
             assemblyVersioningService.Verify(x => x.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption), Times.Exactly(2));
             gitService.Verify(x => x.CommitChanges(request.GitDirectory, commit.Subject, request.CommitAuthorEmail), Times.Once);
             gitService.Verify(x => x.GetCommits(request.GitDirectory), Times.Once);
+            gitService.Verify(x => x.GetTags(request.GitDirectory), Times.Once);
+            gitVersioningService.Verify(x => x.GetLatestVersionTag(It.IsAny<IEnumerable<string>>()), Times.Once);
             gitService.Verify(x => x.CreateTag(request.GitDirectory, $"v{assemblyVersion}", commit.Id), Times.Once);
             gitService.Verify(x => x.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/heads/{request.BranchName}"), Times.Once);
             gitService.Verify(x => x.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/tags/v{assemblyVersion}"), Times.Once);
