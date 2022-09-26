@@ -1,6 +1,7 @@
 name: .NET Build & Test
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "feature/*", "bugfix/*", "hotfix/*" ]
   pull_request:
