@@ -31,7 +31,7 @@ jobs:
   
     - name: Reset Origin
       run: |
-        git remote set-url origin "https://cbcrouse:${{GITHUBACCESSTOKEN}}@github.com/cbcrouse/Versioning.NET.git"
+        git remote set-url origin "https://cbcrouse:${{ secrets.GITHUBACCESSTOKEN }}@github.com/cbcrouse/Versioning.NET.git"
         git checkout ${{ github.ref_name }}
 
     - name: Install Versioning.NET
