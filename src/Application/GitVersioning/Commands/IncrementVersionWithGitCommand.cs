@@ -48,5 +48,15 @@ namespace Application.GitVersioning.Commands
         /// Gets or sets whether beta mode should be exited.
         /// </summary>
         public bool ExitBeta { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets the prefix value to use for the version tag in git. Defaults to 'v'.
+        /// </summary>
+        public string TagPrefix { get; set; } = "v";
+
+        /// <summary>
+        /// Gets or sets the suffix value to use for the version tag in git.
+        /// </summary>
+        public string TagSuffix { get; set; } = string.Empty;
     }
 }

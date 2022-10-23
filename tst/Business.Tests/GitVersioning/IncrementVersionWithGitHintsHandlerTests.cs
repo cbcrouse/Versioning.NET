@@ -133,7 +133,9 @@ namespace Business.Tests.GitVersioning
                 SearchOption = SearchOption.AllDirectories,
                 CommitAuthorEmail = "support@versioning.net",
                 BranchName = "test",
-                RemoteTarget = "origin"
+                RemoteTarget = "origin",
+                TagPrefix = "b",
+                TagSuffix = "c"
             };
             var commit = Commits.First(x => x.Subject == "ci(Versioning): Increment version 0.0.0 -> 0.0.0 [skip ci] [skip hint]");
             var assemblyVersion = new SemVersion(0);
@@ -160,9 +162,9 @@ namespace Business.Tests.GitVersioning
             assemblyVersioningService.Verify(x => x.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption), Times.Exactly(2));
             gitService.Verify(x => x.CommitChanges(request.GitDirectory, commit.Subject, request.CommitAuthorEmail), Times.Once);
             gitService.Verify(x => x.GetCommits(request.GitDirectory), Times.Once);
-            gitService.Verify(x => x.CreateTag(request.GitDirectory, $"v{assemblyVersion}", commit.Id), Times.Once);
+            gitService.Verify(x => x.CreateTag(request.GitDirectory, $"{request.TagPrefix}{assemblyVersion}{request.TagSuffix}", commit.Id), Times.Once);
             gitService.Verify(x => x.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/heads/{request.BranchName}"), Times.Once);
-            gitService.Verify(x => x.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/tags/v{assemblyVersion}"), Times.Once);
+            gitService.Verify(x => x.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/tags/{request.TagPrefix}{assemblyVersion}{request.TagSuffix}"), Times.Once);
             gitVersioningService.Verify(x => x.DeterminePriorityIncrement(It.IsAny<IEnumerable<VersionIncrement>>()), Times.Once);
         }
     }
