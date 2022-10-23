@@ -1,6 +1,7 @@
 ﻿using Domain.Enumerations;
 using MediatR;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace Application.GitVersioning.Commands
 {
@@ -38,5 +39,15 @@ namespace Application.GitVersioning.Commands
         /// Gets or sets the name of the branch to update.
         /// </summary>
         public string BranchName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the prefix value to use for the version tag in git. Defaults to 'v'.
+        /// </summary>
+        public string TagPrefix { get; set; } = "v";
+
+        /// <summary>
+        /// Gets or sets the suffix value to use for the version tag in git.
+        /// </summary>
+        public string TagSuffix { get; set; } = string.Empty;
     }
 }

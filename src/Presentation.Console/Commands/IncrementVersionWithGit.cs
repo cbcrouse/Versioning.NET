@@ -28,6 +28,8 @@ namespace Presentation.Console.Commands
             _mediator = mediator;
             RemoteTarget = "origin";
             AuthorEmail = "tool@versioning.net";
+            TagPrefix = "v";
+            TagSuffix = string.Empty;
         }
 
         /// <summary>
@@ -82,6 +84,18 @@ namespace Presentation.Console.Commands
         [Option(Description = "Determines whether beta mode should be exited. This will set the version to 1.0.0 if the version was lower.")]
         public bool ExitBeta { get; set; }
 
+        /// <summary>
+        /// The prefix value to use for the version tag in git. Defaults to 'v'.
+        /// </summary>
+        [Option(ShortName = "tp", Description = "The prefix value to use for the version tag in git. Defaults to 'v'.")]
+        public string TagPrefix { get; set; }
+
+        /// <summary>
+        /// The suffix value to use for the version tag in git.
+        /// </summary>
+        [Option(ShortName = "ts", Description = "The suffix value to use for the version tag in git.")]
+        public string TagSuffix { get; set; }
+
         // ReSharper disable once UnusedMember.Local
         private async Task OnExecuteAsync()
         {
@@ -94,7 +108,9 @@ namespace Presentation.Console.Commands
                 RemoteTarget = RemoteTarget,
                 BranchName = BranchName,
                 VersionIncrement = VersionIncrement,
-                ExitBeta = ExitBeta
+                ExitBeta = ExitBeta,
+                TagPrefix = TagPrefix,
+                TagSuffix = TagSuffix
             };
             await _mediator.Send(command, CancellationToken.None);
         }
