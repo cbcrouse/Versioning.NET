@@ -11,11 +11,11 @@ using Xunit;
 
 namespace Integration.Tests.Handlers
 {
-    public class IncrementVersionWithGitIntegrationHandlerTests : GitSetup, IClassFixture<Orchestrator>
+    public class IncrementVersionWithGitHintsHandlerTests : GitSetup, IClassFixture<Orchestrator>
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public IncrementVersionWithGitIntegrationHandlerTests(Orchestrator orchestrator)
+        public IncrementVersionWithGitHintsHandlerTests(Orchestrator orchestrator)
         {
             _serviceProvider = orchestrator.BuildServiceProvider();
         }
@@ -36,10 +36,10 @@ namespace Integration.Tests.Handlers
             var gitService = _serviceProvider.GetRequiredService<IGitService>();
             var gitVersioningService = _serviceProvider.GetRequiredService<IGitVersioningService>();
             var versioningService = _serviceProvider.GetRequiredService<IAssemblyVersioningService>();
-            var logger = _serviceProvider.GetRequiredService<ILogger<IncrementVersionWithGitIntegrationHandler>>();
-            var sut = new IncrementVersionWithGitIntegrationHandler(mediator, gitService, gitVersioningService, versioningService, logger);
+            var logger = _serviceProvider.GetRequiredService<ILogger<IncrementVersionWithGitHintsHandler>>();
+            var sut = new IncrementVersionWithGitHintsHandler(mediator, gitService, gitVersioningService, versioningService, logger);
 
-            var command = new IncrementVersionWithGitIntegrationCommand
+            var command = new IncrementVersionWithGitHintsCommand
             {
                 GitDirectory = TestRepoDirectory,
                 BranchName = "main",

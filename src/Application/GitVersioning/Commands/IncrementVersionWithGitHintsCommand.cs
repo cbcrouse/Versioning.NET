@@ -1,13 +1,13 @@
-﻿#nullable enable
+﻿using Domain.Enumerations;
 using MediatR;
 using System.IO;
 
 namespace Application.GitVersioning.Commands
 {
     /// <summary>
-    /// The <see cref="IRequest{TResponse}"/> object responsible for incrementing the version with git integration.
+    /// The <see cref="IRequest{TResponse}"/> object responsible for incrementing the version with git integration based on git commit messages.
     /// </summary>
-    public class IncrementVersionWithGitIntegrationCommand : IRequest<Unit>
+    public class IncrementVersionWithGitHintsCommand : IRequest<Unit>
     {
         /// <summary>
         /// Gets or sets the directory containing the .git folder.

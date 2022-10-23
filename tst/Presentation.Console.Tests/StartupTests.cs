@@ -46,10 +46,10 @@ namespace Presentation.Console.Tests
         }
 
         [Fact]
-        public async Task CanStartupHelp_IncrementVersionWithGit()
+        public async Task CanStartupHelp_IncrementVersionWithGitHints()
         {
             // Arrange
-            var args = new[] { "increment-version-with-git", "--help"};
+            var args = new[] { "increment-version-with-git-hints", "--help"};
 
             // Act
             int resultCode = await Program.Main(args);
@@ -72,10 +72,10 @@ namespace Presentation.Console.Tests
         }
 
         [Fact]
-        public async Task CanStartup_IncrementVersionWithGit()
+        public async Task CanStartup_IncrementVersionWithGitHints()
         {
             // Arrange
-            var args = new[] { "increment-version-with-git", "-g", "fake directory", "-a", "devops@versioning.net", "-b", "main" };
+            var args = new[] { "increment-version-with-git-hints", "-g", "fake directory", "-a", "devops@versioning.net", "-b", "main" };
 
             // Act
             int resultCode = await Program.Main(args);

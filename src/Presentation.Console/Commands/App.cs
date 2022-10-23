@@ -6,7 +6,7 @@ namespace Presentation.Console.Commands
     /// The versioning commandline application.
     /// </summary>
     [Command("dotnet-version")]
-    [Subcommand(typeof(IncrementVersion), typeof(IncrementVersionWithGit))]
+    [Subcommand(typeof(IncrementVersion), typeof(IncrementVersionWithGitHints))]
     public class App
     {
         /// <summary>

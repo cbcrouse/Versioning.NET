@@ -10,14 +10,14 @@ using Xunit;
 
 namespace Business.Tests.GitVersioning
 {
-    public class IncrementVersionWithGitIntegrationValidatorTests
+    public class IncrementVersionWithGitHintsValidatorTests
     {
         [Fact]
         public void Validator_Fails_OnInvalidDirectory()
         {
             // Arrange
             const string invalidDirectory = "X:\\Temp";
-            var sut = new IncrementVersionWithGitIntegrationValidator();
+            var sut = new IncrementVersionWithGitHintsIntegrationValidator();
 
             // Act & Assert
             sut.ShouldHaveValidationErrorFor(x => x.GitDirectory, invalidDirectory).WithErrorMessage("Must be a valid directory.");
@@ -28,7 +28,7 @@ namespace Business.Tests.GitVersioning
         {
             // Arrange
             string invalidDirectory = Path.GetTempPath();
-            var sut = new IncrementVersionWithGitIntegrationValidator();
+            var sut = new IncrementVersionWithGitHintsIntegrationValidator();
 
             // Act & Assert
             sut.ShouldHaveValidationErrorFor(x => x.GitDirectory, invalidDirectory).WithErrorMessage("Must be a valid .git directory.");
@@ -44,7 +44,7 @@ namespace Business.Tests.GitVersioning
             string projectDir = Directory.GetParent(binDir)!.FullName;
             string tstDir = Directory.GetParent(projectDir)!.FullName;
             string slnDir = Directory.GetParent(tstDir)!.FullName;
-            var sut = new IncrementVersionWithGitIntegrationValidator();
+            var sut = new IncrementVersionWithGitHintsIntegrationValidator();
 
             // Act & Assert
             sut.ShouldNotHaveValidationErrorFor(x => x.GitDirectory, slnDir);
@@ -55,7 +55,7 @@ namespace Business.Tests.GitVersioning
         {
             // Arrange
             string invalidDirectory = "invalid directory";
-            var sut = new IncrementVersionWithGitIntegrationValidator();
+            var sut = new IncrementVersionWithGitHintsIntegrationValidator();
 
             // Act & Assert
             sut.ShouldHaveValidationErrorFor(x => x.TargetDirectory, invalidDirectory).WithErrorMessage("Must be a valid directory.");
@@ -65,7 +65,7 @@ namespace Business.Tests.GitVersioning
         public void Validator_HasCorrectValidators()
         {
             // Arrange
-            var sut = new IncrementVersionWithGitIntegrationValidator();
+            var sut = new IncrementVersionWithGitHintsIntegrationValidator();
 
             // Act & Assert
             sut.ShouldHaveRules(x => x.CommitAuthorEmail,

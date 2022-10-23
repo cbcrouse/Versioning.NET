@@ -15,15 +15,15 @@ using System.Threading.Tasks;
 namespace Application.GitVersioning.Handlers
 {
     /// <summary>
-    /// The <see cref="IRequestHandler{TRequest,TResponse}"/> responsible for incrementing the version with git integration.
+    /// The <see cref="IRequestHandler{TRequest,TResponse}"/> responsible for incrementing the version with git integration based on git commit messages.
     /// </summary>
-    public class IncrementVersionWithGitIntegrationHandler : IRequestHandler<IncrementVersionWithGitIntegrationCommand, Unit>
+    public class IncrementVersionWithGitHintsHandler : IRequestHandler<IncrementVersionWithGitHintsCommand, Unit>
     {
         private readonly IMediator _mediator;
         private readonly IGitService _gitService;
         private readonly IGitVersioningService _gitVersioningService;
         private readonly IAssemblyVersioningService _assemblyVersioningService;
-        private readonly ILogger<IncrementVersionWithGitIntegrationHandler> _logger;
+        private readonly ILogger<IncrementVersionWithGitHintsHandler> _logger;
 
         /// <summary>
         /// Default Constructor
@@ -33,12 +33,12 @@ namespace Application.GitVersioning.Handlers
         /// <param name="gitVersioningService">An abstraction for retrieving version hint info from git commit messages.</param>
         /// <param name="assemblyVersioningService">An abstraction for working with assembly versions.</param>
         /// <param name="logger">A generic interface for logging.</param>
-        public IncrementVersionWithGitIntegrationHandler(
+        public IncrementVersionWithGitHintsHandler(
             IMediator mediator,
             IGitService gitService,
             IGitVersioningService gitVersioningService,
             IAssemblyVersioningService assemblyVersioningService,
-            ILogger<IncrementVersionWithGitIntegrationHandler> logger)
+            ILogger<IncrementVersionWithGitHintsHandler> logger)
         {
             _mediator = mediator;
             _gitService = gitService;
@@ -50,7 +50,7 @@ namespace Application.GitVersioning.Handlers
         /// <summary>Handles the request to increment the version with git integration.</summary>
         /// <param name="request">The <see cref="IRequest{TResponse}"/> object responsible for incrementing the version with git integration.</param>
         /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
-        public async Task<Unit> Handle(IncrementVersionWithGitIntegrationCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(IncrementVersionWithGitHintsCommand request, CancellationToken cancellationToken)
         {
             var query = new GetCommitVersionInfosQuery { GitDirectory = request.GitDirectory, RemoteTarget = request.RemoteTarget, TipBranchName = request.BranchName };
             List<GitCommitVersionInfo> versionInfos = (await _mediator.Send(query, cancellationToken)).ToList();
