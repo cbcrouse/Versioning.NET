@@ -63,6 +63,7 @@ namespace Infrastructure.Services
             {
                 var doc = new XmlDocument();
                 doc.Load(csProjFile);
+                doc.PreserveWhitespace = true;
 
                 XmlNode? versionPrefixText = doc.SelectSingleNode("/Project/PropertyGroup/VersionPrefix");
                 XmlNode? versionText =  doc.SelectSingleNode("/Project/PropertyGroup/Version");
