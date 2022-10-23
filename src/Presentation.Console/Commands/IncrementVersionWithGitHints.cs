@@ -1,5 +1,4 @@
-﻿using Application.GitVersioning.Commands;
-using Domain.Enumerations;
+using Application.GitVersioning.Commands;
 using McMaster.Extensions.CommandLineUtils;
 using MediatR;
 using System.ComponentModel.DataAnnotations;
@@ -10,10 +9,10 @@ using System.Threading.Tasks;
 namespace Presentation.Console.Commands
 {
     /// <summary>
-    /// Increment versions in csproj files with git integration.
+    /// Increment versions in csproj files with git integration based on git commit messages.
     /// </summary>
-    [Command(Description = "Increment versions in csproj files with git integration.")]
-    public class IncrementVersionWithGit
+    [Command(Description = "Increment versions in csproj files with git integration based on git commit messages.")]
+    public class IncrementVersionWithGitHints
     {
         private readonly IMediator _mediator;
 
@@ -22,7 +21,7 @@ namespace Presentation.Console.Commands
         /// </summary>
         /// <param name="mediator">An abstraction for accessing application behaviors.</param>
 #pragma warning disable 8618
-        public IncrementVersionWithGit(IMediator mediator)
+        public IncrementVersionWithGitHints(IMediator mediator)
 #pragma warning restore 8618
         {
             _mediator = mediator;
@@ -69,32 +68,17 @@ namespace Presentation.Console.Commands
         [Option(Description = "The git commit author's email address.")]
         public string AuthorEmail { get; set; }
 
-        /// <summary>
-        /// Indicates how to increment the version.
-        /// </summary>
-        [Option(Description = "Indicates how to increment the version.")]
-        [Required]
-        public VersionIncrement VersionIncrement { get; set; } = VersionIncrement.None;
-
-        /// <summary>
-        /// Determines whether beta mode should be exited.
-        /// </summary>
-        [Option(Description = "Determines whether beta mode should be exited. This will set the version to 1.0.0 if the version was lower.")]
-        public bool ExitBeta { get; set; }
-
         // ReSharper disable once UnusedMember.Local
         private async Task OnExecuteAsync()
         {
-            var command = new IncrementVersionWithGitCommand
+            var command = new IncrementVersionWithGitHintsCommand
             {
                 GitDirectory = GitDirectory,
                 TargetDirectory = TargetDirectory,
                 SearchOption = SearchOption,
                 CommitAuthorEmail = AuthorEmail,
                 RemoteTarget = RemoteTarget,
-                BranchName = BranchName,
-                VersionIncrement = VersionIncrement,
-                ExitBeta = ExitBeta
+                BranchName = BranchName
             };
             await _mediator.Send(command, CancellationToken.None);
         }

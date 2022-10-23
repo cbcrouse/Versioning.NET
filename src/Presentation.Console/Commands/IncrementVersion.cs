@@ -53,7 +53,7 @@ namespace Presentation.Console.Commands
         /// <summary>
         /// Determines whether beta mode should be exited.
         /// </summary>
-        [Option(Description = "Determines whether beta mode should be exited.")]
+        [Option(Description = "Determines whether beta mode should be exited. This will set the version to 1.0.0 if the version was lower.")]
         public bool ExitBeta { get; set; }
 
         // ReSharper disable once UnusedMember.Local
