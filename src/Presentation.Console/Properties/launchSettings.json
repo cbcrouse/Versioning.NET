@@ -5,11 +5,11 @@
     },
     "Git Versioning": {
       "commandName": "Project",
-      "commandLineArgs": "increment-version-with-git -g \"../../../../../\" -a \"devops@versioning.net\" -b main"
+      "commandLineArgs": "increment-version-with-git-hints -g \"../../../../../\" -a \"devops@versioning.net\" -b main"
     },
     "Git Versioning Help": {
       "commandName": "Project",
-      "commandLineArgs": "increment-version-with-git --help"
+      "commandLineArgs": "increment-version-with-git-hints --help"
     },
     "Versioning Help": {
       "commandName": "Project",
@@ -17,15 +17,15 @@
     },
     "No Tags": {
       "commandName": "Project",
-      "commandLineArgs": "increment-version-with-git -g \"G:\\Git\\InsaneTools\" -a \"devops@versioning.net\" -b master"
+      "commandLineArgs": "increment-version-with-git-hints -g \"C:\\Git\\GitHub\\InsaneTools\" -a \"devops@versioning.net\" -b master"
     },
     "Git Versioning Targeted Directory": {
       "commandName": "Project",
-      "commandLineArgs": "increment-version-with-git -g \"../../../../../\" -d \"../../../../../src/Infrastructure\" -a \"devops@versioning.net\" -b main -s TopDirectoryOnly"
+      "commandLineArgs": "increment-version-with-git-hints -g \"../../../../../\" -d \"../../../../../src/Infrastructure\" -a \"devops@versioning.net\" -b main -s TopDirectoryOnly"
     },
     "Git Versioning Invalid Targeted Directory": {
       "commandName": "Project",
-      "commandLineArgs": "increment-version-with-git -g \"../../../../../\" -d \"invalid directory\" -a \"devops@versioning.net\" -b main -s TopDirectoryOnly"
+      "commandLineArgs": "increment-version-with-git-hints -g \"../../../../../\" -d \"invalid directory\" -a \"devops@versioning.net\" -b main -s TopDirectoryOnly"
     },
     "Version": {
       "commandName": "Project",

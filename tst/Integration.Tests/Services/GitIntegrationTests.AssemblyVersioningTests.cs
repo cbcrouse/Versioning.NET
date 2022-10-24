@@ -51,6 +51,24 @@ namespace Integration.Tests.Services
         }
 
         [Fact]
+        public void GetLatestAssemblyVersion_Throws_OnNoVersionFoundInAnyCsProjFiles()
+        {
+            // Arrange
+            var service = new AssemblyVersioningService();
+            var directory = Path.Join(TestRepoDirectory, "src", "TestProject");
+
+            // Act
+            SemVersion Act()
+            {
+                return service.GetLatestAssemblyVersion(directory, SearchOption.TopDirectoryOnly);
+            }
+
+            // Assert
+            var ex = Assert.Throws<InvalidOperationException>(Act);
+            Assert.Equal("No valid version was found in any of the csproj files. Please ensure that the csproj files contain a VersionPrefix or Version element.", ex.Message);
+        }
+
+        [Fact]
         public void Can_IncrementAssemblyVersion_By_Patch()
         {
             // Arrange
