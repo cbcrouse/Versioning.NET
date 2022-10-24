@@ -1,1 +1,24 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net6.0</TargetFramework><IsTestProject>false</IsTestProject><GenerateDocumentationFile>true</GenerateDocumentationFile><IsPackable>false</IsPackable><VersionPrefix>0.7.2</VersionPrefix><Nullable>enable</Nullable><WarningsAsErrors>CS8600;CS8602;CS8603</WarningsAsErrors></PropertyGroup><ItemGroup><PackageReference Include="FluentValidation" Version="8.6.3" /><PackageReference Include="MediatR" Version="8.0.2" /></ItemGroup><ItemGroup><ProjectReference Include="..\Common\Common.csproj" /><ProjectReference Include="..\Domain\Domain.csproj" /></ItemGroup><ItemGroup><Folder Include="Interfaces\" /><Folder Include="Interfaces\ValueResolvers\" /></ItemGroup></Project>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <IsTestProject>false</IsTestProject>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <IsPackable>false</IsPackable>
+        <VersionPrefix>0.7.2</VersionPrefix>
+        <Nullable>enable</Nullable>
+        <WarningsAsErrors>CS8600;CS8602;CS8603</WarningsAsErrors>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="FluentValidation" Version="8.6.3" />
+        <PackageReference Include="MediatR" Version="8.0.2" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Common\Common.csproj" />
+        <ProjectReference Include="..\Domain\Domain.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Interfaces\" />
+        <Folder Include="Interfaces\ValueResolvers\" />
+    </ItemGroup>
+</Project>

@@ -1,1 +1,46 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net6.0</TargetFramework><IsTestProject>false</IsTestProject><GenerateDocumentationFile>true</GenerateDocumentationFile><nullable>enable</nullable><IsPackable>false</IsPackable><VersionPrefix>0.7.2</VersionPrefix><Nullable>enable</Nullable><WarningsAsErrors>CS8600;CS8602;CS8603</WarningsAsErrors></PropertyGroup><ItemGroup><PackageReference Include="FluentValidation" Version="8.6.3" /><PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="8.6.3" /><PackageReference Include="LibGit2Sharp" Version="0.26.2" /><PackageReference Include="MediatR" Version="8.0.2" /><PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" /></ItemGroup><ItemGroup><ProjectReference Include="..\Application\Application.csproj" /><ProjectReference Include="..\Common\Common.csproj" /></ItemGroup><ItemGroup><None Update="appsettings.core.json"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None><None Update="appsettings.core.Development.json"><CopyToOutputDirectory>Always</CopyToOutputDirectory><DependentUpon>appsettings.core.json</DependentUpon></None><None Update="appsettings.core.qa.json"><CopyToOutputDirectory>Always</CopyToOutputDirectory><DependentUpon>appsettings.core.json</DependentUpon></None></ItemGroup><ItemGroup><Folder Include="ValueResolvers\" /><Folder Include="MediatR\" /></ItemGroup><ProjectExtensions><VisualStudio><UserProperties appsettings_1core_1dev_1json__JsonSchema="http://json.schemastore.org/appsettings" appsettings_1core_1stg_1json__JsonSchema="http://json.schemastore.org/appsettings" appsettings_1core_1qa_1json__JsonSchema="http://json.schemastore.org/appsettings" appsettings_1core_1development_1json__JsonSchema="http://json.schemastore.org/appsettings" appsettings_1core_1prod_1json__JsonSchema="http://json.schemastore.org/appsettings" appsettings_1core_1json__JsonSchema="http://json.schemastore.org/appsettings" /></VisualStudio></ProjectExtensions></Project>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <IsTestProject>false</IsTestProject>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <nullable>enable</nullable>
+        <IsPackable>false</IsPackable>
+        <VersionPrefix>0.7.2</VersionPrefix>
+        <Nullable>enable</Nullable>
+        <WarningsAsErrors>CS8600;CS8602;CS8603</WarningsAsErrors>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="FluentValidation" Version="8.6.3" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="8.6.3" />
+        <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
+        <PackageReference Include="MediatR" Version="8.0.2" />
+        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Application\Application.csproj" />
+        <ProjectReference Include="..\Common\Common.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Update="appsettings.core.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="appsettings.core.Development.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <DependentUpon>appsettings.core.json</DependentUpon>
+        </None>
+        <None Update="appsettings.core.qa.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <DependentUpon>appsettings.core.json</DependentUpon>
+        </None>
+    </ItemGroup>
+    <ItemGroup>
+        <Folder Include="ValueResolvers\" />
+        <Folder Include="MediatR\" />
+    </ItemGroup>
+    <ProjectExtensions>
+        <VisualStudio>
+            <UserProperties appsettings_1core_1dev_1json__JsonSchema="http://json.schemastore.org/appsettings" appsettings_1core_1stg_1json__JsonSchema="http://json.schemastore.org/appsettings" appsettings_1core_1qa_1json__JsonSchema="http://json.schemastore.org/appsettings" appsettings_1core_1development_1json__JsonSchema="http://json.schemastore.org/appsettings" appsettings_1core_1prod_1json__JsonSchema="http://json.schemastore.org/appsettings" appsettings_1core_1json__JsonSchema="http://json.schemastore.org/appsettings" />
+        </VisualStudio>
+    </ProjectExtensions>
+</Project>
