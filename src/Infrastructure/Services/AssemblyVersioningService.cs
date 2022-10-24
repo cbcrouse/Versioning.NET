@@ -21,7 +21,7 @@ namespace Infrastructure.Services
         public SemVersion GetLatestAssemblyVersion(string directory, SearchOption searchOption)
         {
             string[] csProjFiles = Directory.GetFiles(directory, "*.csproj", searchOption);
-            var highestVersion = new SemVersion(0,0,0);
+            SemVersion? highestVersion = null;
 
             if (csProjFiles.Length == 0)
             {
@@ -42,8 +42,13 @@ namespace Infrastructure.Services
 
                 SemVersion? version = SemVersion.Parse(versionText);
 
-                if (version > highestVersion)
+                if (version != null && version > highestVersion)
                     highestVersion = version;
+            }
+
+            if (highestVersion == null)
+            {
+                throw new InvalidOperationException("No valid version was found in any of the csproj files. Please ensure that the csproj files contain a VersionPrefix or Version element.");
             }
 
             return highestVersion;

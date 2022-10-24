@@ -54,11 +54,11 @@ namespace Application.GitVersioning.Handlers
         {
             var query = new GetCommitVersionInfosQuery { GitDirectory = request.GitDirectory, RemoteTarget = request.RemoteTarget, TipBranchName = request.BranchName };
             List<GitCommitVersionInfo> versionInfos = (await _mediator.Send(query, cancellationToken)).ToList();
+
             VersionIncrement increment = _gitVersioningService.DeterminePriorityIncrement(versionInfos.Select(x => x.VersionIncrement));
             _logger.LogInformation($"Increment '{increment}' was determined from the commits.");
 
-
-            if (increment == VersionIncrement.None || increment == VersionIncrement.Unknown)
+            if (increment is VersionIncrement.None or VersionIncrement.Unknown)
             {
                 return Unit.Value;
             }
