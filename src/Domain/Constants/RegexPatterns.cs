@@ -13,6 +13,6 @@
         /// <summary>
         /// Matches the commit message subject in a git log line.
         /// </summary>
-        public const string GitLogCommitSubject = @"(?<Type>\w{1,})\((?<Scope>[\w\s]{1,})\)\s*:\s*(?<Subject>[^\s].{1,})";
+        public const string GitLogCommitSubject = @"(?<Type>\w{1,})\((?<Scope>.*)\)\s*:\s*(?<Subject>[^\s].{1,})";
     }
 }
