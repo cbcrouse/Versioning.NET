@@ -1,4 +1,5 @@
-﻿using Domain.Constants;
+﻿using System.Text;
+using Domain.Constants;
 using System.Text.RegularExpressions;
 using Xunit;
 
@@ -22,21 +23,25 @@ namespace Business.Tests
         }
 
         [Theory]
-        [InlineData("test(Test): Added ability to test", true)]
-        [InlineData("test(Different Test): test", true)]
-        [InlineData("test(Different Test) : test", true)]
-        [InlineData("test(Different Test): ", false)]
-        [InlineData("(Different Test): test", false)]
-        public void MatchesCommitSubject(string commitId, bool expectedResult)
+        [InlineData("test(Default Test): Added ability to test", true, "test", "Default Test", "Added ability to test")]
+        [InlineData("test(Pre-Colon Space Test) : test", true, "test", "Pre-Colon Space Test", "test")]
+        [InlineData("test(Special.(Char-Te$t)): test", true, "test", "Special.(Char-Te$t)", "test")]
+        [InlineData("test(): No scope test", true, "test", "", "No scope test")]
+        [InlineData("test(Whitespace Subject Test): ", false)]
+        [InlineData("(No Type Test): test", false)]
+        public void MatchesCommitSubject(string commitId, bool expectedResult, string expectedType = "", string expectedScope = "", string expectedSubject = "")
         {
             // Arrange
             var sut = new Regex(RegexPatterns.GitLogCommitSubject);
 
             // Act
-            bool result = sut.IsMatch(commitId);
+            var match = sut.Match(commitId);
 
             // Act & Assert
-            Assert.Equal(expectedResult, result);
+            Assert.Equal(expectedResult, match.Success);
+            Assert.Equal(expectedType, match.Groups["Type"].Value);
+            Assert.Equal(expectedScope, match.Groups["Scope"].Value);
+            Assert.Equal(expectedSubject, match.Groups["Subject"].Value);
         }
     }
 }
