@@ -33,8 +33,9 @@ jobs:
         --collect:"XPlat Code Coverage"
         -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
       env:
-        GitHubAccessToken: ${{ secrets.GITHUBACCESSTOKEN }}
-
+        GitHubActor: ${{ github.actor }}
+        GitHubAccessToken: ${{ secrets.GITHUB_TOKEN }}
+        #GitHubTestRepoAddress: "github.com/${{ github.actor }}/${{ github.repository }}.Tests.git"
     - name: Codecov
       # You may pin to the exact commit or the version.
       # uses: codecov/codecov-action@fcebab03f26c7530a22baa63f06b3e0515f0c7cd
