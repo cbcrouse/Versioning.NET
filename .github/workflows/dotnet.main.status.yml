@@ -34,7 +34,7 @@ jobs:
         -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
       env:
         GitHubActor: ${{ github.actor }}
-        GitHubAccessToken: ${{ GITHUBACCESSTOKEN }}
+        GitHubAccessToken: ${{ secrets.GITHUBACCESSTOKEN }}
         #GitHubTestRepoAddress: "github.com/${{ github.actor }}/${{ github.repository }}.Tests.git"
     - name: Codecov
       # You may pin to the exact commit or the version.
