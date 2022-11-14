@@ -35,4 +35,6 @@ jobs:
         --collect:"XPlat Code Coverage"
         -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
       env:
+        GitHubActor: ${{ github.repository_owner }}
         GitHubAccessToken: ${{ secrets.GITHUBACCESSTOKEN }}
+        #GitHubTestRepoAddress: "github.com/${{ github.repository }}.Tests.git"
