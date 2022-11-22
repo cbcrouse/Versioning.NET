@@ -89,7 +89,7 @@ namespace Application.GitVersioning.Commands
         /// <summary>
         /// Gets or sets the list of commit's types how will create a minor increment
         /// </summary>
-        public IEnumerable<string> MinorTypeHints { get; set; } = new List<string> { "feat" };
+        public IEnumerable<string> MinorTypeHints { get; set; } = new List<string>();
 
         /// <summary>
         /// Gets or sets the list of commit's scopes how will create a minor increment
@@ -104,7 +104,7 @@ namespace Application.GitVersioning.Commands
         /// <summary>
         /// Gets or sets the list of commit's types how will create a patch increment
         /// </summary>
-        public IEnumerable<string> PatchTypeHints { get; set; } = new List<string> { "fix", "build", "config", "docs", "perf", "refactor", "resolve", "style", "test", "ci", "feat" };
+        public IEnumerable<string> PatchTypeHints { get; set; } = new List<string>();
 
         /// <summary>
         /// Gets or sets the list of commit's scopes how will create a patch increment
