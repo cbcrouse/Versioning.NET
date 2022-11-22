@@ -87,42 +87,6 @@ namespace Business.Tests.GitVersioning
         }
 
         [Fact]
-        public async Task TargetDirectory_SetToGitDirectory_WhenEmpty()
-        {
-            // Arrange
-            var request = new IncrementVersionWithGitHintsCommand
-            {
-                GitDirectory = "C:\\Temp",
-                TargetDirectory = null,
-                SearchOption = SearchOption.AllDirectories,
-                CommitAuthorEmail = "support@versioning.net",
-                BranchName = "test",
-                RemoteTarget = "origin"
-            };
-            var commit = Commits.First(x => x.Subject == "ci(Versioning): Increment version 0.0.0 -> 0.0.0 [skip ci] [skip hint]");
-            var assemblyVersion = new SemVersion(0);
-            var mediator = new Mock<IMediator>();
-            var gitService = new Mock<IGitService>();
-            var gitVersioningService = new Mock<IGitVersioningService>();
-            var assemblyVersioningService = new Mock<IAssemblyVersioningService>();
-            var logger = new NullLogger<IncrementVersionWithGitHintsHandler>();
-
-            gitVersioningService.Setup(x => x.DeterminePriorityIncrement(It.IsAny<IEnumerable<VersionIncrement>>())).Returns(VersionIncrement.Minor);
-            mediator.Setup(x => x.Send(It.IsAny<GetCommitVersionInfosQuery>(), CancellationToken.None)).ReturnsAsync(new List<GitCommitVersionInfo>());
-            mediator.Setup(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
-
-            gitService.Setup(x => x.GetCommits(It.IsAny<string>())).Returns(Commits);
-            assemblyVersioningService.Setup(x => x.GetLatestAssemblyVersion(request.GitDirectory, request.SearchOption)).Returns(assemblyVersion);
-            var sut = new IncrementVersionWithGitHintsHandler(mediator.Object, gitVersioningService.Object, logger);
-
-            // Act
-            await sut.Handle(request, CancellationToken.None);
-
-            // Assert
-            assemblyVersioningService.Verify(x => x.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption), Times.Exactly(2));
-        }
-
-        [Fact]
         public async Task Handler_CallsDependencies()
         {
             // Arrange
