@@ -58,40 +58,11 @@ namespace Application.GitVersioning.Handlers
             VersionIncrement increment = _gitVersioningService.DeterminePriorityIncrement(versionInfos.Select(x => x.VersionIncrement));
             _logger.LogInformation($"Increment '{increment}' was determined from the commits.");
 
-            if (increment is VersionIncrement.None or VersionIncrement.Unknown)
-            {
-                return Unit.Value;
-            }
-
-            if (string.IsNullOrWhiteSpace(request.TargetDirectory))
-            {
-                request.TargetDirectory = request.GitDirectory;
-            }
-
-            SemVersion originalAssemblyVersion = _assemblyVersioningService.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption);
-
-            var command = new IncrementAssemblyVersionCommand
-            {
-                Directory = request.TargetDirectory,
-                SearchOption = request.SearchOption,
-                VersionIncrement = increment,
-                ExitBeta = versionInfos.Any(x => x.ExitBeta)
-            };
-            await _mediator.Send(command, cancellationToken);
-
-            SemVersion currentAssemblyVersion = _assemblyVersioningService.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption);
-
-            var commitMessage = $"ci(Versioning): Increment version {originalAssemblyVersion} -> {currentAssemblyVersion} [skip ci] [skip hint]";
-            _gitService.CommitChanges(request.GitDirectory, commitMessage, request.CommitAuthorEmail);
-
-            string commitId = _gitService.GetCommits(request.GitDirectory).First(x => x.Subject.Equals(commitMessage)).Id;
-            string tagValue = $"{request.TagPrefix}{currentAssemblyVersion}{request.TagSuffix}";
-
-            _gitService.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/heads/{request.BranchName}");
-            _gitService.CreateTag(request.GitDirectory, tagValue, commitId);
-            _gitService.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/tags/{tagValue}");
-
-            return Unit.Value;
+            var command = new IncrementVersionWithGitCommand { GitDirectory = request.GitDirectory, TargetDirectory = request.TargetDirectory, 
+                SearchOption = request.SearchOption, CommitAuthorEmail = request.CommitAuthorEmail, RemoteTarget = request.RemoteTarget, 
+                BranchName = request.BranchName, TagPrefix = request.TagPrefix, TagSuffix = request.TagSuffix, 
+                ExitBeta = versionInfos.Any(x=>x.ExitBeta), VersionIncrement = increment};
+            return await _mediator.Send(command, cancellationToken);
         }
     }
 }
