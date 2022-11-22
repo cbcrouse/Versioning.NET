@@ -158,13 +158,6 @@ namespace Business.Tests.GitVersioning
 
             // Assert
             mediator.Verify(x => x.Send(It.IsAny<GetCommitVersionInfosQuery>(), CancellationToken.None), Times.Once);
-            mediator.Verify(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None), Times.Once);
-            assemblyVersioningService.Verify(x => x.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption), Times.Exactly(2));
-            gitService.Verify(x => x.CommitChanges(request.GitDirectory, commit.Subject, request.CommitAuthorEmail), Times.Once);
-            gitService.Verify(x => x.GetCommits(request.GitDirectory), Times.Once);
-            gitService.Verify(x => x.CreateTag(request.GitDirectory, $"{request.TagPrefix}{assemblyVersion}{request.TagSuffix}", commit.Id), Times.Once);
-            gitService.Verify(x => x.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/heads/{request.BranchName}"), Times.Once);
-            gitService.Verify(x => x.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/tags/{request.TagPrefix}{assemblyVersion}{request.TagSuffix}"), Times.Once);
             gitVersioningService.Verify(x => x.DeterminePriorityIncrement(It.IsAny<IEnumerable<VersionIncrement>>()), Times.Once);
         }
     }
