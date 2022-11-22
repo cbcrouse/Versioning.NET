@@ -1,12 +1,10 @@
-﻿using Application.AssemblyVersioning.Commands;
-using Application.GitVersioning.Commands;
+﻿using Application.GitVersioning.Commands;
 using Application.GitVersioning.Queries;
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.Enumerations;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Semver;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -20,30 +18,22 @@ namespace Application.GitVersioning.Handlers
     public class IncrementVersionWithGitHintsHandler : IRequestHandler<IncrementVersionWithGitHintsCommand, Unit>
     {
         private readonly IMediator _mediator;
-        private readonly IGitService _gitService;
         private readonly IGitVersioningService _gitVersioningService;
-        private readonly IAssemblyVersioningService _assemblyVersioningService;
         private readonly ILogger<IncrementVersionWithGitHintsHandler> _logger;
 
         /// <summary>
         /// Default Constructor
         /// </summary>
         /// <param name="mediator">An abstraction for accessing application behaviors.</param>
-        /// <param name="gitService">An abstraction to facilitate testing without using the git integration.</param>
         /// <param name="gitVersioningService">An abstraction for retrieving version hint info from git commit messages.</param>
-        /// <param name="assemblyVersioningService">An abstraction for working with assembly versions.</param>
         /// <param name="logger">A generic interface for logging.</param>
         public IncrementVersionWithGitHintsHandler(
             IMediator mediator,
-            IGitService gitService,
             IGitVersioningService gitVersioningService,
-            IAssemblyVersioningService assemblyVersioningService,
             ILogger<IncrementVersionWithGitHintsHandler> logger)
         {
             _mediator = mediator;
-            _gitService = gitService;
             _gitVersioningService = gitVersioningService;
-            _assemblyVersioningService = assemblyVersioningService;
             _logger = logger;
         }
 
