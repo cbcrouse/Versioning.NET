@@ -37,7 +37,7 @@ namespace Integration.Tests.Handlers
             var gitVersioningService = _serviceProvider.GetRequiredService<IGitVersioningService>();
             var versioningService = _serviceProvider.GetRequiredService<IAssemblyVersioningService>();
             var logger = _serviceProvider.GetRequiredService<ILogger<IncrementVersionWithGitHintsHandler>>();
-            var sut = new IncrementVersionWithGitHintsHandler(mediator, gitService, gitVersioningService, versioningService, logger);
+            var sut = new IncrementVersionWithGitHintsHandler(mediator, gitVersioningService, logger);
 
             var command = new IncrementVersionWithGitHintsCommand
             {
