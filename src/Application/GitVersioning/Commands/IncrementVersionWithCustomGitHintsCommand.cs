@@ -69,7 +69,7 @@ namespace Application.GitVersioning.Commands
         /// <summary>
         /// Gets or sets the list of commit's subjects hints how will create a none increment
         /// </summary>
-        public IEnumerable<string> SkipSubjectHints { get; set; } = new List<string> { "[skip hint]" };
+        public IEnumerable<string> SkipSubjectHints { get; set; } = new List<string>();
 
         /// <summary>
         /// Gets or sets the list of commit's types how will create a major increment

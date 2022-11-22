@@ -113,7 +113,7 @@ namespace Presentation.Console.Commands
         /// Determines commit's subject's hints how will not create a increment.
         /// </summary>
         [Option(ShortName = "hsu", Description = "Determines commit's subject's hints how will not create a increment.")]
-        public string[] SkipSubjectHints { get; set; } = { "[skip hint]" };
+        public string[] SkipSubjectHints { get; set; } = System.Array.Empty<string>();
 
         /// <summary>
         /// Determines commit's types how will create a major increment.
