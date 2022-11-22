@@ -47,7 +47,7 @@ namespace Business.Tests.GitVersioning
             gitVersioningService.Setup(x => x.DeterminePriorityIncrement(It.IsAny<IEnumerable<VersionIncrement>>())).Returns(VersionIncrement.None);
             mediator.Setup(x => x.Send(It.IsAny<GetCommitVersionInfosQuery>(), CancellationToken.None)).ReturnsAsync(new List<GitCommitVersionInfo>());
             mediator.Setup(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
-            var sut = new IncrementVersionWithGitHintsHandler(mediator.Object, gitService.Object, gitVersioningService.Object, assemblyVersioningService.Object, logger);
+            var sut = new IncrementVersionWithGitHintsHandler(mediator.Object, gitVersioningService.Object, logger);
 
             // Act
             await sut.Handle(new IncrementVersionWithGitHintsCommand(), CancellationToken.None);
@@ -73,7 +73,7 @@ namespace Business.Tests.GitVersioning
             gitVersioningService.Setup(x => x.DeterminePriorityIncrement(It.IsAny<IEnumerable<VersionIncrement>>())).Returns(VersionIncrement.Unknown);
             mediator.Setup(x => x.Send(It.IsAny<GetCommitVersionInfosQuery>(), CancellationToken.None)).ReturnsAsync(new List<GitCommitVersionInfo>());
             mediator.Setup(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
-            var sut = new IncrementVersionWithGitHintsHandler(mediator.Object, gitService.Object, gitVersioningService.Object, assemblyVersioningService.Object, logger);
+            var sut = new IncrementVersionWithGitHintsHandler(mediator.Object, gitVersioningService.Object, logger);
 
             // Act
             await sut.Handle(new IncrementVersionWithGitHintsCommand(), CancellationToken.None);
@@ -113,7 +113,7 @@ namespace Business.Tests.GitVersioning
 
             gitService.Setup(x => x.GetCommits(It.IsAny<string>())).Returns(Commits);
             assemblyVersioningService.Setup(x => x.GetLatestAssemblyVersion(request.GitDirectory, request.SearchOption)).Returns(assemblyVersion);
-            var sut = new IncrementVersionWithGitHintsHandler(mediator.Object, gitService.Object, gitVersioningService.Object, assemblyVersioningService.Object, logger);
+            var sut = new IncrementVersionWithGitHintsHandler(mediator.Object, gitVersioningService.Object, logger);
 
             // Act
             await sut.Handle(request, CancellationToken.None);
@@ -151,7 +151,7 @@ namespace Business.Tests.GitVersioning
 
             gitService.Setup(x => x.GetCommits(It.IsAny<string>())).Returns(Commits);
             assemblyVersioningService.Setup(x => x.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption)).Returns(assemblyVersion);
-            var sut = new IncrementVersionWithGitHintsHandler(mediator.Object, gitService.Object, gitVersioningService.Object, assemblyVersioningService.Object, logger);
+            var sut = new IncrementVersionWithGitHintsHandler(mediator.Object, gitVersioningService.Object, logger);
 
             // Act
             await sut.Handle(request, CancellationToken.None);
