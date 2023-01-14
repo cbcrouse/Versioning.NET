@@ -152,6 +152,8 @@ Want to add a feature or fix a bug? Glad to have the help! There's just a couple
 * [Commit Message Standards](./docs/commit_message_standards.md)
 * [Branching Strategies](./docs/branching_strategies.md)
 
+![Alt](https://repobeats.axiom.co/api/embed/aa303b2d6422a8971deb518047c932327d38969a.svg "Repobeats analytics image")
+
 ---
 
 ## ![Law](./docs/media/law.png) Licensing
