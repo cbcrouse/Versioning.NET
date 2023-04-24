@@ -40,24 +40,24 @@ namespace Application.AssemblyVersioning.Handlers
 
             if (IsBetaVersion(assemblyVersion) && !request.ExitBeta)
             {
-                _logger.LogInformation($"Assembly currently in beta. Lowering increment: {request.VersionIncrement}.");
+                _logger.LogInformation("Assembly currently in beta. Lowering increment to '{VersionIncrement}'.", request.VersionIncrement);
                 request.VersionIncrement = request.VersionIncrement.ToBeta();
-                _logger.LogInformation($"Increment lowered to: {request.VersionIncrement}");
+                _logger.LogInformation("Increment lowered to '{VersionIncrement}'", request.VersionIncrement);
             }
 
-            if (assemblyVersion < new SemVersion(1) && request.ExitBeta)
+            if (IsBetaVersion(assemblyVersion) && request.ExitBeta)
             {
-                _logger.LogInformation($"Assembly currently in beta. Exit beta: {request.ExitBeta}.");
+                _logger.LogInformation("Assembly currently in beta. Exit beta: {ExitBeta}.", request.ExitBeta);
                 request.VersionIncrement = VersionIncrement.Major;
-                _logger.LogInformation($"Increment changed to: {request.VersionIncrement}");
+                _logger.LogInformation("Increment changed to '{VersionIncrement}'", request.VersionIncrement);
             }
 
             _assemblyVersioningService.IncrementVersion(request.VersionIncrement, request.Directory, request.SearchOption);
-            _logger.LogInformation($"Incremented assembly versions by {request.VersionIncrement}.");
+            _logger.LogInformation("Incremented assembly versions by '{VersionIncrement}'", request.VersionIncrement);
             return Task.FromResult(Unit.Value);
         }
 
-        private bool IsBetaVersion(SemVersion assemblyVersion)
+        private static bool IsBetaVersion(SemVersion assemblyVersion)
         {
             return assemblyVersion < new SemVersion(1);
         }
