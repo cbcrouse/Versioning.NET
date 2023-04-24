@@ -162,5 +162,49 @@ namespace Business.Tests.AssemblyVersioning
             // Assert
             service.Verify(x => x.IncrementVersion(VersionIncrement.Major, It.IsAny<string>(), It.IsAny<SearchOption>()), Times.Once);
         }
+
+        [Fact]
+        public async Task BetaVersion_SetsIncrementToMajor_WhenExitBeta_IsTrue()
+        {
+            // Arrange
+            var request = new IncrementAssemblyVersionCommand
+            {
+                Directory = "C:\\Temp",
+                VersionIncrement = VersionIncrement.Minor,
+                ExitBeta = true
+            };
+            var service = new Mock<IAssemblyVersioningService>();
+            service.Setup(x => x.GetLatestAssemblyVersion(It.IsAny<string>(), It.IsAny<SearchOption>())).Returns(new SemVersion(0, 1, 1));
+            var logger = new NullLogger<IncrementAssemblyVersionHandler>();
+            var sut = new IncrementAssemblyVersionHandler(service.Object, logger);
+
+            // Act
+            _ = await sut.Handle(request, CancellationToken.None);
+
+            // Assert
+            service.Verify(x => x.IncrementVersion(VersionIncrement.Major, It.IsAny<string>(), It.IsAny<SearchOption>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task NonBetaVersion_Unchanged_WhenExitBeta_IsTrue()
+        {
+            // Arrange
+            var request = new IncrementAssemblyVersionCommand
+            {
+                Directory = "C:\\Temp",
+                VersionIncrement = VersionIncrement.Minor,
+                ExitBeta = true
+            };
+            var service = new Mock<IAssemblyVersioningService>();
+            service.Setup(x => x.GetLatestAssemblyVersion(It.IsAny<string>(), It.IsAny<SearchOption>())).Returns(new SemVersion(1, 1, 1));
+            var logger = new NullLogger<IncrementAssemblyVersionHandler>();
+            var sut = new IncrementAssemblyVersionHandler(service.Object, logger);
+
+            // Act
+            _ = await sut.Handle(request, CancellationToken.None);
+
+            // Assert
+            service.Verify(x => x.IncrementVersion(VersionIncrement.Minor, It.IsAny<string>(), It.IsAny<SearchOption>()), Times.Once);
+        }
     }
 }
