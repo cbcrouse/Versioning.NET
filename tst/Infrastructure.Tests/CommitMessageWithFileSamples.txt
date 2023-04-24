@@ -45,14 +45,14 @@ templates/ca-sln-sql/src/Infrastructure/Infrastructure.csproj
 templates/ca-sln-sql/src/Persistence.Sql/Persistence.Sql.csproj
 templates/ca-sln-sql/src/Presentation.API/Presentation.API.csproj
 templates/ca-sln-sql/src/Presentation.AzureFunction/Presentation.AzureFunction.csproj
-templates/ca-sln-sql/src/Presentation.Console/Presentation.Console.csproj
+templates/ca-sln-sql/src/Versioning.NET/Versioning.NET.csproj
 templates/ca-sln-sql/tst/Business.Tests/Business.Tests.csproj
 templates/ca-sln-sql/tst/Common.Tests/Common.Tests.csproj
 templates/ca-sln-sql/tst/Infrastructure.Tests/Infrastructure.Tests.csproj
 templates/ca-sln-sql/tst/Mapping.Tests/Mapping.Tests.csproj
 templates/ca-sln-sql/tst/Persistence.Tests/Persistence.Sql.Tests.csproj
 templates/ca-sln-sql/tst/Presentation.API.Tests/Presentation.API.Tests.csproj
-templates/ca-sln-sql/tst/Presentation.Console.Tests/Presentation.Console.Tests.csproj
+templates/ca-sln-sql/tst/Versioning.NET.Tests/Versioning.NET.Tests.csproj
 templates/ca-sln/.template.config/template.json
 tools/New-SolutionTest.ps1
 05a5def config(Projects): Loaded unloaded projects [skip ci]
@@ -61,7 +61,7 @@ templates/ca-sln-sql/src/Application/Application.csproj
 templates/ca-sln-sql/src/Domain/Domain.csproj
 templates/ca-sln-sql/src/Events/Events.csproj
 templates/ca-sln-sql/src/Presentation.AzureFunction/Presentation.AzureFunction.csproj
-templates/ca-sln-sql/src/Presentation.Console/Presentation.Console.csproj
+templates/ca-sln-sql/src/Versioning.NET/Versioning.NET.csproj
 60c25be style(AppStartupOrchestrator): Removed extraneous TODO [skip ci]
 templates/ca-sln-sql/src/Infrastructure/Startup/AppStartupOrchestrator.cs
 3d27b22 feat(HealthChecks): Added support for HealthChecks and HealthChecksUI
@@ -87,7 +87,7 @@ templates/ca-sln-sql/src/Infrastructure/Infrastructure.csproj
 templates/ca-sln-sql/src/Persistence.Sql/Persistence.Sql.csproj
 templates/ca-sln-sql/src/Presentation.API/Presentation.API.csproj
 templates/ca-sln-sql/src/Presentation.AzureFunction/Presentation.AzureFunction.csproj
-templates/ca-sln-sql/src/Presentation.Console/Presentation.Console.csproj
+templates/ca-sln-sql/src/Versioning.NET/Versioning.NET.csproj
 c7fbb58 docs(README): Added "Startup Orchestration" docs and Solution Overview [skip ci]
 README.md
 docs/solution_overview.md
@@ -174,16 +174,16 @@ templates/ca-sln-sql/src/Presentation.AzureFunction/appsettings.qa.json
 templates/ca-sln-sql/src/Presentation.AzureFunction/appsettings.stg.json
 templates/ca-sln-sql/src/Presentation.AzureFunction/host.json
 templates/ca-sln-sql/src/Presentation.AzureFunction/local.settings.sample.json
-templates/ca-sln-sql/src/Presentation.Console/Presentation.Console.csproj
-templates/ca-sln-sql/src/Presentation.Console/Program.cs
-templates/ca-sln-sql/src/Presentation.Console/Properties/launchSettings.json
-templates/ca-sln-sql/src/Presentation.Console/Startup.cs
-templates/ca-sln-sql/src/Presentation.Console/appsettings.Development.json
-templates/ca-sln-sql/src/Presentation.Console/appsettings.dev.json
-templates/ca-sln-sql/src/Presentation.Console/appsettings.json
-templates/ca-sln-sql/src/Presentation.Console/appsettings.prod.json
-templates/ca-sln-sql/src/Presentation.Console/appsettings.qa.json
-templates/ca-sln-sql/src/Presentation.Console/appsettings.stg.json
+templates/ca-sln-sql/src/Versioning.NET/Versioning.NET.csproj
+templates/ca-sln-sql/src/Versioning.NET/Program.cs
+templates/ca-sln-sql/src/Versioning.NET/Properties/launchSettings.json
+templates/ca-sln-sql/src/Versioning.NET/Startup.cs
+templates/ca-sln-sql/src/Versioning.NET/appsettings.Development.json
+templates/ca-sln-sql/src/Versioning.NET/appsettings.dev.json
+templates/ca-sln-sql/src/Versioning.NET/appsettings.json
+templates/ca-sln-sql/src/Versioning.NET/appsettings.prod.json
+templates/ca-sln-sql/src/Versioning.NET/appsettings.qa.json
+templates/ca-sln-sql/src/Versioning.NET/appsettings.stg.json
 templates/ca-sln-sql/tst/Business.Tests/Business.Tests.csproj
 templates/ca-sln-sql/tst/Business.Tests/TodoItem/HandlerTests.cs
 templates/ca-sln-sql/tst/Business.Tests/TodoItem/ValidatorTests.cs
@@ -208,8 +208,8 @@ templates/ca-sln-sql/tst/Persistence.Tests/TodoItemDataAccessTests.Context.TodoI
 templates/ca-sln-sql/tst/Persistence.Tests/TodoItemDataAccessTests.Seed.cs
 templates/ca-sln-sql/tst/Presentation.API.Tests/Presentation.API.Tests.csproj
 templates/ca-sln-sql/tst/Presentation.API.Tests/UnitTest1.cs
-templates/ca-sln-sql/tst/Presentation.Console.Tests/Presentation.Console.Tests.csproj
-templates/ca-sln-sql/tst/Presentation.Console.Tests/UnitTest1.cs
+templates/ca-sln-sql/tst/Versioning.NET.Tests/Versioning.NET.Tests.csproj
+templates/ca-sln-sql/tst/Versioning.NET.Tests/UnitTest1.cs
 templates/ca-sln/_APP_NAME_.sln
 747522d feat(Repo): Update issue templates [skip ci]
 .github/ISSUE_TEMPLATE/bug_report.md
@@ -261,10 +261,10 @@ src/Presentation.AzureFunction/appsettings.prod.json
 src/Presentation.AzureFunction/appsettings.qa.json
 src/Presentation.AzureFunction/appsettings.stg.json
 src/Presentation.AzureFunction/host.json
-src/Presentation.Console/appsettings.dev.json
-src/Presentation.Console/appsettings.prod.json
-src/Presentation.Console/appsettings.qa.json
-src/Presentation.Console/appsettings.stg.json
+src/Versioning.NET/appsettings.dev.json
+src/Versioning.NET/appsettings.prod.json
+src/Versioning.NET/appsettings.qa.json
+src/Versioning.NET/appsettings.stg.json
 templates/ca-sln/.template.config/template.json
 templates/ca-sln/_APP_NAME_.sln
 templates/ca-sln/_APP_NAME_.sln.DotSettings
@@ -321,16 +321,16 @@ templates/ca-sln/src/Presentation.AzureFunction/appsettings.qa.json
 templates/ca-sln/src/Presentation.AzureFunction/appsettings.stg.json
 templates/ca-sln/src/Presentation.AzureFunction/host.json
 templates/ca-sln/src/Presentation.AzureFunction/local.settings.sample.json
-templates/ca-sln/src/Presentation.Console/Presentation.Console.csproj
-templates/ca-sln/src/Presentation.Console/Program.cs
-templates/ca-sln/src/Presentation.Console/Properties/launchSettings.json
-templates/ca-sln/src/Presentation.Console/Startup.cs
-templates/ca-sln/src/Presentation.Console/appsettings.Development.json
-templates/ca-sln/src/Presentation.Console/appsettings.dev.json
-templates/ca-sln/src/Presentation.Console/appsettings.json
-templates/ca-sln/src/Presentation.Console/appsettings.prod.json
-templates/ca-sln/src/Presentation.Console/appsettings.qa.json
-templates/ca-sln/src/Presentation.Console/appsettings.stg.json
+templates/ca-sln/src/Versioning.NET/Versioning.NET.csproj
+templates/ca-sln/src/Versioning.NET/Program.cs
+templates/ca-sln/src/Versioning.NET/Properties/launchSettings.json
+templates/ca-sln/src/Versioning.NET/Startup.cs
+templates/ca-sln/src/Versioning.NET/appsettings.Development.json
+templates/ca-sln/src/Versioning.NET/appsettings.dev.json
+templates/ca-sln/src/Versioning.NET/appsettings.json
+templates/ca-sln/src/Versioning.NET/appsettings.prod.json
+templates/ca-sln/src/Versioning.NET/appsettings.qa.json
+templates/ca-sln/src/Versioning.NET/appsettings.stg.json
 templates/ca-sln/tst/Business.Tests/Business.Tests.csproj
 templates/ca-sln/tst/Business.Tests/UnitTest1.cs
 templates/ca-sln/tst/Common.Tests/Common.Tests.csproj
@@ -348,8 +348,8 @@ templates/ca-sln/tst/Persistence.Tests/Persistence.Tests.csproj
 templates/ca-sln/tst/Persistence.Tests/UnitTest1.cs
 templates/ca-sln/tst/Presentation.API.Tests/Presentation.API.Tests.csproj
 templates/ca-sln/tst/Presentation.API.Tests/UnitTest1.cs
-templates/ca-sln/tst/Presentation.Console.Tests/Presentation.Console.Tests.csproj
-templates/ca-sln/tst/Presentation.Console.Tests/UnitTest1.cs
+templates/ca-sln/tst/Versioning.NET.Tests/Versioning.NET.Tests.csproj
+templates/ca-sln/tst/Versioning.NET.Tests/UnitTest1.cs
 tools/New-SolutionTest.ps1
 0a1d4f4 ci(Actions): Created a new build and test action
 .github/workflows/build.yml
@@ -409,16 +409,16 @@ src/Presentation.AzureFunction/appsettings.qa.json
 src/Presentation.AzureFunction/appsettings.stg.json
 src/Presentation.AzureFunction/host.json
 src/Presentation.AzureFunction/local.settings.sample.json
-src/Presentation.Console/Presentation.Console.csproj
-src/Presentation.Console/Program.cs
-src/Presentation.Console/Properties/launchSettings.json
-src/Presentation.Console/Startup.cs
-src/Presentation.Console/appsettings.Development.json
-src/Presentation.Console/appsettings.dev.json
-src/Presentation.Console/appsettings.json
-src/Presentation.Console/appsettings.prod.json
-src/Presentation.Console/appsettings.qa.json
-src/Presentation.Console/appsettings.stg.json
+src/Versioning.NET/Versioning.NET.csproj
+src/Versioning.NET/Program.cs
+src/Versioning.NET/Properties/launchSettings.json
+src/Versioning.NET/Startup.cs
+src/Versioning.NET/appsettings.Development.json
+src/Versioning.NET/appsettings.dev.json
+src/Versioning.NET/appsettings.json
+src/Versioning.NET/appsettings.prod.json
+src/Versioning.NET/appsettings.qa.json
+src/Versioning.NET/appsettings.stg.json
 tst/Business.Tests/Business.Tests.csproj
 tst/Business.Tests/UnitTest1.cs
 tst/Common.Tests/Common.Tests.csproj
@@ -436,8 +436,8 @@ tst/Persistence.Tests/Persistence.Tests.csproj
 tst/Persistence.Tests/UnitTest1.cs
 tst/Presentation.API.Tests/Presentation.API.Tests.csproj
 tst/Presentation.API.Tests/UnitTest1.cs
-tst/Presentation.Console.Tests/Presentation.Console.Tests.csproj
-tst/Presentation.Console.Tests/UnitTest1.cs
+tst/Versioning.NET.Tests/Versioning.NET.Tests.csproj
+tst/Versioning.NET.Tests/UnitTest1.cs
 1783a46 Initial commit
 .gitignore
 LICENSE

@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29613.14
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{753F9CB2-330F-4F25-9A8C-B518D6277F71}"
 EndProject
@@ -30,7 +30,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Events", "src\Events\Events
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "src\Common\Common.csproj", "{EB18429F-52CD-4642-88B5-80EE58400C0C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation.Console", "src\Presentation.Console\Presentation.Console.csproj", "{07385AA2-63A4-42B7-9D7E-0C67DA06D9BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Versioning.NET", "src\Versioning.NET\Versioning.NET.csproj", "{07385AA2-63A4-42B7-9D7E-0C67DA06D9BC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Tests", "tst\Common.Tests\Common.Tests.csproj", "{18705E4A-204B-46D8-A200-4A8699098DD1}"
 EndProject
@@ -38,11 +38,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Business.Tests", "tst\Busin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Tests", "tst\Infrastructure.Tests\Infrastructure.Tests.csproj", "{275B5BC4-00B3-416C-92D3-647482DBBC2C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation.Console.Tests", "tst\Presentation.Console.Tests\Presentation.Console.Tests.csproj", "{E524B658-47EE-44CF-AF56-773C5827028A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Versioning.NET.Tests", "tst\Versioning.NET.Tests\Versioning.NET.Tests.csproj", "{E524B658-47EE-44CF-AF56-773C5827028A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mapping.Tests", "tst\Mapping.Tests\Mapping.Tests.csproj", "{7F253D77-1A08-4304-9EA4-495B5337B37E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Tests", "tst\Integration.Tests\Integration.Tests.csproj", "{05DC8AAA-0EF6-4DD3-89EA-626298518F3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Integration.Tests", "tst\Integration.Tests\Integration.Tests.csproj", "{05DC8AAA-0EF6-4DD3-89EA-626298518F3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

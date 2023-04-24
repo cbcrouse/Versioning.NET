@@ -1,6 +1,6 @@
 ﻿using McMaster.Extensions.CommandLineUtils;
 
-namespace Presentation.Console.Commands
+namespace Versioning.NET.Commands
 {
     /// <summary>
     /// The versioning commandline application.

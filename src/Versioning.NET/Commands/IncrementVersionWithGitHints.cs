@@ -6,7 +6,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Presentation.Console.Commands
+namespace Versioning.NET.Commands
 {
     /// <summary>
     /// Increment versions in csproj files with git integration based on git commit messages.

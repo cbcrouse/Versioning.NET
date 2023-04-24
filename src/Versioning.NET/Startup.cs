@@ -1,6 +1,6 @@
 using Infrastructure.Startup;
 
-namespace Presentation.Console
+namespace Versioning.NET
 {
 	/// <summary>
 	/// Provides a startup orchestrator for the console application.
