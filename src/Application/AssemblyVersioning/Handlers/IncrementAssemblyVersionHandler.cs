@@ -1,6 +1,7 @@
 ﻿using Application.AssemblyVersioning.Commands;
 using Application.Extensions;
 using Application.Interfaces;
+using Domain.Enumerations;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Semver;
@@ -37,16 +38,28 @@ namespace Application.AssemblyVersioning.Handlers
         {
             SemVersion assemblyVersion = _assemblyVersioningService.GetLatestAssemblyVersion(request.Directory, request.SearchOption);
 
-            if (assemblyVersion < new SemVersion(1) && !request.ExitBeta)
+            if (IsBetaVersion(assemblyVersion) && !request.ExitBeta)
             {
                 _logger.LogInformation($"Assembly currently in beta. Lowering increment: {request.VersionIncrement}.");
                 request.VersionIncrement = request.VersionIncrement.ToBeta();
                 _logger.LogInformation($"Increment lowered to: {request.VersionIncrement}");
             }
 
+            if (assemblyVersion < new SemVersion(1) && request.ExitBeta)
+            {
+                _logger.LogInformation($"Assembly currently in beta. Exit beta: {request.ExitBeta}.");
+                request.VersionIncrement = VersionIncrement.Major;
+                _logger.LogInformation($"Increment changed to: {request.VersionIncrement}");
+            }
+
             _assemblyVersioningService.IncrementVersion(request.VersionIncrement, request.Directory, request.SearchOption);
             _logger.LogInformation($"Incremented assembly versions by {request.VersionIncrement}.");
             return Task.FromResult(Unit.Value);
+        }
+
+        private bool IsBetaVersion(SemVersion assemblyVersion)
+        {
+            return assemblyVersion < new SemVersion(1);
         }
     }
 }
