@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: [ "main" ]
-    paths: [ "src/**", "tst/**" ]
+    paths: [ "src/**" ]
 
 jobs:
   increment-version:
