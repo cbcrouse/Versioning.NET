@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Presentation.Console.Tests
+namespace Versioning.NET.Tests
 {
     public class StartupTests
     {

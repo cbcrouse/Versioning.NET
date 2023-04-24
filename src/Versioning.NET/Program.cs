@@ -1,13 +1,13 @@
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Hosting;
-using Presentation.Console.Commands;
+using Versioning.NET.Commands;
 using System;
 using System.Threading.Tasks;
 
 #pragma warning disable 1591
 
-namespace Presentation.Console
+namespace Versioning.NET
 {
     public static class Program
     {

@@ -18,6 +18,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Presentation.Console\Presentation.Console.csproj" />
+    <ProjectReference Include="..\..\src\Versioning.NET\Versioning.NET.csproj" />
   </ItemGroup>
 </Project>

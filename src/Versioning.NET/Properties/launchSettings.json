@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Presentation.Console": {
+    "Versioning.NET": {
       "commandName": "Project"
     },
     "Git Versioning": {
