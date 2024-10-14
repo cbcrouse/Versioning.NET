@@ -1,6 +1,6 @@
 # Versioning.NET
 
-![Main Status](https://github.com/cbcrouse/Versioning.NET/workflows/Main%20Status/badge.svg?branch=main) [![NuGet Downloads](https://img.shields.io/nuget/dt/Versioning.NET)](https://www.nuget.org/stats/packages/Versioning.NET?groupby=Version) [![NuGet Version](https://img.shields.io/nuget/v/Versioning.NET)](https://www.nuget.org/packages/Versioning.NET) [![codecov](https://codecov.io/gh/cbcrouse/Versioning.NET/branch/main/graph/badge.svg?token=VT14HECMQE)](https://codecov.io/gh/cbcrouse/Versioning.NET) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Versioning.NET&metric=alert_status)](https://sonarcloud.io/dashboard?id=Versioning.NET)
+![Main Status](https://github.com/cbcrouse/Versioning.NET/workflows/Main%20Status/badge.svg?branch=main) [![NuGet Downloads](https://img.shields.io/nuget/dt/Versioning.NET)](https://www.nuget.org/stats/packages/Versioning.NET?groupby=Version) [![NuGet Version](https://img.shields.io/nuget/v/Versioning.NET)](https://www.nuget.org/packages/Versioning.NET) [![codecov](https://codecov.io/gh/cbcrouse/Versioning.NET/branch/main/graph/badge.svg?token=VT14HECMQE)](https://codecov.io/gh/cbcrouse/Versioning.NET) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=cbcrouse_Versioning.NET&metric=alert_status)](https://sonarcloud.io/dashboard?id=Versioning.NET)
 
 ## Overview
 
