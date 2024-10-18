@@ -47,7 +47,7 @@ namespace Business.Tests.GitVersioning
             gitVersioningService.Setup(x => x.DeterminePriorityIncrement(It.IsAny<IEnumerable<VersionIncrement>>())).Returns(VersionIncrement.None);
             mediator.Setup(x => x.Send(It.IsAny<GetCommitVersionInfosQuery>(), CancellationToken.None)).ReturnsAsync(new List<GitCommitVersionInfo>());
             mediator.Setup(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
-            var sut = new IncrementVersionWithGitHintsHandler(mediator.Object, gitService.Object, gitVersioningService.Object, assemblyVersioningService.Object, logger);
+            var sut = new IncrementVersionWithGitHintsHandler(mediator.Object, gitVersioningService.Object, logger);
 
             // Act
             await sut.Handle(new IncrementVersionWithGitHintsCommand(), CancellationToken.None);
@@ -73,7 +73,7 @@ namespace Business.Tests.GitVersioning
             gitVersioningService.Setup(x => x.DeterminePriorityIncrement(It.IsAny<IEnumerable<VersionIncrement>>())).Returns(VersionIncrement.Unknown);
             mediator.Setup(x => x.Send(It.IsAny<GetCommitVersionInfosQuery>(), CancellationToken.None)).ReturnsAsync(new List<GitCommitVersionInfo>());
             mediator.Setup(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
-            var sut = new IncrementVersionWithGitHintsHandler(mediator.Object, gitService.Object, gitVersioningService.Object, assemblyVersioningService.Object, logger);
+            var sut = new IncrementVersionWithGitHintsHandler(mediator.Object, gitVersioningService.Object, logger);
 
             // Act
             await sut.Handle(new IncrementVersionWithGitHintsCommand(), CancellationToken.None);
@@ -84,42 +84,6 @@ namespace Business.Tests.GitVersioning
             gitService.Verify(x => x.GetCommits(It.IsAny<string>()), Times.Never);
             assemblyVersioningService.Verify(x => x.GetLatestAssemblyVersion(It.IsAny<string>(), It.IsAny<SearchOption>()), Times.Never);
             gitVersioningService.Verify(x => x.DeterminePriorityIncrement(It.IsAny<IEnumerable<VersionIncrement>>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task TargetDirectory_SetToGitDirectory_WhenEmpty()
-        {
-            // Arrange
-            var request = new IncrementVersionWithGitHintsCommand
-            {
-                GitDirectory = "C:\\Temp",
-                TargetDirectory = null,
-                SearchOption = SearchOption.AllDirectories,
-                CommitAuthorEmail = "support@versioning.net",
-                BranchName = "test",
-                RemoteTarget = "origin"
-            };
-            var commit = Commits.First(x => x.Subject == "ci(Versioning): Increment version 0.0.0 -> 0.0.0 [skip ci] [skip hint]");
-            var assemblyVersion = new SemVersion(0);
-            var mediator = new Mock<IMediator>();
-            var gitService = new Mock<IGitService>();
-            var gitVersioningService = new Mock<IGitVersioningService>();
-            var assemblyVersioningService = new Mock<IAssemblyVersioningService>();
-            var logger = new NullLogger<IncrementVersionWithGitHintsHandler>();
-
-            gitVersioningService.Setup(x => x.DeterminePriorityIncrement(It.IsAny<IEnumerable<VersionIncrement>>())).Returns(VersionIncrement.Minor);
-            mediator.Setup(x => x.Send(It.IsAny<GetCommitVersionInfosQuery>(), CancellationToken.None)).ReturnsAsync(new List<GitCommitVersionInfo>());
-            mediator.Setup(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
-
-            gitService.Setup(x => x.GetCommits(It.IsAny<string>())).Returns(Commits);
-            assemblyVersioningService.Setup(x => x.GetLatestAssemblyVersion(request.GitDirectory, request.SearchOption)).Returns(assemblyVersion);
-            var sut = new IncrementVersionWithGitHintsHandler(mediator.Object, gitService.Object, gitVersioningService.Object, assemblyVersioningService.Object, logger);
-
-            // Act
-            await sut.Handle(request, CancellationToken.None);
-
-            // Assert
-            assemblyVersioningService.Verify(x => x.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption), Times.Exactly(2));
         }
 
         [Fact]
@@ -151,20 +115,13 @@ namespace Business.Tests.GitVersioning
 
             gitService.Setup(x => x.GetCommits(It.IsAny<string>())).Returns(Commits);
             assemblyVersioningService.Setup(x => x.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption)).Returns(assemblyVersion);
-            var sut = new IncrementVersionWithGitHintsHandler(mediator.Object, gitService.Object, gitVersioningService.Object, assemblyVersioningService.Object, logger);
+            var sut = new IncrementVersionWithGitHintsHandler(mediator.Object, gitVersioningService.Object, logger);
 
             // Act
             await sut.Handle(request, CancellationToken.None);
 
             // Assert
             mediator.Verify(x => x.Send(It.IsAny<GetCommitVersionInfosQuery>(), CancellationToken.None), Times.Once);
-            mediator.Verify(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None), Times.Once);
-            assemblyVersioningService.Verify(x => x.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption), Times.Exactly(2));
-            gitService.Verify(x => x.CommitChanges(request.GitDirectory, commit.Subject, request.CommitAuthorEmail), Times.Once);
-            gitService.Verify(x => x.GetCommits(request.GitDirectory), Times.Once);
-            gitService.Verify(x => x.CreateTag(request.GitDirectory, $"{request.TagPrefix}{assemblyVersion}{request.TagSuffix}", commit.Id), Times.Once);
-            gitService.Verify(x => x.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/heads/{request.BranchName}"), Times.Once);
-            gitService.Verify(x => x.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/tags/{request.TagPrefix}{assemblyVersion}{request.TagSuffix}"), Times.Once);
             gitVersioningService.Verify(x => x.DeterminePriorityIncrement(It.IsAny<IEnumerable<VersionIncrement>>()), Times.Once);
         }
     }
