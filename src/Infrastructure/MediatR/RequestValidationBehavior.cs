@@ -24,14 +24,14 @@ namespace Infrastructure.MediatR
 			_validators = validators;
 		}
 
-		/// <summary>
-		/// Handles the interception for request validation.
-		/// </summary>
-		/// <param name="request">The <see cref="IRequest"/> object.</param>
-		/// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
-		/// <param name="next">The next handler in the pipeline.</param>
-		public Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
-		{
+        /// <summary>
+        /// Handles the interception for request validation.
+        /// </summary>
+        /// <param name="request">The <see cref="IRequest"/> object.</param>
+        /// <param name="next">The next handler in the pipeline.</param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
+        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+        {
 			var context = new ValidationContext(request);
 
 			List<ValidationFailure> failures = _validators
@@ -45,7 +45,7 @@ namespace Infrastructure.MediatR
 				throw new ValidationException(failures);
 			}
 
-			return next();
+			return await next(cancellationToken);
 		}
 	}
 }

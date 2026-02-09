@@ -25,14 +25,14 @@ namespace Infrastructure.MediatR
 			_logger = loggerFactory.CreateLogger<TRequest>();
 		}
 
-		/// <summary>
-		/// Handles the interception for metrics.
-		/// </summary>
-		/// <param name="request">The <see cref="IRequest"/> object.</param>
-		/// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
-		/// <param name="next">The next handler in the pipeline.</param>
-		public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
-		{
+        /// <summary>
+        /// Handles the interception for metrics.
+        /// </summary>
+        /// <param name="request">The <see cref="IRequest"/> object.</param>
+        /// <param name="next">The next handler in the pipeline.</param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
+        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+        {
 			_timer.Start();
 
 			TResponse response = await next();

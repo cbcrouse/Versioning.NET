@@ -35,7 +35,7 @@ namespace Infrastructure.Startup
             ServiceRegistrationExpressions.Add(() => ServiceCollection.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>)));
             ServiceRegistrationExpressions.Add(() => ServiceCollection.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>)));
             ServiceRegistrationExpressions.Add(() => ServiceCollection.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestMetricsBehavior<,>)));
-            ServiceRegistrationExpressions.Add(() => ServiceCollection.AddMediatR(typeof(ApplicationOptions).Assembly));
+            ServiceRegistrationExpressions.Add(() => ServiceCollection.AddMediatR(mediatRServiceConfiguration => mediatRServiceConfiguration.RegisterServicesFromAssembly(typeof(ApplicationOptions).Assembly)));
             ServiceRegistrationExpressions.Add(() => ServiceCollection.AddValidatorsFromAssemblyContaining(typeof(ApplicationOptions), ServiceLifetime.Transient));
 
             // AutoMapper

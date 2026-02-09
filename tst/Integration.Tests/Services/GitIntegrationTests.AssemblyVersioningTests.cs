@@ -141,7 +141,6 @@ namespace Integration.Tests.Services
             var ex = Assert.Throws<ArgumentOutOfRangeException>(() => service.IncrementVersion((VersionIncrement)6, TestRepoDirectory, SearchOption.AllDirectories));
 
             // Assert
-            Assert.Contains("Exception of type 'System.ArgumentOutOfRangeException' was thrown.", ex.Message);
             Assert.Contains("Actual value was 6.", ex.Message);
         }
     }

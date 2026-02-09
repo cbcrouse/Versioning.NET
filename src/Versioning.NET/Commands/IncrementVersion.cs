@@ -1,11 +1,12 @@
-﻿using Application.AssemblyVersioning.Commands;
+﻿using System.ComponentModel.DataAnnotations;
+using Application.AssemblyVersioning.Commands;
 using Domain.Enumerations;
 using McMaster.Extensions.CommandLineUtils;
 using MediatR;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using AllowedValues = McMaster.Extensions.CommandLineUtils.AllowedValuesAttribute;
 
 namespace Versioning.NET.Commands
 {

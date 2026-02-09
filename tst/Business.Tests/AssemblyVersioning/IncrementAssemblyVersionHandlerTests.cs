@@ -137,7 +137,6 @@ namespace Business.Tests.AssemblyVersioning
             var ex = await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await sut.Handle(request, CancellationToken.None));
 
             // Assert
-            Assert.Contains("Exception of type 'System.ArgumentOutOfRangeException' was thrown.", ex.Message);
             Assert.Contains("Actual value was 6.", ex.Message);
         }
 

@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using AllowedValues = McMaster.Extensions.CommandLineUtils.AllowedValuesAttribute;
 
 namespace Versioning.NET.Commands
 {
