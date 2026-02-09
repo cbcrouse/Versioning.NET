@@ -5,7 +5,7 @@
     <IsTestProject>false</IsTestProject>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsPackable>false</IsPackable>
-    <VersionPrefix>0.8.0</VersionPrefix>
+    <VersionPrefix>0.8.1</VersionPrefix>
     <Nullable>enable</Nullable>
     <WarningsAsErrors>CS8600;CS8602;CS8603</WarningsAsErrors>
   </PropertyGroup>
