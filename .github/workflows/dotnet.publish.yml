@@ -33,6 +33,16 @@ jobs:
         git remote set-url origin "https://cbcrouse:${{ secrets.GITHUBACCESSTOKEN }}@github.com/cbcrouse/Versioning.NET.git"
         git checkout ${{ github.ref_name }}
 
+    - name: Setup .NET 6
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '6.x'
+
+    - name: Setup .NET 10
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.x'
+
     - name: Install Versioning.NET
       run: |
         dotnet tool install --global Versioning.NET
@@ -49,11 +59,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
-
-      - name: Setup .NET 6
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '6.x'
 
       - name: Setup .NET 10
         uses: actions/setup-dotnet@v4

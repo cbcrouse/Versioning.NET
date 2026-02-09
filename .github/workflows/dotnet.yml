@@ -45,11 +45,6 @@ jobs:
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"cbcrouse_Versioning.NET" /o:"osiris" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
 
-      - name: Setup .NET 6
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 6.x
-
       - name: Setup .NET 10
         uses: actions/setup-dotnet@v4
         with:
