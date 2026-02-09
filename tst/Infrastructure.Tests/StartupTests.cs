@@ -19,10 +19,8 @@ public class StartupTests
         var configurationBuilder = new ConfigurationBuilder();
         Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
         var configuration = configurationBuilder.Build();
-        var orchestrator = new AppStartupOrchestrator();
-        orchestrator.InitializeConfiguration(configuration);
-        orchestrator.InitializeServiceCollection(serviceCollection);
-        orchestrator.Orchestrate();
+        var pipeline = new CoreServiceRegistrationPipeline();
+        pipeline.Execute(serviceCollection, configuration);
 
         ServiceProvider = serviceCollection.BuildServiceProvider();
     }

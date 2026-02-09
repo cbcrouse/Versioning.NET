@@ -14,6 +14,7 @@
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="LibGit2Sharp" Version="0.31.0" />
+    <PackageReference Include="ServiceComposition.NET" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
@@ -33,7 +34,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ValueResolvers\" />
     <Folder Include="MediatR\" />
   </ItemGroup>
   <ProjectExtensions>

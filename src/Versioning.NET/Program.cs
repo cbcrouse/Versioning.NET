@@ -38,10 +38,10 @@ public static class Program
     {
         return Host.CreateDefaultBuilder(args)
             .UseCommandLineApplication<App>(args)
-            .ConfigureServices(services =>
+            .ConfigureServices((context, services) =>
             {
-                var startup = new Startup();
-                startup.ConfigureServices(services);
+                var startup = new AppServiceComposition();
+                startup.ConfigureServices(services, context.Configuration);
             });
     }
 }

@@ -11,14 +11,10 @@ using Xunit;
 
 namespace Integration.Tests.Handlers;
 
-public class IncrementVersionWithGitHintsHandlerTests : GitSetup, IClassFixture<Orchestrator>
+public class IncrementVersionWithGitHintsHandlerTests(ServiceProviderFactory serviceProviderFactory)
+    : GitSetup, IClassFixture<ServiceProviderFactory>
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public IncrementVersionWithGitHintsHandlerTests(Orchestrator orchestrator)
-    {
-        _serviceProvider = orchestrator.BuildServiceProvider();
-    }
+    private readonly IServiceProvider _serviceProvider = serviceProviderFactory.Create();
 
     [Fact]
     public void Handle_WorksAsExpected()

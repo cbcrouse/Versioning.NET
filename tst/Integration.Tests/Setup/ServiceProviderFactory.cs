@@ -6,18 +6,16 @@ using System;
 
 namespace Integration.Tests.Setup;
 
-public class Orchestrator
+public class ServiceProviderFactory
 {
-    public IServiceProvider BuildServiceProvider()
+    public IServiceProvider Create()
     {
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddLogging(builder => builder.AddConsole());
         var configurationBuilder = new ConfigurationBuilder();
         var configuration = configurationBuilder.Build();
-        var orchestrator = new AppStartupOrchestrator();
-        orchestrator.InitializeConfiguration(configuration);
-        orchestrator.InitializeServiceCollection(serviceCollection);
-        orchestrator.Orchestrate();
+        var pipeline = new CoreServiceRegistrationPipeline();
+        pipeline.Execute(serviceCollection, configuration);
         return serviceCollection.BuildServiceProvider();
     }
 }

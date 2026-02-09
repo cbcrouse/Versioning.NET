@@ -1,10 +1,9 @@
 using Infrastructure.Startup;
+using ServiceComposition.NET;
 
 namespace Versioning.NET;
 
 /// <summary>
 /// Provides a startup orchestrator for the console application.
 /// </summary>
-public class Startup : PresentationStartupOrchestrator<AppStartupOrchestrator>
-{
-}
+public class AppServiceComposition : ServiceCompositionRoot<CoreServiceRegistrationPipeline>;
