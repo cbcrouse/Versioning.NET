@@ -6,91 +6,72 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using Xunit;
 
-namespace Infrastructure.Tests
+namespace Infrastructure.Tests;
+
+public class StartupTests
 {
-    public class StartupTests
+    private IServiceProvider ServiceProvider { get; }
+
+    public StartupTests()
     {
-        private IServiceProvider ServiceProvider { get; }
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddLogging();
+        var configurationBuilder = new ConfigurationBuilder();
+        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
+        var configuration = configurationBuilder.Build();
+        var orchestrator = new AppStartupOrchestrator();
+        orchestrator.InitializeConfiguration(configuration);
+        orchestrator.InitializeServiceCollection(serviceCollection);
+        orchestrator.Orchestrate();
 
-        public StartupTests()
-        {
-            var serviceCollection = new ServiceCollection();
-            serviceCollection.AddLogging();
-            var configurationBuilder = new ConfigurationBuilder();
-            Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
-            var configuration = configurationBuilder.Build();
-            var orchestrator = new AppStartupOrchestrator();
-            orchestrator.InitializeConfiguration(configuration);
-            orchestrator.InitializeServiceCollection(serviceCollection);
-            orchestrator.Orchestrate();
+        ServiceProvider = serviceCollection.BuildServiceProvider();
+    }
 
-            ServiceProvider = serviceCollection.BuildServiceProvider();
-        }
+    [Fact]
+    public void AssemblyVersioningService_IsAssignableFrom_IAssemblyVersioningService()
+    {
+        var sut = new AssemblyVersioningService();
 
-        [Fact]
-        public void AssemblyVersioningService_IsAssignableFrom_IAssemblyVersioningService()
-        {
-            // Arrange
-            var sut = new AssemblyVersioningService();
+        Assert.IsAssignableFrom<IAssemblyVersioningService>(sut);
+    }
 
-            // Act & Assert
-            Assert.IsAssignableFrom<IAssemblyVersioningService>(sut);
+    [Fact]
+    public void IAssemblyVersioningService_IsRegisteredCorrectly()
+    {
+        var sut = ServiceProvider.GetRequiredService<IAssemblyVersioningService>();
 
-        }
+        Assert.IsType<AssemblyVersioningService>(sut);
+    }
 
-        [Fact]
-        public void IAssemblyVersioningService_IsRegisteredCorrectly()
-        {
-            // Arrange
-            var sut = ServiceProvider.GetRequiredService<IAssemblyVersioningService>();
+    [Fact]
+    public void LibGit2Service_IsAssignableFrom_IGitService()
+    {
+        var sut = new LibGit2Service();
 
-            // Act & Assert
-            Assert.IsType<AssemblyVersioningService>(sut);
+        Assert.IsAssignableFrom<IGitService>(sut);
+    }
 
-        }
+    [Fact]
+    public void IGitService_IsRegisteredCorrectly()
+    {
+        var sut = ServiceProvider.GetRequiredService<IGitService>();
 
-        [Fact]
-        public void LibGit2Service_IsAssignableFrom_IGitService()
-        {
-            // Arrange
-            var sut = new LibGit2Service();
+        Assert.IsType<LibGit2Service>(sut);
+    }
 
-            // Act & Assert
-            Assert.IsAssignableFrom<IGitService>(sut);
+    [Fact]
+    public void GitVersioningService_IsAssignableFrom_IGitVersioningService()
+    {
+        var sut = new GitVersioningService();
 
-        }
+        Assert.IsAssignableFrom<IGitVersioningService>(sut);
+    }
 
-        [Fact]
-        public void IGitService_IsRegisteredCorrectly()
-        {
-            // Arrange
-            var sut = ServiceProvider.GetRequiredService<IGitService>();
+    [Fact]
+    public void IGitVersioningService_IsRegisteredCorrectly()
+    {
+        var sut = ServiceProvider.GetRequiredService<IGitVersioningService>();
 
-            // Act & Assert
-            Assert.IsType<LibGit2Service>(sut);
-
-        }
-
-        [Fact]
-        public void GitVersioningService_IsAssignableFrom_IGitVersioningService()
-        {
-            // Arrange
-            var sut = new GitVersioningService();
-
-            // Act & Assert
-            Assert.IsAssignableFrom<IGitVersioningService>(sut);
-
-        }
-
-        [Fact]
-        public void IGitVersioningService_IsRegisteredCorrectly()
-        {
-            // Arrange
-            var sut = ServiceProvider.GetRequiredService<IGitVersioningService>();
-
-            // Act & Assert
-            Assert.IsType<GitVersioningService>(sut);
-
-        }
+        Assert.IsType<GitVersioningService>(sut);
     }
 }

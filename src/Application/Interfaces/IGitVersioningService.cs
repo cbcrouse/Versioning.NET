@@ -3,29 +3,28 @@ using Domain.Enumerations;
 using Semver;
 using System.Collections.Generic;
 
-namespace Application.Interfaces
+namespace Application.Interfaces;
+
+/// <summary>
+/// An abstraction for retrieving version hint info from git commit messages.
+/// </summary>
+public interface IGitVersioningService
 {
     /// <summary>
-    /// An abstraction for retrieving version hint info from git commit messages.
+    /// Returns the latest git version tag.
     /// </summary>
-    public interface IGitVersioningService
-    {
-        /// <summary>
-        /// Returns the latest git version tag.
-        /// </summary>
-        /// <param name="gitTags">A collection of git tags.</param>
-        KeyValuePair<string, SemVersion>? GetLatestVersionTag(IEnumerable<string> gitTags);
+    /// <param name="gitTags">A collection of git tags.</param>
+    KeyValuePair<string, SemVersion>? GetLatestVersionTag(IEnumerable<string> gitTags);
 
-        /// <summary>
-        /// Retrieve a collection of <see cref="GitCommitVersionInfo"/> from a collection of git commit message subject lines.
-        /// </summary>
-        /// <param name="gitCommits">A collection of git commits.</param>
-        IEnumerable<GitCommitVersionInfo> GetCommitVersionInfo(IEnumerable<GitCommit> gitCommits);
+    /// <summary>
+    /// Retrieve a collection of <see cref="GitCommitVersionInfo"/> from a collection of git commit message subject lines.
+    /// </summary>
+    /// <param name="gitCommits">A collection of git commits.</param>
+    IEnumerable<GitCommitVersionInfo> GetCommitVersionInfo(IEnumerable<GitCommit> gitCommits);
 
-        /// <summary>
-        /// Returns the prioritized <see cref="VersionIncrement"/> from a collection of <see cref="VersionIncrement"/>s.
-        /// </summary>
-        /// <param name="increments">A collection of <see cref="VersionIncrement"/>s.</param>
-        VersionIncrement DeterminePriorityIncrement(IEnumerable<VersionIncrement> increments);
-    }
+    /// <summary>
+    /// Returns the prioritized <see cref="VersionIncrement"/> from a collection of <see cref="VersionIncrement"/>s.
+    /// </summary>
+    /// <param name="increments">A collection of <see cref="VersionIncrement"/>s.</param>
+    VersionIncrement DeterminePriorityIncrement(IEnumerable<VersionIncrement> increments);
 }

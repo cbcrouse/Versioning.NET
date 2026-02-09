@@ -1,47 +1,47 @@
-using FluentValidation;
+
 using FluentValidation.Results;
 using Microsoft.Extensions.Hosting;
-using Versioning.NET.Commands;
 using System;
 using System.Threading.Tasks;
+using FluentValidation;
+using Versioning.NET.Commands;
 
 #pragma warning disable 1591
 
-namespace Versioning.NET
-{
-    public static class Program
-    {
-        public static async Task<int> Main(string[] args)
-        {
-            IHost host = CreateHostBuilder(args).Build();
-            var resultCode = 0;
-            try
-            {
-                resultCode = await host.RunCommandLineApplicationAsync();
-            }
-            catch (ValidationException e)
-            {
-                foreach (ValidationFailure validationFailure in e.Errors)
-                {
-                    System.Console.ForegroundColor = ConsoleColor.Red;
-                    System.Console.WriteLine(validationFailure.ErrorMessage);
-                    System.Console.ResetColor();
-                    resultCode = -1;
-                }
-            }
+namespace Versioning.NET;
 
-            return resultCode;
+public static class Program
+{
+    public static async Task<int> Main(string[] args)
+    {
+        IHost host = CreateHostBuilder(args).Build();
+        var resultCode = 0;
+        try
+        {
+            resultCode = await host.RunCommandLineApplicationAsync();
+        }
+        catch (ValidationException e)
+        {
+            foreach (ValidationFailure validationFailure in e.Errors)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(validationFailure.ErrorMessage);
+                Console.ResetColor();
+                resultCode = -1;
+            }
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args)
-        {
-            return Host.CreateDefaultBuilder(args)
-                .UseCommandLineApplication<App>(args)
-                .ConfigureServices(services =>
-                {
+        return resultCode;
+    }
+
+    public static IHostBuilder CreateHostBuilder(string[] args)
+    {
+        return Host.CreateDefaultBuilder(args)
+            .UseCommandLineApplication<App>(args)
+            .ConfigureServices(services =>
+            {
                 var startup = new Startup();
                 startup.ConfigureServices(services);
-                });
-        }
+            });
     }
 }

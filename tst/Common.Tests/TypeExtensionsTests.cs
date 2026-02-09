@@ -2,28 +2,27 @@
 using Common.Tests.TestClasses;
 using Xunit;
 
-namespace Common.Tests
+namespace Common.Tests;
+
+public class TypeExtensionsTests
 {
-    public class TypeExtensionsTests
+    [Fact]
+    public void HasEmptyConstructor_ReturnsTrue_WithEmptyConstructor()
     {
-        [Fact]
-        public void HasEmptyConstructor_ReturnsTrue_WithEmptyConstructor()
-        {
-            // Arrange & Assert
-            var hasEmptyConstructor = typeof(ClassWithEmptyConstructor).HasEmptyConstructor();
+        // Arrange & Assert
+        var hasEmptyConstructor = typeof(ClassWithEmptyConstructor).HasEmptyConstructor();
 
-            // Assert
-            Assert.True(hasEmptyConstructor);
-        }
+        // Assert
+        Assert.True(hasEmptyConstructor);
+    }
 
-        [Fact]
-        public void HasEmptyConstructor_ReturnsFalse_WithNoEmptyConstructor()
-        {
-            // Arrange & Assert
-            var hasEmptyConstructor = typeof(ClassWithNoEmptyConstructor).HasEmptyConstructor();
+    [Fact]
+    public void HasEmptyConstructor_ReturnsFalse_WithNoEmptyConstructor()
+    {
+        // Arrange & Assert
+        var hasEmptyConstructor = typeof(ClassWithNoEmptyConstructor).HasEmptyConstructor();
 
-            // Assert
-            Assert.False(hasEmptyConstructor);
-        }
+        // Assert
+        Assert.False(hasEmptyConstructor);
     }
 }

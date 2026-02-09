@@ -11,199 +11,137 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Business.Tests.AssemblyVersioning
+namespace Business.Tests.AssemblyVersioning;
+
+public class IncrementAssemblyVersionHandlerTests
 {
-    public class IncrementAssemblyVersionHandlerTests
+    private static readonly string DirectoryPath = "C:\\Temp";
+
+    private static (IncrementAssemblyVersionHandler Sut, Mock<IAssemblyVersioningService> Service) CreateSut(SemVersion latestVersion)
     {
-        [Fact]
-        public async Task Handler_CallsDependencies()
+        var service = new Mock<IAssemblyVersioningService>();
+        service
+            .Setup(x => x.GetLatestAssemblyVersion(It.IsAny<string>(), It.IsAny<SearchOption>()))
+            .Returns(latestVersion);
+
+        var logger = new NullLogger<IncrementAssemblyVersionHandler>();
+        var sut = new IncrementAssemblyVersionHandler(service.Object, logger);
+
+        return (sut, service);
+    }
+
+    private static IncrementAssemblyVersionCommand CreateRequest(VersionIncrement increment, bool exitBeta = false)
+        => new()
         {
-            // Arrange
-            var request = new IncrementAssemblyVersionCommand
-            {
-                Directory = "C:\\Temp",
-                VersionIncrement = VersionIncrement.Minor
-            };
-            var service = new Mock<IAssemblyVersioningService>();
-            var logger = new NullLogger<IncrementAssemblyVersionHandler>();
-            var sut = new IncrementAssemblyVersionHandler(service.Object, logger);
+            Directory = DirectoryPath,
+            VersionIncrement = increment,
+            ExitBeta = exitBeta
+        };
 
-            // Act
-            await sut.Handle(request, CancellationToken.None);
+    [Fact]
+    public async Task Handler_CallsDependencies()
+    {
+        var request = CreateRequest(VersionIncrement.Minor);
+        var (sut, service) = CreateSut(new SemVersion(0, 1, 1));
 
-            // Assert
-            service.Verify(x => x.IncrementVersion(It.IsAny<VersionIncrement>(), It.IsAny<string>(), It.IsAny<SearchOption>()), Times.Once);
-        }
+        await sut.Handle(request, CancellationToken.None);
 
-        [Fact]
-        public async Task BetaVersion_LoweredToMinor_FromMajor()
-        {
-            // Arrange
-            var request = new IncrementAssemblyVersionCommand
-            {
-                Directory = "C:\\Temp",
-                VersionIncrement = VersionIncrement.Major
-            };
-            var service = new Mock<IAssemblyVersioningService>();
-            service.Setup(x => x.GetLatestAssemblyVersion(It.IsAny<string>(), It.IsAny<SearchOption>())).Returns(new SemVersion(0, 1, 1));
-            var logger = new NullLogger<IncrementAssemblyVersionHandler>();
-            var sut = new IncrementAssemblyVersionHandler(service.Object, logger);
+        service.Verify(versioningService => versioningService
+                .IncrementVersion(It.IsAny<VersionIncrement>(), DirectoryPath, It.IsAny<SearchOption>()), Times.Once);
+    }
 
-            // Act
-            await sut.Handle(request, CancellationToken.None);
+    [Fact]
+    public async Task BetaVersion_LoweredToMinor_FromMajor()
+    {
+        var request = CreateRequest(VersionIncrement.Major);
+        var (sut, service) = CreateSut(new SemVersion(0, 1, 1));
 
-            // Assert
-            service.Verify(x => x.IncrementVersion(VersionIncrement.Minor, It.IsAny<string>(), It.IsAny<SearchOption>()), Times.Once);
-        }
+        await sut.Handle(request, CancellationToken.None);
 
-        [Fact]
-        public async Task BetaVersion_StaysMinor_WhenIncrementIsMinor()
-        {
-            // Arrange
-            var request = new IncrementAssemblyVersionCommand
-            {
-                Directory = "C:\\Temp",
-                VersionIncrement = VersionIncrement.Minor
-            };
-            var service = new Mock<IAssemblyVersioningService>();
-            service.Setup(x => x.GetLatestAssemblyVersion(It.IsAny<string>(), It.IsAny<SearchOption>())).Returns(new SemVersion(0, 1, 1));
-            var logger = new NullLogger<IncrementAssemblyVersionHandler>();
-            var sut = new IncrementAssemblyVersionHandler(service.Object, logger);
+        service.Verify(versioningService => versioningService
+                .IncrementVersion(VersionIncrement.Minor, DirectoryPath, It.IsAny<SearchOption>()), Times.Once);
+    }
 
-            // Act
-            await sut.Handle(request, CancellationToken.None);
+    [Fact]
+    public async Task BetaVersion_StaysMinor_WhenIncrementIsMinor()
+    {
+        var request = CreateRequest(VersionIncrement.Minor);
+        var (sut, service) = CreateSut(new SemVersion(0, 1, 1));
 
-            // Assert
-            service.Verify(x => x.IncrementVersion(VersionIncrement.Minor, It.IsAny<string>(), It.IsAny<SearchOption>()), Times.Once);
-        }
+        await sut.Handle(request, CancellationToken.None);
 
-        [Fact]
-        public async Task BetaVersion_StaysPatch_WhenIncrementIsPatch()
-        {
-            // Arrange
-            var request = new IncrementAssemblyVersionCommand
-            {
-                Directory = "C:\\Temp",
-                VersionIncrement = VersionIncrement.Patch
-            };
-            var service = new Mock<IAssemblyVersioningService>();
-            service.Setup(x => x.GetLatestAssemblyVersion(It.IsAny<string>(), It.IsAny<SearchOption>())).Returns(new SemVersion(0, 1, 1));
-            var logger = new NullLogger<IncrementAssemblyVersionHandler>();
-            var sut = new IncrementAssemblyVersionHandler(service.Object, logger);
+        service.Verify(versioningService => versioningService
+                .IncrementVersion(VersionIncrement.Minor, DirectoryPath, It.IsAny<SearchOption>()), Times.Once);
+    }
 
-            // Act
-            await sut.Handle(request, CancellationToken.None);
+    [Fact]
+    public async Task BetaVersion_StaysPatch_WhenIncrementIsPatch()
+    {
+        var request = CreateRequest(VersionIncrement.Patch);
+        var (sut, service) = CreateSut(new SemVersion(0, 1, 1));
 
-            // Assert
-            service.Verify(x => x.IncrementVersion(VersionIncrement.Patch, It.IsAny<string>(), It.IsAny<SearchOption>()), Times.Once);
-        }
+        await sut.Handle(request, CancellationToken.None);
 
-        [Fact]
-        public async Task BetaVersion_SetsIncrementToNone_WhenIncrementIsUnknown()
-        {
-            // Arrange
-            var request = new IncrementAssemblyVersionCommand
-            {
-                Directory = "C:\\Temp",
-                VersionIncrement = VersionIncrement.Unknown
-            };
-            var service = new Mock<IAssemblyVersioningService>();
-            service.Setup(x => x.GetLatestAssemblyVersion(It.IsAny<string>(), It.IsAny<SearchOption>())).Returns(new SemVersion(0, 1, 1));
-            var logger = new NullLogger<IncrementAssemblyVersionHandler>();
-            var sut = new IncrementAssemblyVersionHandler(service.Object, logger);
+        service.Verify(versioningService => versioningService
+                .IncrementVersion(VersionIncrement.Patch, DirectoryPath, It.IsAny<SearchOption>()), Times.Once);
+    }
 
-            // Act
-            await sut.Handle(request, CancellationToken.None);
+    [Fact]
+    public async Task BetaVersion_SetsIncrementToNone_WhenIncrementIsUnknown()
+    {
+        var request = CreateRequest(VersionIncrement.Unknown);
+        var (sut, service) = CreateSut(new SemVersion(0, 1, 1));
 
-            // Assert
-            service.Verify(x => x.IncrementVersion(VersionIncrement.None, It.IsAny<string>(), It.IsAny<SearchOption>()), Times.Once);
-        }
+        await sut.Handle(request, CancellationToken.None);
 
-        [Fact]
-        public async Task BetaVersion_Throws_WhenInvalidIncrement()
-        {
-            // Arrange
-            var request = new IncrementAssemblyVersionCommand
-            {
-                Directory = "C:\\Temp",
-                VersionIncrement = (VersionIncrement)6
-            };
-            var service = new Mock<IAssemblyVersioningService>();
-            service.Setup(x => x.GetLatestAssemblyVersion(It.IsAny<string>(), It.IsAny<SearchOption>())).Returns(new SemVersion(0, 1, 1));
-            var logger = new NullLogger<IncrementAssemblyVersionHandler>();
-            var sut = new IncrementAssemblyVersionHandler(service.Object, logger);
+        service.Verify(versioningService => versioningService
+                .IncrementVersion(VersionIncrement.None, DirectoryPath, It.IsAny<SearchOption>()), Times.Once);
+    }
 
-            // Act
-            var ex = await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await sut.Handle(request, CancellationToken.None));
+    [Fact]
+    public async Task BetaVersion_Throws_WhenInvalidIncrement()
+    {
+        var request = CreateRequest((VersionIncrement)6);
+        var (sut, _) = CreateSut(new SemVersion(0, 1, 1));
 
-            // Assert
-            Assert.Contains("Actual value was 6.", ex.Message);
-        }
+        var ex = await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => sut.Handle(request, CancellationToken.None));
 
-        [Fact]
-        public async Task BetaVersion_DoesNotLowerIncrement_WhenExitBeta_IsTrue()
-        {
-            // Arrange
-            var request = new IncrementAssemblyVersionCommand
-            {
-                Directory = "C:\\Temp",
-                VersionIncrement = VersionIncrement.Major,
-                ExitBeta = true
-            };
-            var service = new Mock<IAssemblyVersioningService>();
-            service.Setup(x => x.GetLatestAssemblyVersion(It.IsAny<string>(), It.IsAny<SearchOption>())).Returns(new SemVersion(0, 1, 1));
-            var logger = new NullLogger<IncrementAssemblyVersionHandler>();
-            var sut = new IncrementAssemblyVersionHandler(service.Object, logger);
+        Assert.Contains("Actual value was 6.", ex.Message);
+    }
 
-            // Act
-            _ = await sut.Handle(request, CancellationToken.None);
+    [Fact]
+    public async Task BetaVersion_DoesNotLowerIncrement_WhenExitBeta_IsTrue()
+    {
+        var request = CreateRequest(VersionIncrement.Major, exitBeta: true);
+        var (sut, service) = CreateSut(new SemVersion(0, 1, 1));
 
-            // Assert
-            service.Verify(x => x.IncrementVersion(VersionIncrement.Major, It.IsAny<string>(), It.IsAny<SearchOption>()), Times.Once);
-        }
+        await sut.Handle(request, CancellationToken.None);
 
-        [Fact]
-        public async Task BetaVersion_SetsIncrementToMajor_WhenExitBeta_IsTrue()
-        {
-            // Arrange
-            var request = new IncrementAssemblyVersionCommand
-            {
-                Directory = "C:\\Temp",
-                VersionIncrement = VersionIncrement.Minor,
-                ExitBeta = true
-            };
-            var service = new Mock<IAssemblyVersioningService>();
-            service.Setup(x => x.GetLatestAssemblyVersion(It.IsAny<string>(), It.IsAny<SearchOption>())).Returns(new SemVersion(0, 1, 1));
-            var logger = new NullLogger<IncrementAssemblyVersionHandler>();
-            var sut = new IncrementAssemblyVersionHandler(service.Object, logger);
+        service.Verify(versioningService => versioningService
+                .IncrementVersion(VersionIncrement.Major, DirectoryPath, It.IsAny<SearchOption>()), Times.Once);
+    }
 
-            // Act
-            _ = await sut.Handle(request, CancellationToken.None);
+    [Fact]
+    public async Task BetaVersion_SetsIncrementToMajor_WhenExitBeta_IsTrue()
+    {
+        var request = CreateRequest(VersionIncrement.Minor, exitBeta: true);
+        var (sut, service) = CreateSut(new SemVersion(0, 1, 1));
 
-            // Assert
-            service.Verify(x => x.IncrementVersion(VersionIncrement.Major, It.IsAny<string>(), It.IsAny<SearchOption>()), Times.Once);
-        }
+        await sut.Handle(request, CancellationToken.None);
 
-        [Fact]
-        public async Task NonBetaVersion_Unchanged_WhenExitBeta_IsTrue()
-        {
-            // Arrange
-            var request = new IncrementAssemblyVersionCommand
-            {
-                Directory = "C:\\Temp",
-                VersionIncrement = VersionIncrement.Minor,
-                ExitBeta = true
-            };
-            var service = new Mock<IAssemblyVersioningService>();
-            service.Setup(x => x.GetLatestAssemblyVersion(It.IsAny<string>(), It.IsAny<SearchOption>())).Returns(new SemVersion(1, 1, 1));
-            var logger = new NullLogger<IncrementAssemblyVersionHandler>();
-            var sut = new IncrementAssemblyVersionHandler(service.Object, logger);
+        service.Verify(versioningService => versioningService
+                .IncrementVersion(VersionIncrement.Major, DirectoryPath, It.IsAny<SearchOption>()), Times.Once);
+    }
 
-            // Act
-            _ = await sut.Handle(request, CancellationToken.None);
+    [Fact]
+    public async Task NonBetaVersion_Unchanged_WhenExitBeta_IsTrue()
+    {
+        var request = CreateRequest(VersionIncrement.Minor, exitBeta: true);
+        var (sut, service) = CreateSut(new SemVersion(1, 1, 1));
 
-            // Assert
-            service.Verify(x => x.IncrementVersion(VersionIncrement.Minor, It.IsAny<string>(), It.IsAny<SearchOption>()), Times.Once);
-        }
+        await sut.Handle(request, CancellationToken.None);
+
+        service.Verify(versioningService => versioningService
+                .IncrementVersion(VersionIncrement.Minor, DirectoryPath, It.IsAny<SearchOption>()), Times.Once);
     }
 }

@@ -10,6 +10,6 @@
     <WarningsAsErrors>CS8600;CS8602;CS8603</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="semver" Version="2.0.6" />
+    <PackageReference Include="semver" Version="3.0.0" />
   </ItemGroup>
 </Project>

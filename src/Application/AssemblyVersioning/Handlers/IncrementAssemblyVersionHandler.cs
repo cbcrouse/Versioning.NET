@@ -8,58 +8,44 @@ using Semver;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Application.AssemblyVersioning.Handlers
+namespace Application.AssemblyVersioning.Handlers;
+
+/// <summary>
+/// The <see cref="IRequestHandler{TRequest,TResponse}"/> responsible for incrementing assembly versions.
+/// </summary>
+/// <param name="assemblyVersioningService">An abstraction for working with assembly versions.</param>
+/// <param name="logger">A generic interface for logging.</param>
+public class IncrementAssemblyVersionHandler(IAssemblyVersioningService assemblyVersioningService, ILogger<IncrementAssemblyVersionHandler> logger)
+    : IRequestHandler<IncrementAssemblyVersionCommand, Unit>
 {
-    /// <summary>
-    /// The <see cref="IRequestHandler{TRequest,TResponse}"/> responsible for incrementing assembly versions.
-    /// </summary>
-    public class IncrementAssemblyVersionHandler : IRequestHandler<IncrementAssemblyVersionCommand, Unit>
+    /// <inheritdoc />
+    public Task<Unit> Handle(IncrementAssemblyVersionCommand request, CancellationToken cancellationToken)
     {
-        private readonly IAssemblyVersioningService _assemblyVersioningService;
-        private readonly ILogger<IncrementAssemblyVersionHandler> _logger;
+        SemVersion assemblyVersion = assemblyVersioningService.GetLatestAssemblyVersion(request.Directory, request.SearchOption);
 
-        /// <summary>
-        /// Default Constructor
-        /// </summary>
-        /// <param name="assemblyVersioningService">An abstraction for working with assembly versions.</param>
-        /// <param name="logger">A generic interface for logging.</param>
-        public IncrementAssemblyVersionHandler(IAssemblyVersioningService assemblyVersioningService, ILogger<IncrementAssemblyVersionHandler> logger)
+        logger.LogInformation("Latest assembly version found: '{AssemblyVersion}'.", assemblyVersion);
+
+        if (IsBetaVersion(assemblyVersion) && !request.ExitBeta)
         {
-            _assemblyVersioningService = assemblyVersioningService;
-            _logger = logger;
+            logger.LogInformation("Assembly currently in beta. Lowering increment to '{VersionIncrement}'.", request.VersionIncrement);
+            request.VersionIncrement = request.VersionIncrement.ToBeta();
+            logger.LogInformation("Increment lowered to '{VersionIncrement}'", request.VersionIncrement);
         }
 
-        /// <summary>
-        /// Handles the request to version assemblies.
-        /// </summary>
-        /// <param name="request">The <see cref="IMediator"/> request object responsible for incrementing assembly versions.</param>
-        /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
-        public Task<Unit> Handle(IncrementAssemblyVersionCommand request, CancellationToken cancellationToken)
+        if (IsBetaVersion(assemblyVersion) && request.ExitBeta)
         {
-            SemVersion assemblyVersion = _assemblyVersioningService.GetLatestAssemblyVersion(request.Directory, request.SearchOption);
-
-            if (IsBetaVersion(assemblyVersion) && !request.ExitBeta)
-            {
-                _logger.LogInformation("Assembly currently in beta. Lowering increment to '{VersionIncrement}'.", request.VersionIncrement);
-                request.VersionIncrement = request.VersionIncrement.ToBeta();
-                _logger.LogInformation("Increment lowered to '{VersionIncrement}'", request.VersionIncrement);
-            }
-
-            if (IsBetaVersion(assemblyVersion) && request.ExitBeta)
-            {
-                _logger.LogInformation("Assembly currently in beta. Exit beta: {ExitBeta}.", request.ExitBeta);
-                request.VersionIncrement = VersionIncrement.Major;
-                _logger.LogInformation("Increment changed to '{VersionIncrement}'", request.VersionIncrement);
-            }
-
-            _assemblyVersioningService.IncrementVersion(request.VersionIncrement, request.Directory, request.SearchOption);
-            _logger.LogInformation("Incremented assembly versions by '{VersionIncrement}'", request.VersionIncrement);
-            return Task.FromResult(Unit.Value);
+            logger.LogInformation("Assembly currently in beta. Exit beta: {ExitBeta}.", request.ExitBeta);
+            request.VersionIncrement = VersionIncrement.Major;
+            logger.LogInformation("Increment changed to '{VersionIncrement}'", request.VersionIncrement);
         }
 
-        private static bool IsBetaVersion(SemVersion assemblyVersion)
-        {
-            return assemblyVersion < new SemVersion(1);
-        }
+        assemblyVersioningService.IncrementVersion(request.VersionIncrement, request.Directory, request.SearchOption);
+        logger.LogInformation("Incremented assembly versions by '{VersionIncrement}'", request.VersionIncrement);
+        return Task.FromResult(Unit.Value);
+    }
+
+    private static bool IsBetaVersion(SemVersion assemblyVersion)
+    {
+        return assemblyVersion.Major < 1;
     }
 }

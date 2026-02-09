@@ -1,10 +1,9 @@
-﻿namespace Common.Tests.TestClasses
+﻿namespace Common.Tests.TestClasses;
+
+public class ClassWithEmptyConstructor
 {
-    public class ClassWithEmptyConstructor
+    public ClassWithEmptyConstructor()
     {
-        public ClassWithEmptyConstructor()
-        {
-            // Intentionally left blank
-        }
+        // Intentionally left blank
     }
 }

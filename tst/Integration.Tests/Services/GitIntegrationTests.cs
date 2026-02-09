@@ -1,9 +1,8 @@
 ﻿using Integration.Tests.Setup;
 
-namespace Integration.Tests.Services
+namespace Integration.Tests.Services;
+
+public partial class GitIntegrationTests : GitSetup
 {
-    public partial class GitIntegrationTests : GitSetup
-    {
         
-    }
 }

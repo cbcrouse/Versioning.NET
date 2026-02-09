@@ -9,48 +9,47 @@ using Microsoft.Extensions.Logging;
 using System;
 using Xunit;
 
-namespace Integration.Tests.Handlers
+namespace Integration.Tests.Handlers;
+
+public class IncrementVersionWithGitHintsHandlerTests : GitSetup, IClassFixture<Orchestrator>
 {
-    public class IncrementVersionWithGitHintsHandlerTests : GitSetup, IClassFixture<Orchestrator>
+    private readonly IServiceProvider _serviceProvider;
+
+    public IncrementVersionWithGitHintsHandlerTests(Orchestrator orchestrator)
     {
-        private readonly IServiceProvider _serviceProvider;
+        _serviceProvider = orchestrator.BuildServiceProvider();
+    }
 
-        public IncrementVersionWithGitHintsHandlerTests(Orchestrator orchestrator)
+    [Fact]
+    public void Handle_WorksAsExpected()
+    {
+        // Arrange
+        using var repo = new Repository(TestRepoDirectory);
+        repo.Network.Remotes.Update("origin", updater =>
         {
-            _serviceProvider = orchestrator.BuildServiceProvider();
-        }
+            var token = Environment.GetEnvironmentVariable("GitHubAccessToken");
+            var url = $"https://cbcrouse:{token}@github.com/cbcrouse/Versioning.NET.Tests.git";
+            updater.Url = url;
+            updater.PushUrl = url;
+        });
+        var mediator = _serviceProvider.GetRequiredService<IMediator>();
+        var gitService = _serviceProvider.GetRequiredService<IGitService>();
+        var gitVersioningService = _serviceProvider.GetRequiredService<IGitVersioningService>();
+        var versioningService = _serviceProvider.GetRequiredService<IAssemblyVersioningService>();
+        var logger = _serviceProvider.GetRequiredService<ILogger<IncrementVersionWithGitHintsHandler>>();
+        var sut = new IncrementVersionWithGitHintsHandler(mediator, gitService, gitVersioningService, versioningService, logger);
 
-        [Fact]
-        public void Handle_WorksAsExpected()
+        var command = new IncrementVersionWithGitHintsCommand
         {
-            // Arrange
-            using var repo = new Repository(TestRepoDirectory);
-            repo.Network.Remotes.Update("origin", updater =>
-            {
-                var token = Environment.GetEnvironmentVariable("GitHubAccessToken");
-                var url = $"https://cbcrouse:{token}@github.com/cbcrouse/Versioning.NET.Tests.git";
-                updater.Url = url;
-                updater.PushUrl = url;
-            });
-            var mediator = _serviceProvider.GetRequiredService<IMediator>();
-            var gitService = _serviceProvider.GetRequiredService<IGitService>();
-            var gitVersioningService = _serviceProvider.GetRequiredService<IGitVersioningService>();
-            var versioningService = _serviceProvider.GetRequiredService<IAssemblyVersioningService>();
-            var logger = _serviceProvider.GetRequiredService<ILogger<IncrementVersionWithGitHintsHandler>>();
-            var sut = new IncrementVersionWithGitHintsHandler(mediator, gitService, gitVersioningService, versioningService, logger);
+            GitDirectory = TestRepoDirectory,
+            BranchName = "main",
+            RemoteTarget = "origin",
+            CommitAuthorEmail = "support@versioning.net"
+        };
 
-            var command = new IncrementVersionWithGitHintsCommand
-            {
-                GitDirectory = TestRepoDirectory,
-                BranchName = "main",
-                RemoteTarget = "origin",
-                CommitAuthorEmail = "support@versioning.net"
-            };
+        // Act
+        //_ = await sut.Handle(command, CancellationToken.None);
 
-            // Act
-            //_ = await sut.Handle(command, CancellationToken.None);
-
-            // Assert
-        }
+        // Assert
     }
 }

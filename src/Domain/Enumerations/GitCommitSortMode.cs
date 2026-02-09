@@ -1,20 +1,19 @@
 ﻿using System;
 
-namespace Domain.Enumerations
+namespace Domain.Enumerations;
+
+/// <summary>
+/// Provides several indicators for sorting git commits.
+/// </summary>
+[Flags]
+public enum GitCommitSortMode
 {
     /// <summary>
-    /// Provides several indicators for sorting git commits.
+    /// Indicates the sort mode is none.
     /// </summary>
-    [Flags]
-    public enum GitCommitSortMode
-    {
-        /// <summary>
-        /// Indicates the sort mode is none.
-        /// </summary>
-        None,
-        /// <summary>
-        /// Indicates the sort mode is descending.
-        /// </summary>
-        Descending
-    }
+    None,
+    /// <summary>
+    /// Indicates the sort mode is descending.
+    /// </summary>
+    Descending
 }

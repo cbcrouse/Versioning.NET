@@ -1,32 +1,31 @@
 ﻿using McMaster.Extensions.CommandLineUtils;
 
-namespace Versioning.NET.Commands
+namespace Versioning.NET.Commands;
+
+/// <summary>
+/// The versioning commandline application.
+/// </summary>
+[Command("dotnet-version")]
+[Subcommand(typeof(IncrementVersion), typeof(IncrementVersionWithGit), typeof(IncrementVersionWithGitHints))]
+public class App
 {
     /// <summary>
-    /// The versioning commandline application.
+    /// Show the version information.
     /// </summary>
-    [Command("dotnet-version")]
-    [Subcommand(typeof(IncrementVersion), typeof(IncrementVersionWithGit), typeof(IncrementVersionWithGitHints))]
-    public class App
+    [Option(Description = "Show the version information.")]
+    public bool Version { get; set; }
+
+    // ReSharper disable once UnusedMember.Local
+    private int OnExecuteAsync(CommandLineApplication app)
     {
-        /// <summary>
-        /// Show the version information.
-        /// </summary>
-        [Option(Description = "Show the version information.")]
-        public bool Version { get; set; }
-
-        // ReSharper disable once UnusedMember.Local
-        private int OnExecuteAsync(CommandLineApplication app)
+        if (Version)
         {
-            if (Version)
-            {
-                app.VersionOptionFromAssemblyAttributes(typeof(App).Assembly);
-                app.ShowVersion();
-                return 0;
-            }
-
-            app.ShowHelp();
+            app.VersionOptionFromAssemblyAttributes(typeof(App).Assembly);
+            app.ShowVersion();
             return 0;
         }
+
+        app.ShowHelp();
+        return 0;
     }
 }

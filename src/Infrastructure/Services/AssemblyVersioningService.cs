@@ -1,115 +1,126 @@
-﻿#nullable enable
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Domain.Enumerations;
 using Semver;
 using System;
 using System.IO;
 using System.Xml;
 
-namespace Infrastructure.Services
+namespace Infrastructure.Services;
+
+/// <summary>
+/// Provides the implementation details for working with assembly versions.
+/// </summary>
+public class AssemblyVersioningService : IAssemblyVersioningService
 {
     /// <summary>
-    /// Provides the implementation details for working with assembly versions.
+    /// Returns the latest semantic version found amongst the files within the given directory.
     /// </summary>
-    public class AssemblyVersioningService : IAssemblyVersioningService
+    /// <param name="directory">The directory used to determine the latest version.</param>
+    /// <param name="searchOption">Specifies whether to search the current directory, or the current directory and all subdirectories.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="directory"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="directory"/> is an empty string.</exception>
+    /// <exception cref="DirectoryNotFoundException">Thrown when the specified <paramref name="directory"/> does not exist.</exception>
+    /// <exception cref="UnauthorizedAccessException">Thrown when the caller does not have the required permission to access the directory.</exception>
+    /// <exception cref="FileNotFoundException">Thrown when no files matching the pattern <c>"*.csproj"</c> are found in the specified directory.</exception>
+    /// <exception cref="XmlException">Thrown when a project file contains invalid XML.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when no valid semantic version could be determined from any project file.</exception>
+    public SemVersion GetLatestAssemblyVersion(string directory, SearchOption searchOption)
     {
-        /// <summary>
-        /// Returns the latest semantic version found amongst the files within the given directory.
-        /// </summary>
-        /// <param name="directory">The directory used to determine the latest version.</param>
-        /// <param name="searchOption">Specifies whether to search the current directory, or the current directory and all subdirectories.</param>
-        public SemVersion GetLatestAssemblyVersion(string directory, SearchOption searchOption)
+        string[] csProjFiles = Directory.GetFiles(directory, "*.csproj", searchOption);
+        SemVersion? highestVersion = null;
+
+        if (csProjFiles.Length == 0)
         {
-            string[] csProjFiles = Directory.GetFiles(directory, "*.csproj", searchOption);
-            SemVersion? highestVersion = null;
-
-            if (csProjFiles.Length == 0)
-            {
-                throw new FileNotFoundException("A file with an extension matching '.csproj' was not found.");
-            }
-
-            foreach (string csProjFile in csProjFiles)
-            {
-                var doc = new XmlDocument();
-                doc.Load(csProjFile);
-                string? versionText = doc.SelectSingleNode("/Project/PropertyGroup/VersionPrefix")?.InnerText ??
-                                      doc.SelectSingleNode("/Project/PropertyGroup/Version")?.InnerText;
-
-                if (versionText == null)
-                {
-                    continue;
-                }
-
-                SemVersion? version = SemVersion.Parse(versionText);
-
-                if (version != null && version > highestVersion)
-                    highestVersion = version;
-            }
-
-            if (highestVersion == null)
-            {
-                throw new InvalidOperationException("No valid version was found in any of the csproj files. Please ensure that the csproj files contain a VersionPrefix or Version element.");
-            }
-
-            return highestVersion;
+            throw new FileNotFoundException("A file with an extension matching '.csproj' was not found.");
         }
 
-        /// <summary>
-        /// Increases the assembly version by the specified <see cref="VersionIncrement"/>.
-        /// </summary>
-        /// <param name="increment">The increment to use when updating the version.</param>
-        /// <param name="directory">The directory of the assemblies to version.</param>
-        /// <param name="searchOption">Specifies whether to search the current directory, or the current directory and all subdirectories.</param>
-        public void IncrementVersion(VersionIncrement increment, string directory, SearchOption searchOption)
+        foreach (string csProjFile in csProjFiles)
         {
-            string[] csProjFiles = Directory.GetFiles(directory, "*.csproj", searchOption);
+            var doc = new XmlDocument();
+            doc.Load(csProjFile);
+            string? versionText = doc.SelectSingleNode("/Project/PropertyGroup/VersionPrefix")?.InnerText ??
+                                  doc.SelectSingleNode("/Project/PropertyGroup/Version")?.InnerText;
 
-            foreach (string csProjFile in csProjFiles)
+            if (versionText == null)
             {
-                var doc = new XmlDocument
-                {
-                    PreserveWhitespace = true
-                };
-                doc.Load(csProjFile);
-
-                XmlNode? versionPrefixText = doc.SelectSingleNode("/Project/PropertyGroup/VersionPrefix");
-                XmlNode? versionText =  doc.SelectSingleNode("/Project/PropertyGroup/Version");
-
-                if (versionPrefixText?.InnerText != null)
-                {
-                    UpdateVersionNode(increment, versionPrefixText);
-                }
-                else if (versionText?.InnerText != null)
-                {
-                    UpdateVersionNode(increment, versionText);
-                }
-
-                doc.Save(csProjFile);
-            }
-        }
-
-        private static void UpdateVersionNode(VersionIncrement increment, XmlNode node)
-        {
-            SemVersion? version = SemVersion.Parse(node.InnerText);
-            switch (increment)
-            {
-                case VersionIncrement.Unknown:
-                case VersionIncrement.None:
-                    break;
-                case VersionIncrement.Patch:
-                    version = new SemVersion(version.Major, version.Minor, version.Patch + 1, build: version.Build);
-                    break;
-                case VersionIncrement.Minor:
-                    version = new SemVersion(version.Major, version.Minor + 1, 0);
-                    break;
-                case VersionIncrement.Major:
-                    version = new SemVersion(version.Major + 1, 0, 0);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(increment), increment, null);
+                continue;
             }
 
-            node.InnerText = version.ToString();
+            SemVersion version = SemVersion.Parse(versionText);
+
+            var isHigher = SemVersion.ComparePrecedence(version, highestVersion) > 0;
+            if (isHigher)
+                highestVersion = version;
         }
+
+        if (highestVersion == null)
+        {
+            throw new InvalidOperationException("No valid version was found in any of the csproj files. Please ensure that the csproj files contain a VersionPrefix or Version element.");
+        }
+
+        return highestVersion;
+    }
+
+    /// <summary>
+    /// Increases the assembly version by the specified <see cref="VersionIncrement"/>.
+    /// </summary>
+    /// <param name="increment">The increment to use when updating the version.</param>
+    /// <param name="directory">The directory of the assemblies to version.</param>
+    /// <param name="searchOption">Specifies whether to search the current directory, or the current directory and all subdirectories.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="directory"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="directory"/> is an empty string.</exception>
+    /// <exception cref="DirectoryNotFoundException">Thrown when the specified <paramref name="directory"/> does not exist.</exception>
+    /// <exception cref="UnauthorizedAccessException">Thrown when the caller does not have the required permission to access the directory.</exception>
+    /// <exception cref="XmlException">Thrown when a project file contains invalid XML.</exception>
+    public void IncrementVersion(VersionIncrement increment, string directory, SearchOption searchOption)
+    {
+        string[] csProjFiles = Directory.GetFiles(directory, "*.csproj", searchOption);
+
+        foreach (string csProjFile in csProjFiles)
+        {
+            var doc = new XmlDocument
+            {
+                PreserveWhitespace = true
+            };
+            doc.Load(csProjFile);
+
+            XmlNode? versionPrefixText = doc.SelectSingleNode("/Project/PropertyGroup/VersionPrefix");
+            XmlNode? versionText =  doc.SelectSingleNode("/Project/PropertyGroup/Version");
+
+            if (versionPrefixText?.InnerText != null)
+            {
+                UpdateVersionNode(increment, versionPrefixText);
+            }
+            else if (versionText?.InnerText != null)
+            {
+                UpdateVersionNode(increment, versionText);
+            }
+
+            doc.Save(csProjFile);
+        }
+    }
+
+    private static void UpdateVersionNode(VersionIncrement increment, XmlNode node)
+    {
+        SemVersion version = SemVersion.Parse(node.InnerText);
+        switch (increment)
+        {
+            case VersionIncrement.Unknown:
+            case VersionIncrement.None:
+                break;
+            case VersionIncrement.Patch:
+                version = new SemVersion(version.Major, version.Minor, version.Patch + 1, prerelease: version.PrereleaseIdentifiers);
+                break;
+            case VersionIncrement.Minor:
+                version = new SemVersion(version.Major, version.Minor + 1, 0, prerelease: version.PrereleaseIdentifiers);
+                break;
+            case VersionIncrement.Major:
+                version = new SemVersion(version.Major + 1, 0, 0, prerelease: version.PrereleaseIdentifiers);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(increment), increment, null);
+        }
+
+        node.InnerText = version.ToString();
     }
 }
