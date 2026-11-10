@@ -2,12 +2,18 @@ name: Auto Version & Publish NuGet
 
 on:
   workflow_dispatch:
+    inputs:
+        existing_tag:
+          description: Existing release tag to publish without incrementing the version
+          required: false
+          type: string
   push:
     branches: [ "main" ]
     paths: [ "src/**" ]
 
 jobs:
   increment-version:
+    if: github.ref == 'refs/heads/main' && inputs.existing_tag == ''
     runs-on: windows-latest
     steps:
     - name: Checkout
@@ -53,12 +59,30 @@ jobs:
 
   publish-nuget:
     needs: increment-version
+    if: always() && !cancelled() && github.ref == 'refs/heads/main' && (needs.increment-version.result == 'success' || (needs.increment-version.result == 'skipped' && inputs.existing_tag != ''))
+    permissions:
+      contents: read
+      id-token: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check out the existing release tag
+        if: inputs.existing_tag != ''
+        env:
+          RELEASE_TAG: ${{ inputs.existing_tag }}
+        run: |
+          if [[ ! "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Expected a version tag such as v3.0.0"
+            exit 1
+          fi
+          git merge-base --is-ancestor "refs/tags/$RELEASE_TAG" HEAD
+          git checkout --detach "refs/tags/$RELEASE_TAG"
 
       - name: Setup .NET 10
         uses: actions/setup-dotnet@v4
@@ -71,8 +95,14 @@ jobs:
       - name: Pack project
         run: dotnet pack src/Versioning.NET/Versioning.NET.csproj --configuration Release --no-restore /m
 
+      - name: Authenticate with NuGet.org
+        uses: NuGet/login@v1
+        id: nuget_login
+        with:
+          user: cbcrouse
+
       - name: Publish
         env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          NUGET_API_KEY: ${{ steps.nuget_login.outputs.NUGET_API_KEY }}
           NUGET_SOURCE: https://api.nuget.org/v3/index.json
-        run: dotnet nuget push "src/Versioning.NET/nupkg/*.nupkg" --skip-duplicate --api-key $NUGET_API_KEY --source $NUGET_SOURCE
+        run: dotnet nuget push "src/Versioning.NET/nupkg/*.nupkg" --skip-duplicate --api-key "$NUGET_API_KEY" --source "$NUGET_SOURCE"
