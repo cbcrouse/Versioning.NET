@@ -47,7 +47,7 @@ public class CoreServiceRegistrationPipeline : ServiceRegistrationPipeline
     }
 
     /// <inheritdoc />
-    protected override ILogger StartupLogger =>
+    protected override ILogger Logger =>
         new SerilogLoggerFactory(
             new LoggerConfiguration()
                 .Enrich.FromLogContext()
