@@ -19,7 +19,7 @@ concurrency:
 jobs:
   source:
     name: Select successful Main Status source
-    if: (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository) || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    if: ((github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository && (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')) || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'))
     runs-on: windows-latest
     permissions:
       contents: read
@@ -81,7 +81,7 @@ jobs:
   test-existing-tag:
     name: Test existing release tag
     needs: source
-    if: inputs.existing_tag != ''
+    if: ((github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository && (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')) || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')) && (inputs.existing_tag != '')
     runs-on: windows-latest
     permissions:
       contents: read
@@ -107,7 +107,7 @@ jobs:
     outputs:
       release_sha: ${{ steps.version.outputs.sha }}
       version_changed: ${{ steps.version.outputs.changed }}
-    if: needs.source.outputs.release_needed == 'true' && inputs.existing_tag == ''
+    if: ((github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository && (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')) || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')) && (needs.source.outputs.release_needed == 'true' && inputs.existing_tag == '')
     runs-on: windows-latest
     steps:
     - name: Checkout
@@ -161,7 +161,7 @@ jobs:
 
   publish-nuget:
     needs: [source, test-existing-tag, increment-version]
-    if: always() && !cancelled() && needs.source.result == 'success' && ((needs.increment-version.result == 'success' && needs.increment-version.outputs.version_changed == 'true') || (needs.test-existing-tag.result == 'success' && inputs.existing_tag != ''))
+    if: always() && !cancelled() && ((github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository && (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')) || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')) && needs.source.result == 'success' && ((needs.increment-version.result == 'success' && needs.increment-version.outputs.version_changed == 'true') || (needs.test-existing-tag.result == 'success' && inputs.existing_tag != ''))
     permissions:
       contents: read
       id-token: write
