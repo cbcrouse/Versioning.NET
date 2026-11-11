@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net11.0</TargetFramework>
     <IsTestProject>false</IsTestProject>
@@ -10,7 +10,7 @@
     <OutputType>Exe</OutputType>
     <StartupObject />
     <ToolCommandName>dotnet-version</ToolCommandName>
-    <VersionPrefix>0.8.1</VersionPrefix>
+    <VersionPrefix>0.9.0</VersionPrefix>
     <Authors>Casey Crouse</Authors>
     <PackageId>Versioning.NET</PackageId>
     <Description>A dotnet tool that automatically versions csproj files semantically with git integration.</Description>
