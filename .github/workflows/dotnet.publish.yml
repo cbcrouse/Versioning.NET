@@ -44,10 +44,10 @@ jobs:
       with:
         dotnet-version: '6.x'
 
-    - name: Setup .NET 10
+    - name: Setup .NET 11
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '10.x'
+        dotnet-version: '11.x'
 
     - name: Install Versioning.NET
       run: |
@@ -84,10 +84,10 @@ jobs:
           git merge-base --is-ancestor "refs/tags/$RELEASE_TAG" HEAD
           git checkout --detach "refs/tags/$RELEASE_TAG"
 
-      - name: Setup .NET 10
+      - name: Setup .NET 11
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.x'
+          dotnet-version: '11.x'
 
       - name: Restore NuGet packages
         run: dotnet restore src/Versioning.NET/Versioning.NET.csproj
