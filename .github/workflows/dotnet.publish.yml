@@ -3,23 +3,82 @@ name: Auto Version & Publish NuGet
 on:
   workflow_dispatch:
     inputs:
-        existing_tag:
-          description: Existing release tag to publish without incrementing the version
-          required: false
-          type: string
+      existing_tag:
+        description: Existing release tag to test and publish without incrementing the version
+        required: false
+        type: string
   push:
-    branches: [ "main" ]
-    paths: [ "src/**" ]
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'Directory.Build.*'
+      - 'Directory.Packages.props'
+      - 'global.json'
+      - 'NuGet.Config'
+      - 'nuget.config'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/dotnet.publish.yml'
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
+  test:
+    name: Test release source
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    outputs:
+      source_sha: ${{ steps.source.outputs.sha }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Select release source
+        id: source
+        shell: pwsh
+        env:
+          RELEASE_TAG: ${{ inputs.existing_tag }}
+        run: |
+          if ($env:RELEASE_TAG) {
+            if ($env:RELEASE_TAG -notmatch '^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$') {
+              throw 'Expected a version tag such as v3.0.0'
+            }
+            git merge-base --is-ancestor "refs/tags/$env:RELEASE_TAG" HEAD
+            if ($LASTEXITCODE -ne 0) { throw 'Release tag must be reachable from main' }
+            git checkout --detach "refs/tags/$env:RELEASE_TAG"
+            if ($LASTEXITCODE -ne 0) { throw 'Could not check out release tag' }
+          }
+          $sourceSha = git rev-parse HEAD
+          "sha=$sourceSha" >> $env:GITHUB_OUTPUT
+
+      - name: Setup .NET 11
+        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
+        with:
+          dotnet-version: '11.x'
+
+      - name: Test
+        run: dotnet test Versioning.NET.sln --configuration Release
+
   increment-version:
-    if: github.ref == 'refs/heads/main' && inputs.existing_tag == ''
+    needs: test
+    outputs:
+      release_sha: ${{ steps.version.outputs.sha }}
+      version_changed: ${{ steps.version.outputs.changed }}
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && inputs.existing_tag == ''
     runs-on: windows-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       with:
         fetch-depth: 0
+        ref: ${{ needs.test.outputs.source_sha }}
         token: ${{ secrets.GITHUBACCESSTOKEN }}
 
     - name: Import GPG & Enable Git Signing
@@ -33,19 +92,20 @@ jobs:
         git_commit_gpgsign: true
         git_tag_gpgsign: true
         git_push_gpgsign: true
-  
+
     - name: Reset Origin
       run: |
         git remote set-url origin "https://cbcrouse:${{ secrets.GITHUBACCESSTOKEN }}@github.com/cbcrouse/Versioning.NET.git"
-        git checkout ${{ github.ref_name }}
-
-    - name: Setup .NET 6
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '6.x'
+        git fetch origin main
+        if ($LASTEXITCODE -ne 0) { throw 'Could not fetch main' }
+        $testedSha = '${{ needs.test.outputs.source_sha }}'
+        $mainSha = git rev-parse origin/main
+        if ($mainSha -ne $testedSha) { throw 'Main advanced during testing. Retry the release on current main.' }
+        git checkout -B main $testedSha
+        if ($LASTEXITCODE -ne 0) { throw 'Could not check out tested source' }
 
     - name: Setup .NET 11
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
       with:
         dotnet-version: '11.x'
 
@@ -54,38 +114,32 @@ jobs:
         dotnet tool install --global Versioning.NET
 
     - name: Increment Version
+      id: version
       run: |
-        dotnet-version increment-version-with-git-hints -g "." --branch-name ${{ github.ref_name }} --author-email ${{ vars.COMMIT_SIGNING_EMAIL }}
+        $before = git rev-parse HEAD
+        dotnet-version increment-version-with-git-hints -g "." --branch-name main --author-email ${{ vars.COMMIT_SIGNING_EMAIL }}
+        if ($LASTEXITCODE -ne 0) { throw 'Version increment failed' }
+        $after = git rev-parse HEAD
+        "sha=$after" >> $env:GITHUB_OUTPUT
+        "changed=$($before -ne $after)".ToLowerInvariant() >> $env:GITHUB_OUTPUT
 
   publish-nuget:
-    needs: increment-version
-    if: always() && !cancelled() && github.ref == 'refs/heads/main' && (needs.increment-version.result == 'success' || (needs.increment-version.result == 'skipped' && inputs.existing_tag != ''))
+    needs: [test, increment-version]
+    if: always() && !cancelled() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.test.result == 'success' && ((needs.increment-version.result == 'success' && needs.increment-version.outputs.version_changed == 'true') || (needs.increment-version.result == 'skipped' && inputs.existing_tag != ''))
     permissions:
       contents: read
       id-token: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ needs.increment-version.outputs.release_sha || needs.test.outputs.source_sha }}
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Check out the existing release tag
-        if: inputs.existing_tag != ''
-        env:
-          RELEASE_TAG: ${{ inputs.existing_tag }}
-        run: |
-          if [[ ! "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
-            echo "::error::Expected a version tag such as v3.0.0"
-            exit 1
-          fi
-          git merge-base --is-ancestor "refs/tags/$RELEASE_TAG" HEAD
-          git checkout --detach "refs/tags/$RELEASE_TAG"
-
       - name: Setup .NET 11
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
         with:
           dotnet-version: '11.x'
 
