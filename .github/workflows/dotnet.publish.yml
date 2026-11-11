@@ -1,25 +1,120 @@
 name: Auto Version & Publish NuGet
 
 on:
+  workflow_run:
+    workflows: [ Main Status ]
+    types: [ completed ]
+    branches: [ main ]
   workflow_dispatch:
     inputs:
-        existing_tag:
-          description: Existing release tag to publish without incrementing the version
-          required: false
-          type: string
-  push:
-    branches: [ "main" ]
-    paths: [ "src/**" ]
+      existing_tag:
+        description: Existing release tag to test and publish without incrementing the version
+        required: false
+        type: string
+
+concurrency:
+  group: publish-main
+  cancel-in-progress: false
 
 jobs:
+  source:
+    name: Select successful Main Status source
+    if: ((github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository && (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')) || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'))
+    runs-on: windows-latest
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      source_sha: ${{ steps.source.outputs.sha }}
+      release_needed: ${{ steps.source.outputs.release_needed }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Select release source
+        id: source
+        shell: pwsh
+        env:
+          RELEASE_TAG: ${{ inputs.existing_tag }}
+          EVENT_NAME: ${{ github.event_name }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          $sourceSha = git rev-parse HEAD
+          if ($env:RELEASE_TAG) {
+            if ($env:RELEASE_TAG -notmatch '^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$') {
+              throw 'Expected a version tag such as v3.0.0'
+            }
+            git merge-base --is-ancestor "refs/tags/$env:RELEASE_TAG" HEAD
+            if ($LASTEXITCODE -ne 0) { throw 'Release tag must be reachable from main' }
+            $sourceSha = git rev-parse "refs/tags/$env:RELEASE_TAG^{commit}"
+            if ($LASTEXITCODE -ne 0) { throw 'Could not resolve release tag' }
+            "sha=$sourceSha" >> $env:GITHUB_OUTPUT
+            'release_needed=true' >> $env:GITHUB_OUTPUT
+            exit 0
+          }
+
+          if ($env:EVENT_NAME -eq 'workflow_dispatch') {
+            $runs = gh run list --workflow dotnet.main.status.yml --commit $sourceSha --branch main --status success --json headSha
+            if ($LASTEXITCODE -ne 0) { throw 'Could not query Main Status runs' }
+            if (-not ($runs | ConvertFrom-Json | Where-Object headSha -eq $sourceSha)) {
+              throw 'Run Main Status successfully on this commit before releasing'
+            }
+          }
+
+          $versionTag = git describe --tags --match 'v[0-9]*' --abbrev=0 $sourceSha 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            $changedFiles = git diff --name-only "$versionTag..$sourceSha" -- src 'Directory.Build.*' Directory.Packages.props global.json NuGet.Config nuget.config
+            if ($LASTEXITCODE -ne 0) { throw 'Could not determine package changes' }
+          } else {
+            $changedFiles = git ls-tree --name-only -r $sourceSha |
+              Where-Object { $_ -like 'src/*' -or $_ -like 'Directory.Build.*' -or $_ -in @('Directory.Packages.props', 'global.json', 'NuGet.Config', 'nuget.config') }
+            if ($LASTEXITCODE -ne 0) { throw 'Could not determine initial package files' }
+          }
+          "sha=$sourceSha" >> $env:GITHUB_OUTPUT
+          "release_needed=$([bool]$changedFiles)".ToLowerInvariant() >> $env:GITHUB_OUTPUT
+
+  test-existing-tag:
+    name: Test existing release tag
+    needs: source
+    if: ((github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository && (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')) || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')) && (inputs.existing_tag != '')
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout release tag
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.source.outputs.source_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup .NET 11
+        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
+        with:
+          dotnet-version: '11.x'
+
+      - name: Test
+        env:
+          GitHubAccessToken: ${{ secrets.GITHUBACCESSTOKEN }}
+        run: dotnet test Versioning.NET.sln --configuration Release
   increment-version:
-    if: github.ref == 'refs/heads/main' && inputs.existing_tag == ''
+    needs: source
+    outputs:
+      release_sha: ${{ steps.version.outputs.sha }}
+      version_changed: ${{ steps.version.outputs.changed }}
+    if: ((github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository && (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')) || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')) && (needs.source.outputs.release_needed == 'true' && inputs.existing_tag == '')
     runs-on: windows-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       with:
         fetch-depth: 0
+        ref: ${{ needs.source.outputs.source_sha }}
         token: ${{ secrets.GITHUBACCESSTOKEN }}
 
     - name: Import GPG & Enable Git Signing
@@ -33,19 +128,20 @@ jobs:
         git_commit_gpgsign: true
         git_tag_gpgsign: true
         git_push_gpgsign: true
-  
+
     - name: Reset Origin
       run: |
         git remote set-url origin "https://cbcrouse:${{ secrets.GITHUBACCESSTOKEN }}@github.com/cbcrouse/Versioning.NET.git"
-        git checkout ${{ github.ref_name }}
-
-    - name: Setup .NET 6
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '6.x'
+        git fetch origin main
+        if ($LASTEXITCODE -ne 0) { throw 'Could not fetch main' }
+        $testedSha = '${{ needs.source.outputs.source_sha }}'
+        $mainSha = git rev-parse origin/main
+        if ($mainSha -ne $testedSha) { throw 'Main advanced during testing. Retry the release on current main.' }
+        git checkout -B main $testedSha
+        if ($LASTEXITCODE -ne 0) { throw 'Could not check out tested source' }
 
     - name: Setup .NET 11
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
       with:
         dotnet-version: '11.x'
 
@@ -54,38 +150,32 @@ jobs:
         dotnet tool install --global Versioning.NET
 
     - name: Increment Version
+      id: version
       run: |
-        dotnet-version increment-version-with-git-hints -g "." --branch-name ${{ github.ref_name }} --author-email ${{ vars.COMMIT_SIGNING_EMAIL }}
+        $before = git rev-parse HEAD
+        dotnet-version increment-version-with-git-hints -g "." --branch-name main --author-email ${{ vars.COMMIT_SIGNING_EMAIL }}
+        if ($LASTEXITCODE -ne 0) { throw 'Version increment failed' }
+        $after = git rev-parse HEAD
+        "sha=$after" >> $env:GITHUB_OUTPUT
+        "changed=$($before -ne $after)".ToLowerInvariant() >> $env:GITHUB_OUTPUT
 
   publish-nuget:
-    needs: increment-version
-    if: always() && !cancelled() && github.ref == 'refs/heads/main' && (needs.increment-version.result == 'success' || (needs.increment-version.result == 'skipped' && inputs.existing_tag != ''))
+    needs: [source, test-existing-tag, increment-version]
+    if: always() && !cancelled() && ((github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository && (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')) || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')) && needs.source.result == 'success' && ((needs.increment-version.result == 'success' && needs.increment-version.outputs.version_changed == 'true') || (needs.test-existing-tag.result == 'success' && inputs.existing_tag != ''))
     permissions:
       contents: read
       id-token: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ needs.increment-version.outputs.release_sha || needs.source.outputs.source_sha }}
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Check out the existing release tag
-        if: inputs.existing_tag != ''
-        env:
-          RELEASE_TAG: ${{ inputs.existing_tag }}
-        run: |
-          if [[ ! "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
-            echo "::error::Expected a version tag such as v3.0.0"
-            exit 1
-          fi
-          git merge-base --is-ancestor "refs/tags/$RELEASE_TAG" HEAD
-          git checkout --detach "refs/tags/$RELEASE_TAG"
-
       - name: Setup .NET 11
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
         with:
           dotnet-version: '11.x'
 
