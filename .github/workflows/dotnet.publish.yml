@@ -64,6 +64,8 @@ jobs:
           dotnet-version: '11.x'
 
       - name: Test
+        env:
+          GitHubAccessToken: ${{ secrets.GITHUBACCESSTOKEN }}
         run: dotnet test Versioning.NET.sln --configuration Release
 
   increment-version:
